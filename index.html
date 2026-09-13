@@ -217,9 +217,14 @@
           <div class="text-[11px] text-zinc-500 tracking-wider uppercase font-semibold">bash — cyberind@core:~</div>
         </div>
 
-        <!-- Output Terminal dengan Efek Mengetik Otomatis dan Perulangan Berkelanjutan -->
-        <div class="space-y-1.5 leading-relaxed overflow-hidden min-h-[40px] flex items-center">
-          <p id="typingTerminal" class="text-zinc-300 whitespace-nowrap overflow-hidden"></p>
+        <!-- Output Terminal Bersusun ke Bawah dengan Line Number & Animasi Mengetik Berkelanjutan -->
+        <div class="space-y-1.5 leading-relaxed overflow-hidden">
+          <p><span class="text-zinc-600 select-none mr-3">1</span><span id="line1" class="text-zinc-400"></span></p>
+          <p><span class="text-zinc-600 select-none mr-3">2</span><span id="line2" class="text-emerald-400"></span></p>
+          <p><span class="text-zinc-600 select-none mr-3">3</span><span id="line3" class="text-emerald-400"></span></p>
+          <p><span class="text-zinc-600 select-none mr-3">4</span><span id="line4" class="text-emerald-400"></span></p>
+          <p><span class="text-zinc-600 select-none mr-3">5</span><span id="line5" class="text-amber-400"></span></p>
+          <p><span class="text-zinc-600 select-none mr-3">6</span><span id="line6" class="text-red-400"></span></p>
         </div>
       </div>
     </div>
@@ -461,35 +466,50 @@
 </footer>
 
 <script>
-// Skrip Animasi Mengetik Berkelanjutan (Infinite Typing Effect) pada Terminal
-function initContinuousTyping() {
-  const terminalElement = document.getElementById('typingTerminal');
-  if (!terminalElement) return;
+// Skrip Animasi Mengetik Bersusun ke Bawah dengan Line Number & Perulangan Berkelanjutan
+function initVerticalTyping() {
+  const lines = [
+    { id: 'line1', text: '$ ./cyberind --launch' },
+    { id: 'line2', text: '[OK] CONNECTED' },
+    { id: 'line3', text: '[OK] SECURE' },
+    { id: 'line4', text: '[OK] LOADED' },
+    { id: 'line5', text: 'ACCESS GRANTED' },
+    { id: 'line6', text: '> cyberind.my.id' }
+  ];
 
-  const textToType = "$ ./cyberind --launch  |  [OK] CONNECTED  |  [OK] SECURE  |  [OK] LOADED  |  ACCESS GRANTED  |  > cyberind.my.id";
+  let currentLine = 0;
   let charIndex = 0;
-  let isDeleting = false;
 
-  function typeLoop() {
-    if (!isDeleting) {
-      terminalElement.textContent = textToType.substring(0, charIndex + 1);
-      charIndex++;
-      if (charIndex === textToType.length) {
-        // Berhenti sejenak di akhir teks sebelum mulai menghapus
-        setTimeout(() => { isDeleting = true; }, 2000);
-      }
-    } else {
-      terminalElement.textContent = textToType.substring(0, charIndex - 1);
-      charIndex--;
-      if (charIndex === 0) {
-        isDeleting = false;
-      }
+  function typeNextLine() {
+    if (currentLine >= lines.length) {
+      // Jeda sebelum mereset ulang animasi terminal
+      setTimeout(() => {
+        lines.forEach(l => {
+          const el = document.getElementById(l.id);
+          if (el) el.textContent = '';
+        });
+        currentLine = 0;
+        charIndex = 0;
+        setTimeout(typeNextLine, 500);
+      }, 3000);
+      return;
     }
-    const speed = isDeleting ? 40 : 70;
-    setTimeout(typeLoop, speed);
+
+    const currentObj = lines[currentLine];
+    const targetElement = document.getElementById(currentObj.id);
+
+    if (targetElement && charIndex < currentObj.text.length) {
+      targetElement.textContent += currentObj.text.charAt(charIndex);
+      charIndex++;
+      setTimeout(typeNextLine, 35);
+    } else {
+      currentLine++;
+      charIndex = 0;
+      setTimeout(typeNextLine, 200);
+    }
   }
 
-  typeLoop();
+  typeNextLine();
 }
 
 function randomTool() {
@@ -551,7 +571,7 @@ function app() {
         (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
       this.$watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
 
-      initContinuousTyping();
+      initVerticalTyping();
 
       const io = new IntersectionObserver(entries => {
         entries.forEach(e => {
