@@ -221,7 +221,7 @@
 
   <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
     
-    <!-- TERMINAL DENGAN KURSOR KOTAK PUTIH -->
+    <!-- TERMINAL DENGAN KURSOR KOTAK PUTIH (Kecepatan diperlambat menjadi 95ms per karakter) -->
     <div class="reveal mb-12 ml-0 sm:ml-0 mr-[-24px] sm:mr-0 pr-6 sm:pr-0">
       <div style="background: #111318; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); backdrop-blur: 16px;" class="rounded-l-2xl sm:rounded-2xl p-5 sm:p-6 font-mono text-xs sm:text-sm text-zinc-300 relative overflow-hidden">
         
@@ -481,7 +481,7 @@
 </footer>
 
 <script>
-// Skrip Animasi Mengetik dengan Kursor Kotak Putih yang Berpindah Mengikuti Baris Aktif
+// Skrip Animasi Mengetik (Kecepatan diperlambat menjadi 95ms per karakter)
 function initVerticalTyping() {
   const lines = [
     { id: 'line1', cursorId: 'cursor1', text: '$ ./cyberind --launch' },
@@ -532,11 +532,11 @@ function initVerticalTyping() {
     if (targetElement && charIndex < currentObj.text.length) {
       targetElement.textContent += currentObj.text.charAt(charIndex);
       charIndex++;
-      setTimeout(typeNextLine, 35);
+      setTimeout(typeNextLine, 95); // Diperlambat dari 35 menjadi 95 milidetik
     } else {
       currentLine++;
       charIndex = 0;
-      setTimeout(typeNextLine, 200);
+      setTimeout(typeNextLine, 350);
     }
   }
 
