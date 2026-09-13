@@ -203,7 +203,7 @@
 
   <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
     
-    <!-- TERMINAL: Margin kiri ada (mengikuti max-w container), sisi kanan 0 (mentok penuh), tanpa scroll samping -->
+    <!-- TERMINAL: Margin kiri ada, kanan mentok (0), tanpa scroll samping -->
     <div class="reveal mb-12 ml-0 sm:ml-0 mr-[-24px] sm:mr-0 pr-6 sm:pr-0">
       <div style="background: #111318; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); backdrop-blur: 16px;" class="rounded-l-2xl sm:rounded-2xl p-5 sm:p-6 font-mono text-xs sm:text-sm text-zinc-300 relative overflow-hidden">
         
@@ -259,10 +259,9 @@
         <div class="relative w-80 sm:w-[22rem] md:w-[25rem] aspect-square flex items-center justify-center">
           <div class="absolute -inset-5 rounded-[2.75rem] bg-gradient-to-br from-accent/25 via-accent-light/10 to-transparent blur-3xl -z-10"></div>
           
-          <!-- Logo Gambar Besar: cyb-logo.png untuk Mode Gelap & S-cyb.png untuk Mode Terang -->
+          <!-- Logo Besar Dinamis: Berubah otomatis antara Mode Gelap (cyb-logo.png) dan Mode Terang (S-cyb.png) -->
           <div class="pf-clean w-full h-full flex items-center justify-center p-6">
-            <img src="https://www.cyberind.my.id/assets/images/cyb-logo.png" alt="Cyberind.id Large Logo" class="dark:block hidden w-full h-full object-contain drop-shadow-[0_15px_35px_rgba(239,68,68,0.25)]">
-            <img src="https://www.cyberind.my.id/assets/images/S-cyb.png" alt="Cyberind.id Large Logo Light" class="dark:hidden block w-full h-full object-contain drop-shadow-[0_15px_35px_rgba(239,68,68,0.25)]">
+            <img :src="dark ? 'https://www.cyberind.my.id/assets/images/cyb-logo.png' : 'https://www.cyberind.my.id/assets/images/S-cyb.png'" alt="Cyberind.id Large Logo" class="w-full h-full object-contain drop-shadow-[0_15px_35px_rgba(239,68,68,0.25)] transition-all duration-300">
           </div>
 
           <div class="glass-touch absolute -bottom-2 -left-2 bg-accent/90 border border-white/20 text-white font-display font-bold text-xs px-4 py-2.5 rounded-2xl shadow-lg">Explore. Learn. Share. Build. Secure.</div>
