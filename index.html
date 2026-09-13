@@ -68,7 +68,6 @@
     .shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:rgba(255,255,255,.18);transform:skewX(-20deg);transition:left .4s cubic-bezier(.4,0,.2,1)}
     .shimmer:hover::after{left:160%}
     
-    /* Clean look tanpa background untuk gambar besar */
     .pf-clean {
       background: transparent !important;
       box-shadow: none !important;
@@ -157,7 +156,6 @@
 <header class="fixed inset-x-0 top-0 z-50 transition-all duration-300"
   :class="sc ? 'bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md shadow-sm shadow-black/5' : ''">
   <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-    <!-- Logo kecil di atas (logoo.png) -->
     <a href="#hero" class="font-display font-bold text-xl tracking-tight flex items-center gap-2.5">
       <img src="https://www.cyberind.my.id/assets/images/logoo.png" alt="Cyberind.id Logo" class="w-7 h-7 object-contain">
       <span><span class="text-zinc-900 dark:text-white">cyberind</span><span class="text-accent">id</span></span>
@@ -205,11 +203,11 @@
 
   <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
     
-    <!-- TERMINAL: Sesuai gambar referensi & efek ketik santai ke kanan -->
-    <div class="reveal mb-12">
-      <div style="background: linear-gradient(135deg, rgba(16, 12, 30, 0.98), rgba(8, 6, 18, 0.99)); border: 1px solid rgba(147, 112, 219, 0.3); box-shadow: -20px 35px 70px -15px rgba(50, 10, 80, 0.6), 15px 35px 70px -15px rgba(20, 10, 50, 0.5), 0 0 40px rgba(126, 34, 206, 0.25); backdrop-blur: 20px;" class="rounded-2xl p-6 font-mono text-xs sm:text-sm text-zinc-200 overflow-x-auto relative">
+    <!-- TERMINAL: Samping kanan dibuat tanpa margin (full mentok ke kanan layar browser/kontainer) -->
+    <div class="reveal mb-12 -mx-6 sm:mx-0">
+      <div style="background: linear-gradient(135deg, rgba(16, 12, 30, 0.98), rgba(8, 6, 18, 0.99)); border: 1px solid rgba(147, 112, 219, 0.3); box-shadow: -20px 35px 70px -15px rgba(50, 10, 80, 0.6), 15px 35px 70px -15px rgba(20, 10, 50, 0.5), 0 0 40px rgba(126, 34, 206, 0.25); backdrop-blur: 20px;" class="sm:rounded-2xl p-5 sm:p-6 font-mono text-xs sm:text-sm text-zinc-200 overflow-x-auto relative">
         
-        <!-- Header Terminal ala Gambar Referensi -->
+        <!-- Header Terminal -->
         <div class="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-purple-900/40 gap-3">
           <div class="flex items-center gap-2">
             <span class="text-purple-400 font-bold text-sm tracking-wide">🛡️ cyberind-init-system.sh</span>
@@ -221,8 +219,8 @@
           </div>
         </div>
 
-        <!-- Output Terminal dengan Efek Mengetik Santai Melebar ke Kanan -->
-        <div id="terminalOutput" class="space-y-2 leading-relaxed min-h-[120px] whitespace-nowrap overflow-x-auto pb-2">
+        <!-- Output Terminal dengan Efek Mengetik Santai Melebar Full ke Kanan -->
+        <div id="terminalOutput" class="space-y-2 leading-relaxed min-h-[120px] whitespace-nowrap overflow-x-auto pb-2 pr-12">
           <p class="text-purple-400">$ bash &lt;(curl -s https://cyberind.id/install-tools.sh)</p>
         </div>
       </div>
@@ -252,7 +250,7 @@
         <div class="relative w-80 sm:w-[22rem] md:w-[25rem] aspect-square flex items-center justify-center">
           <div class="absolute -inset-5 rounded-[2.75rem] bg-gradient-to-br from-accent/25 via-accent-light/10 to-transparent blur-3xl -z-10"></div>
           
-          <!-- Gambar besar (cyb-logo.png) dengan penyesuaian otomatis kontras/filter agar tulisan putih tetap terlihat jelas di mode terang & gelap -->
+          <!-- Gambar besar (cyb-logo.png) dengan penyesuaian otomatis kontras agar teks putih terlihat di mode terang & gelap -->
           <div class="pf-clean w-full h-full flex items-center justify-center p-6">
             <img src="https://www.cyberind.my.id/assets/images/cyb-logo.png" alt="Cyberind.id Large Logo" class="dark:brightness-100 dark:contrast-100 brightness-[0.85] contrast-125 transition-all duration-300">
           </div>
