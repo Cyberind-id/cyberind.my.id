@@ -1,1 +1,3671 @@
-p
+<!DOCTYPE html>
+<html lang="id"
+      x-data="adminApp()"
+      :class="{ 'dark': dark }"
+      class="scroll-smooth">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cyberind CMS — Admin</title>
+
+    <meta name="description"
+          content="Cyberind.id Content Management System">
+
+    <link rel="icon"
+          href="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine -->
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=PT+Sans:wght@400;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        :root {
+            --accent: #ef4444;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .font-pt {
+            font-family: 'PT Sans', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255,255,255,.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0,0,0,.06);
+        }
+
+        .dark .glass {
+            background: rgba(15,15,15,.82);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        .sidebar {
+            background: #080808;
+        }
+
+        .sidebar-item {
+            transition: all .2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255,255,255,.07);
+        }
+
+        .sidebar-item.active {
+            background: rgba(239,68,68,.12);
+            color: #ef4444;
+        }
+
+        .terminal {
+            background: #080808;
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .loader {
+            width: 38px;
+            height: 38px;
+            border: 4px solid rgba(127,127,127,.2);
+            border-top-color: #ef4444;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .editor {
+            min-height: 320px;
+        }
+
+        .stat-card {
+            transition: transform .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+    </style>
+
+</head>
+
+
+<body class="bg-gray-100 dark:bg-[#050505] text-gray-900 dark:text-gray-100">
+
+
+<!-- =========================================================
+     LOGIN
+========================================================= -->
+
+<div
+    x-show="!session"
+    x-cloak
+    class="min-h-screen flex items-center justify-center p-5">
+
+    <div class="w-full max-w-md">
+
+        <!-- Logo -->
+
+        <div class="text-center mb-8">
+
+            <img
+                src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+                alt="Cyberind.id"
+                class="w-20 h-20 object-contain mx-auto mb-5">
+
+            <h1 class="text-2xl font-bold">
+                Cyberind<span class="text-red-500">.id</span>
+                CMS
+            </h1>
+
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                Content Management System
+            </p>
+
+        </div>
+
+
+        <!-- Login Card -->
+
+        <div class="glass rounded-2xl p-7 shadow-xl">
+
+            <div class="mb-6">
+
+                <h2 class="text-xl font-bold">
+                    Login Admin
+                </h2>
+
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Masuk untuk mengelola Cyberind Journal.
+                </p>
+
+            </div>
+
+
+            <!-- Error -->
+
+            <div
+                x-show="loginError"
+                x-transition
+                class="mb-5 p-4 rounded-xl bg-red-500/10
+                       border border-red-500/20
+                       text-red-500 text-sm">
+
+                <i class="fa-solid fa-circle-exclamation mr-2"></i>
+
+                <span x-text="loginError"></span>
+
+            </div>
+
+
+            <form @submit.prevent="login()">
+
+                <!-- Email -->
+
+                <div class="mb-5">
+
+                    <label class="block text-sm font-semibold mb-2">
+                        Email
+                    </label>
+
+                    <div class="relative">
+
+                        <i
+                            class="fa-regular fa-envelope
+                                   absolute left-4 top-1/2
+                                   -translate-y-1/2
+                                   text-gray-400">
+                        </i>
+
+                        <input
+                            type="email"
+                            x-model="loginEmail"
+                            required
+                            autocomplete="email"
+                            placeholder="admin@example.com"
+                            class="w-full pl-11 pr-4 py-3
+                                   rounded-xl
+                                   border border-gray-200
+                                   dark:border-gray-700
+                                   bg-white dark:bg-gray-900
+                                   outline-none
+                                   focus:border-red-500
+                                   transition">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="mb-6">
+
+                    <label class="block text-sm font-semibold mb-2">
+                        Password
+                    </label>
+
+                    <div class="relative">
+
+                        <i
+                            class="fa-solid fa-lock
+                                   absolute left-4 top-1/2
+                                   -translate-y-1/2
+                                   text-gray-400">
+                        </i>
+
+                        <input
+                            :type="showPassword ? 'text' : 'password'"
+                            x-model="loginPassword"
+                            required
+                            autocomplete="current-password"
+                            placeholder="••••••••"
+                            class="w-full pl-11 pr-12 py-3
+                                   rounded-xl
+                                   border border-gray-200
+                                   dark:border-gray-700
+                                   bg-white dark:bg-gray-900
+                                   outline-none
+                                   focus:border-red-500
+                                   transition">
+
+                        <button
+                            type="button"
+                            @click="showPassword = !showPassword"
+                            class="absolute right-4 top-1/2
+                                   -translate-y-1/2
+                                   text-gray-400">
+
+                            <i
+                                class="fa-solid"
+                                :class="showPassword ? 'fa-eye-slash' : 'fa-eye'">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    :disabled="loginLoading"
+                    class="w-full py-3.5
+                           rounded-xl
+                           bg-red-500
+                           hover:bg-red-600
+                           disabled:opacity-60
+                           text-white
+                           font-semibold
+                           transition">
+
+                    <span x-show="!loginLoading">
+
+                        <i class="fa-solid fa-right-to-bracket mr-2"></i>
+
+                        Login
+
+                    </span>
+
+                    <span
+                        x-show="loginLoading"
+                        x-cloak>
+
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+
+                        Memproses...
+
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <div class="mt-6 pt-5 border-t
+                        border-gray-200
+                        dark:border-gray-800
+                        text-center">
+
+                <a
+                    href="/"
+                    class="text-sm text-gray-500
+                           hover:text-red-500 transition">
+
+                    <i class="fa-solid fa-arrow-left mr-1"></i>
+
+                    Kembali ke website
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <p class="text-center text-xs
+                  text-gray-400 mt-6">
+
+            Cyberind.id CMS
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     ADMIN APPLICATION
+========================================================= -->
+
+<div
+    x-show="session"
+    x-cloak
+    class="min-h-screen">
+
+
+    <!-- =====================================================
+         MOBILE HEADER
+    ====================================================== -->
+
+    <header
+        class="lg:hidden fixed top-0 left-0 right-0
+               h-16 z-50
+               sidebar text-white
+               flex items-center justify-between
+               px-5">
+
+        <a href="/"
+           class="flex items-center gap-3">
+
+            <img
+                src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+                class="w-9 h-9 object-contain">
+
+            <span class="font-bold">
+                Cyberind<span class="text-red-500">.id</span>
+            </span>
+
+        </a>
+
+
+        <button
+            @click="mobileSidebar = !mobileSidebar"
+            class="w-10 h-10">
+
+            <i
+                class="fa-solid"
+                :class="mobileSidebar ? 'fa-xmark' : 'fa-bars'">
+            </i>
+
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar fixed
+               top-0 bottom-0 left-0
+               w-64 z-40
+               text-white
+               transform transition-transform duration-300
+               lg:translate-x-0"
+        :class="mobileSidebar
+            ? 'translate-x-0'
+            : '-translate-x-full'">
+
+        <div class="h-full flex flex-col">
+
+
+            <!-- Logo -->
+
+            <div class="h-20 px-6
+                        flex items-center
+                        border-b border-white/10">
+
+                <a href="/"
+                   class="flex items-center gap-3">
+
+                    <img
+                        src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+                        class="w-10 h-10 object-contain">
+
+                    <div>
+
+                        <div class="font-bold">
+
+                            Cyberind<span class="text-red-500">.id</span>
+
+                        </div>
+
+                        <div class="text-[9px]
+                                    text-gray-500
+                                    tracking-wider">
+
+                            ADMIN CMS
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- Navigation -->
+
+            <div class="flex-1 px-4 py-6 overflow-y-auto">
+
+                <div
+                    class="text-[10px] uppercase
+                           tracking-widest
+                           text-gray-500
+                           px-3 mb-3">
+
+                    Main Menu
+
+                </div>
+
+
+                <!-- Dashboard -->
+
+                <button
+                    @click="changePage('dashboard')"
+                    class="sidebar-item w-full
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1"
+                    :class="page === 'dashboard' ? 'active' : ''">
+
+                    <i class="fa-solid fa-chart-line w-5"></i>
+
+                    <span>Dashboard</span>
+
+                </button>
+
+
+                <!-- Articles -->
+
+                <button
+                    @click="changePage('articles')"
+                    class="sidebar-item w-full
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1"
+                    :class="page === 'articles' ? 'active' : ''">
+
+                    <i class="fa-regular fa-newspaper w-5"></i>
+
+                    <span>Artikel</span>
+
+                </button>
+
+
+                <!-- New Article -->
+
+                <button
+                    @click="newArticle()"
+                    class="sidebar-item w-full
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1"
+                    :class="page === 'editor' ? 'active' : ''">
+
+                    <i class="fa-solid fa-pen-to-square w-5"></i>
+
+                    <span>Tulis Artikel</span>
+
+                </button>
+
+
+                <div
+                    class="text-[10px] uppercase
+                           tracking-widest
+                           text-gray-500
+                           px-3 mt-8 mb-3">
+
+                    Website
+
+                </div>
+
+
+                <!-- Journal -->
+
+                <a
+                    href="/blog/"
+                    target="_blank"
+                    class="sidebar-item
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1">
+
+                    <i class="fa-solid fa-book-open w-5"></i>
+
+                    <span>Cyberind Journal</span>
+
+                    <i class="fa-solid fa-arrow-up-right-from-square
+                              text-[10px] ml-auto text-gray-500">
+                    </i>
+
+                </a>
+
+
+                <!-- Website -->
+
+                <a
+                    href="/"
+                    target="_blank"
+                    class="sidebar-item
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1">
+
+                    <i class="fa-solid fa-globe w-5"></i>
+
+                    <span>Website</span>
+
+                    <i class="fa-solid fa-arrow-up-right-from-square
+                              text-[10px] ml-auto text-gray-500">
+                    </i>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- Bottom -->
+
+            <div
+                class="border-t border-white/10
+                       p-4">
+
+
+                <!-- Theme -->
+
+                <button
+                    @click="toggleTheme()"
+                    class="sidebar-item w-full
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl mb-1">
+
+                    <i
+                        class="fa-solid w-5"
+                        :class="dark ? 'fa-sun' : 'fa-moon'">
+                    </i>
+
+                    <span
+                        x-text="dark ? 'Light Mode' : 'Dark Mode'">
+                    </span>
+
+                </button>
+
+
+                <!-- Logout -->
+
+                <button
+                    @click="logout()"
+                    class="sidebar-item w-full
+                           flex items-center gap-3
+                           px-3 py-3 rounded-xl
+                           text-gray-300
+                           hover:text-red-400">
+
+                    <i class="fa-solid fa-right-from-bracket w-5"></i>
+
+                    <span>Logout</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- Overlay mobile -->
+
+    <div
+        x-show="mobileSidebar"
+        x-cloak
+        @click="mobileSidebar = false"
+        class="fixed inset-0 z-30
+               bg-black/60 lg:hidden">
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header
+            class="hidden lg:flex h-20
+                   items-center justify-between
+                   px-8
+                   border-b
+                   border-gray-200
+                   dark:border-gray-800
+                   bg-white
+                   dark:bg-[#080808]">
+
+            <div>
+
+                <h1
+                    class="text-xl font-bold"
+                    x-text="pageTitle">
+                </h1>
+
+                <p
+                    class="text-sm text-gray-500
+                           dark:text-gray-400 mt-1">
+
+                    Kelola konten Cyberind Journal.
+
+                </p>
+
+            </div>
+
+
+            <div class="flex items-center gap-4">
+
+
+                <!-- New -->
+
+                <button
+                    @click="newArticle()"
+                    class="px-4 py-2.5
+                           rounded-xl
+                           bg-red-500
+                           hover:bg-red-600
+                           text-white
+                           text-sm
+                           font-semibold
+                           transition">
+
+                    <i class="fa-solid fa-plus mr-2"></i>
+
+                    Artikel Baru
+
+                </button>
+
+
+                <!-- User -->
+
+                <div
+                    class="flex items-center gap-3
+                           pl-4
+                           border-l
+                           border-gray-200
+                           dark:border-gray-800">
+
+                    <div
+                        class="w-9 h-9
+                               rounded-full
+                               bg-red-500/10
+                               text-red-500
+                               flex items-center
+                               justify-center">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+                    <div class="text-sm">
+
+                        <div
+                            class="font-semibold"
+                            x-text="userEmail">
+                        </div>
+
+                        <div
+                            class="text-xs
+                                   text-gray-500">
+
+                            Administrator
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             CONTENT
+        ================================================== -->
+
+        <div class="p-5 sm:p-7 lg:p-8">
+
+
+            <!-- =============================================
+                 DASHBOARD
+            ============================================== -->
+
+            <section
+                x-show="page === 'dashboard'"
+                x-cloak>
+
+
+                <!-- Welcome Terminal -->
+
+                <div
+                    class="terminal rounded-2xl
+                           p-6 sm:p-8
+                           text-white mb-7">
+
+                    <div
+                        class="flex items-center gap-2
+                               mb-5">
+
+                        <span
+                            class="w-3 h-3 rounded-full
+                                   bg-red-500">
+                        </span>
+
+                        <span
+                            class="w-3 h-3 rounded-full
+                                   bg-yellow-500">
+                        </span>
+
+                        <span
+                            class="w-3 h-3 rounded-full
+                                   bg-green-500">
+                        </span>
+
+                    </div>
+
+                    <div
+                        class="font-mono
+                               text-sm sm:text-base
+                               leading-8">
+
+                        <div class="text-gray-500">
+                            $ cyberind cms --status
+                        </div>
+
+                        <div class="text-green-400">
+                            [OK] AUTHENTICATED
+                        </div>
+
+                        <div class="text-green-400">
+                            [OK] DATABASE CONNECTED
+                        </div>
+
+                        <div class="text-gray-400">
+                            > cyberind.my.id
+                        </div>
+
+                        <div class="text-red-400 font-bold mt-2">
+                            ACCESS GRANTED
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Stats -->
+
+                <div
+                    class="grid grid-cols-1
+                           sm:grid-cols-2
+                           xl:grid-cols-4
+                           gap-5 mb-8">
+
+
+                    <!-- Total -->
+
+                    <div
+                        class="stat-card glass
+                               rounded-2xl p-6">
+
+                        <div
+                            class="flex items-center
+                                   justify-between">
+
+                            <div>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500">
+
+                                    Total Artikel
+
+                                </p>
+
+                                <p
+                                    class="text-3xl
+                                           font-bold mt-2"
+                                    x-text="articles.length">
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="w-12 h-12
+                                       rounded-xl
+                                       bg-red-500/10
+                                       text-red-500
+                                       flex items-center
+                                       justify-center">
+
+                                <i class="fa-regular fa-newspaper text-lg"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Published -->
+
+                    <div
+                        class="stat-card glass
+                               rounded-2xl p-6">
+
+                        <div
+                            class="flex items-center
+                                   justify-between">
+
+                            <div>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500">
+
+                                    Published
+
+                                </p>
+
+                                <p
+                                    class="text-3xl
+                                           font-bold mt-2"
+                                    x-text="publishedCount">
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="w-12 h-12
+                                       rounded-xl
+                                       bg-green-500/10
+                                       text-green-500
+                                       flex items-center
+                                       justify-center">
+
+                                <i class="fa-solid fa-globe text-lg"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Draft -->
+
+                    <div
+                        class="stat-card glass
+                               rounded-2xl p-6">
+
+                        <div
+                            class="flex items-center
+                                   justify-between">
+
+                            <div>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500">
+
+                                    Draft
+
+                                </p>
+
+                                <p
+                                    class="text-3xl
+                                           font-bold mt-2"
+                                    x-text="draftCount">
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="w-12 h-12
+                                       rounded-xl
+                                       bg-yellow-500/10
+                                       text-yellow-500
+                                       flex items-center
+                                       justify-center">
+
+                                <i class="fa-solid fa-file-pen text-lg"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Views -->
+
+                    <div
+                        class="stat-card glass
+                               rounded-2xl p-6">
+
+                        <div
+                            class="flex items-center
+                                   justify-between">
+
+                            <div>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500">
+
+                                    Total Views
+
+                                </p>
+
+                                <p
+                                    class="text-3xl
+                                           font-bold mt-2"
+                                    x-text="formatNumber(totalViews)">
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="w-12 h-12
+                                       rounded-xl
+                                       bg-blue-500/10
+                                       text-blue-500
+                                       flex items-center
+                                       justify-center">
+
+                                <i class="fa-regular fa-eye text-lg"></i>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Recent Articles -->
+
+                <div
+                    class="glass rounded-2xl overflow-hidden">
+
+                    <div
+                        class="p-6
+                               border-b
+                               border-gray-200
+                               dark:border-gray-800
+                               flex items-center
+                               justify-between">
+
+                        <div>
+
+                            <h2 class="font-bold text-lg">
+                                Artikel Terbaru
+                            </h2>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1">
+
+                                Lima artikel terakhir.
+
+                            </p>
+
+                        </div>
+
+                        <button
+                            @click="changePage('articles')"
+                            class="text-sm
+                                   text-red-500
+                                   hover:text-red-600">
+
+                            Lihat semua
+
+                            <i class="fa-solid fa-arrow-right ml-1"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="divide-y
+                                divide-gray-200
+                                dark:divide-gray-800">
+
+                        <template
+                            x-for="article in recentArticles"
+                            :key="article.id">
+
+                            <div
+                                class="p-5 sm:p-6
+                                       flex items-center
+                                       gap-4">
+
+                                <div
+                                    class="w-14 h-14
+                                           rounded-xl
+                                           bg-gray-200
+                                           dark:bg-gray-800
+                                           overflow-hidden
+                                           shrink-0">
+
+                                    <template
+                                        x-if="article.featured_image">
+
+                                        <img
+                                            :src="article.featured_image"
+                                            class="w-full h-full
+                                                   object-cover">
+
+                                    </template>
+
+                                    <template
+                                        x-if="!article.featured_image">
+
+                                        <div
+                                            class="w-full h-full
+                                                   flex items-center
+                                                   justify-center
+                                                   text-gray-400">
+
+                                            <i class="fa-regular fa-image"></i>
+
+                                        </div>
+
+                                    </template>
+
+                                </div>
+
+
+                                <div class="min-w-0 flex-1">
+
+                                    <h3
+                                        class="font-semibold
+                                               truncate"
+                                        x-text="article.title">
+                                    </h3>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1">
+
+                                        <span
+                                            x-text="formatDate(article.created_at)">
+                                        </span>
+
+                                        <span class="mx-1">•</span>
+
+                                        <span
+                                            x-text="article.author_name">
+                                        </span>
+
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="px-2.5 py-1
+                                           rounded-full
+                                           text-xs font-semibold"
+                                    :class="article.status === 'published'
+                                        ? 'bg-green-500/10 text-green-500'
+                                        : 'bg-yellow-500/10 text-yellow-500'"
+                                    x-text="article.status === 'published'
+                                        ? 'Published'
+                                        : 'Draft'">
+                                </span>
+
+                            </div>
+
+                        </template>
+
+
+                        <div
+                            x-show="recentArticles.length === 0"
+                            class="p-10 text-center
+                                   text-gray-500">
+
+                            Belum ada artikel.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 ARTICLES
+            ============================================== -->
+
+            <section
+                x-show="page === 'articles'"
+                x-cloak>
+
+
+                <!-- Header -->
+
+                <div
+                    class="flex flex-col
+                           sm:flex-row
+                           sm:items-center
+                           justify-between
+                           gap-4 mb-6">
+
+                    <div>
+
+                        <h2 class="text-2xl font-bold">
+                            Semua Artikel
+                        </h2>
+
+                        <p
+                            class="text-sm
+                                   text-gray-500
+                                   mt-1">
+
+                            Kelola artikel Cyberind Journal.
+
+                        </p>
+
+                    </div>
+
+                    <button
+                        @click="newArticle()"
+                        class="px-5 py-3
+                               rounded-xl
+                               bg-red-500
+                               text-white
+                               font-semibold
+                               hover:bg-red-600
+                               transition">
+
+                        <i class="fa-solid fa-plus mr-2"></i>
+
+                        Artikel Baru
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- Search / Filter -->
+
+                <div
+                    class="glass rounded-2xl p-4 mb-5
+                           flex flex-col
+                           md:flex-row
+                           gap-3">
+
+                    <div class="relative flex-1">
+
+                        <i
+                            class="fa-solid fa-magnifying-glass
+                                   absolute left-4 top-1/2
+                                   -translate-y-1/2
+                                   text-gray-400">
+                        </i>
+
+                        <input
+                            type="text"
+                            x-model="search"
+                            placeholder="Cari judul artikel..."
+                            class="w-full
+                                   pl-11 pr-4 py-3
+                                   rounded-xl
+                                   bg-gray-50
+                                   dark:bg-gray-900
+                                   border
+                                   border-gray-200
+                                   dark:border-gray-700
+                                   outline-none
+                                   focus:border-red-500">
+
+                    </div>
+
+
+                    <select
+                        x-model="statusFilter"
+                        class="px-4 py-3
+                               rounded-xl
+                               bg-gray-50
+                               dark:bg-gray-900
+                               border
+                               border-gray-200
+                               dark:border-gray-700
+                               outline-none">
+
+                        <option value="all">
+                            Semua Status
+                        </option>
+
+                        <option value="published">
+                            Published
+                        </option>
+
+                        <option value="draft">
+                            Draft
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Table -->
+
+                <div
+                    class="glass rounded-2xl
+                           overflow-hidden">
+
+                    <div class="overflow-x-auto">
+
+                        <table class="w-full text-sm">
+
+                            <thead
+                                class="bg-gray-50
+                                       dark:bg-gray-900
+                                       border-b
+                                       border-gray-200
+                                       dark:border-gray-800">
+
+                                <tr>
+
+                                    <th
+                                        class="text-left
+                                               px-6 py-4
+                                               font-semibold">
+
+                                        Artikel
+
+                                    </th>
+
+                                    <th
+                                        class="text-left
+                                               px-6 py-4
+                                               font-semibold">
+
+                                        Status
+
+                                    </th>
+
+                                    <th
+                                        class="text-left
+                                               px-6 py-4
+                                               font-semibold">
+
+                                        Views
+
+                                    </th>
+
+                                    <th
+                                        class="text-left
+                                               px-6 py-4
+                                               font-semibold">
+
+                                        Tanggal
+
+                                    </th>
+
+                                    <th
+                                        class="text-right
+                                               px-6 py-4
+                                               font-semibold">
+
+                                        Aksi
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                class="divide-y
+                                       divide-gray-200
+                                       dark:divide-gray-800">
+
+                                <template
+                                    x-for="article in filteredArticles"
+                                    :key="article.id">
+
+                                    <tr
+                                        class="hover:bg-gray-50
+                                               dark:hover:bg-gray-900/50
+                                               transition">
+
+                                        <!-- Article -->
+
+                                        <td class="px-6 py-4">
+
+                                            <div
+                                                class="flex items-center
+                                                       gap-4
+                                                       min-w-[280px]">
+
+                                                <div
+                                                    class="w-12 h-12
+                                                           rounded-xl
+                                                           bg-gray-200
+                                                           dark:bg-gray-800
+                                                           overflow-hidden
+                                                           shrink-0">
+
+                                                    <template
+                                                        x-if="article.featured_image">
+
+                                                        <img
+                                                            :src="article.featured_image"
+                                                            class="w-full h-full
+                                                                   object-cover">
+
+                                                    </template>
+
+                                                    <template
+                                                        x-if="!article.featured_image">
+
+                                                        <div
+                                                            class="w-full h-full
+                                                                   flex items-center
+                                                                   justify-center
+                                                                   text-gray-400">
+
+                                                            <i class="fa-regular fa-image"></i>
+
+                                                        </div>
+
+                                                    </template>
+
+                                                </div>
+
+
+                                                <div class="min-w-0">
+
+                                                    <div
+                                                        class="font-semibold
+                                                               truncate
+                                                               max-w-[380px]"
+                                                        x-text="article.title">
+                                                    </div>
+
+                                                    <div
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-1
+                                                               truncate
+                                                               max-w-[380px]"
+                                                        x-text="'/' + article.slug">
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- Status -->
+
+                                        <td class="px-6 py-4">
+
+                                            <span
+                                                class="px-2.5 py-1
+                                                       rounded-full
+                                                       text-xs
+                                                       font-semibold"
+                                                :class="article.status === 'published'
+                                                    ? 'bg-green-500/10 text-green-500'
+                                                    : 'bg-yellow-500/10 text-yellow-500'"
+                                                x-text="article.status === 'published'
+                                                    ? 'Published'
+                                                    : 'Draft'">
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Views -->
+
+                                        <td class="px-6 py-4">
+
+                                            <span
+                                                class="text-gray-500"
+                                                x-text="formatNumber(article.views || 0)">
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Date -->
+
+                                        <td class="px-6 py-4 whitespace-nowrap">
+
+                                            <span
+                                                class="text-gray-500"
+                                                x-text="formatDate(article.created_at)">
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Actions -->
+
+                                        <td class="px-6 py-4">
+
+                                            <div
+                                                class="flex items-center
+                                                       justify-end gap-2">
+
+                                                <!-- Preview -->
+
+                                                <a
+                                                    :href="'/blog/article.html?slug=' + encodeURIComponent(article.slug)"
+                                                    target="_blank"
+                                                    class="w-9 h-9
+                                                           rounded-lg
+                                                           bg-gray-100
+                                                           dark:bg-gray-800
+                                                           flex items-center
+                                                           justify-center
+                                                           hover:text-red-500
+                                                           transition"
+                                                    title="Preview">
+
+                                                    <i class="fa-regular fa-eye"></i>
+
+                                                </a>
+
+
+                                                <!-- Edit -->
+
+                                                <button
+                                                    @click="editArticle(article)"
+                                                    class="w-9 h-9
+                                                           rounded-lg
+                                                           bg-gray-100
+                                                           dark:bg-gray-800
+                                                           flex items-center
+                                                           justify-center
+                                                           hover:text-blue-500
+                                                           transition"
+                                                    title="Edit">
+
+                                                    <i class="fa-solid fa-pen"></i>
+
+                                                </button>
+
+
+                                                <!-- Delete -->
+
+                                                <button
+                                                    @click="deleteArticle(article)"
+                                                    class="w-9 h-9
+                                                           rounded-lg
+                                                           bg-gray-100
+                                                           dark:bg-gray-800
+                                                           flex items-center
+                                                           justify-center
+                                                           hover:text-red-500
+                                                           transition"
+                                                    title="Hapus">
+
+                                                    <i class="fa-solid fa-trash"></i>
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                </template>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- Empty -->
+
+                    <div
+                        x-show="filteredArticles.length === 0"
+                        class="p-14 text-center">
+
+                        <div
+                            class="w-16 h-16
+                                   rounded-2xl
+                                   bg-gray-100
+                                   dark:bg-gray-900
+                                   flex items-center
+                                   justify-center
+                                   mx-auto mb-5">
+
+                            <i
+                                class="fa-regular fa-newspaper
+                                       text-2xl
+                                       text-gray-400">
+                            </i>
+
+                        </div>
+
+                        <h3 class="font-semibold">
+                            Tidak ada artikel
+                        </h3>
+
+                        <p
+                            class="text-sm
+                                   text-gray-500
+                                   mt-1">
+
+                            Belum ada artikel yang sesuai.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =============================================
+                 EDITOR
+            ============================================== -->
+
+            <section
+                x-show="page === 'editor'"
+                x-cloak>
+
+
+                <!-- Header -->
+
+                <div
+                    class="flex flex-col
+                           sm:flex-row
+                           sm:items-center
+                           justify-between
+                           gap-4 mb-6">
+
+                    <div>
+
+                        <button
+                            @click="changePage('articles')"
+                            class="text-sm
+                                   text-gray-500
+                                   hover:text-red-500
+                                   mb-3">
+
+                            <i class="fa-solid fa-arrow-left mr-1"></i>
+
+                            Kembali ke Artikel
+
+                        </button>
+
+                        <h2
+                            class="text-2xl font-bold"
+                            x-text="editing
+                                ? 'Edit Artikel'
+                                : 'Tulis Artikel'">
+                        </h2>
+
+                    </div>
+
+
+                    <div class="flex gap-3">
+
+                        <button
+                            @click="previewCurrent()"
+                            class="px-4 py-3
+                                   rounded-xl
+                                   border
+                                   border-gray-200
+                                   dark:border-gray-700
+                                   hover:border-red-500
+                                   hover:text-red-500
+                                   transition">
+
+                            <i class="fa-regular fa-eye mr-2"></i>
+
+                            Preview
+
+                        </button>
+
+                        <button
+                            @click="saveArticle()"
+                            :disabled="saving"
+                            class="px-5 py-3
+                                   rounded-xl
+                                   bg-red-500
+                                   text-white
+                                   font-semibold
+                                   hover:bg-red-600
+                                   disabled:opacity-60
+                                   transition">
+
+                            <span x-show="!saving">
+
+                                <i class="fa-solid fa-floppy-disk mr-2"></i>
+
+                                Simpan
+
+                            </span>
+
+                            <span
+                                x-show="saving"
+                                x-cloak>
+
+                                <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+
+                                Menyimpan...
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Editor Layout -->
+
+                <div
+                    class="grid grid-cols-1
+                           xl:grid-cols-3
+                           gap-6">
+
+
+                    <!-- Main -->
+
+                    <div class="xl:col-span-2 space-y-6">
+
+
+                        <!-- Title -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Judul Artikel
+
+                            </label>
+
+                            <input
+                                type="text"
+                                x-model="form.title"
+                                @input="generateSlug()"
+                                placeholder="Masukkan judul artikel..."
+                                class="w-full
+                                       text-xl sm:text-2xl
+                                       font-bold
+                                       px-4 py-4
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                        </div>
+
+
+
+                        <!-- Slug -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Slug / URL
+
+                            </label>
+
+                            <div class="flex">
+
+                                <span
+                                    class="hidden sm:flex
+                                           items-center
+                                           px-4
+                                           rounded-l-xl
+                                           bg-gray-100
+                                           dark:bg-gray-800
+                                           text-gray-500
+                                           text-sm">
+
+                                    /blog/article.html?slug=
+
+                                </span>
+
+                                <input
+                                    type="text"
+                                    x-model="form.slug"
+                                    class="w-full
+                                           px-4 py-3
+                                           rounded-xl sm:rounded-l-none
+                                           sm:rounded-r-xl
+                                           bg-gray-50
+                                           dark:bg-gray-900
+                                           border
+                                           border-gray-200
+                                           dark:border-gray-700
+                                           outline-none
+                                           focus:border-red-500">
+
+                            </div>
+
+                            <p
+                                class="text-xs
+                                       text-gray-500
+                                       mt-2">
+
+                                Slug digunakan sebagai URL artikel.
+
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- Excerpt -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Ringkasan / Excerpt
+
+                            </label>
+
+                            <textarea
+                                x-model="form.excerpt"
+                                rows="4"
+                                placeholder="Tuliskan ringkasan singkat artikel..."
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+                            </textarea>
+
+                        </div>
+
+
+
+                        <!-- Content -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <div
+                                class="flex items-center
+                                       justify-between
+                                       mb-3">
+
+                                <label
+                                    class="text-sm
+                                           font-semibold">
+
+                                    Isi Artikel
+
+                                </label>
+
+                                <span
+                                    class="text-xs
+                                           text-gray-500">
+
+                                    HTML Editor
+
+                                </span>
+
+                            </div>
+
+                            <textarea
+                                x-model="form.content"
+                                class="editor w-full
+                                       px-4 py-4
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500
+                                       font-mono text-sm"
+                                placeholder="<h2>Judul</h2><p>Isi artikel...</p>">
+                            </textarea>
+
+                            <p
+                                class="text-xs
+                                       text-gray-500
+                                       mt-3">
+
+                                Gunakan HTML sederhana seperti
+                                <code>&lt;h2&gt;</code>,
+                                <code>&lt;p&gt;</code>,
+                                <code>&lt;ul&gt;</code>,
+                                <code>&lt;img&gt;</code>,
+                                dan <code>&lt;pre&gt;</code>.
+
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- Featured Image -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Featured Image URL
+
+                            </label>
+
+                            <input
+                                type="url"
+                                x-model="form.featured_image"
+                                placeholder="https://..."
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                            <template
+                                x-if="form.featured_image">
+
+                                <img
+                                    :src="form.featured_image"
+                                    class="mt-4
+                                           w-full
+                                           max-h-80
+                                           object-cover
+                                           rounded-xl"
+                                    @error="$event.target.style.display='none'">
+
+                            </template>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Sidebar -->
+
+                    <div class="space-y-6">
+
+
+                        <!-- Publish -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <h3 class="font-bold mb-5">
+                                Publikasi
+                            </h3>
+
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Status
+
+                            </label>
+
+                            <select
+                                x-model="form.status"
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                                <option value="draft">
+                                    Draft
+                                </option>
+
+                                <option value="published">
+                                    Published
+                                </option>
+
+                            </select>
+
+
+                            <div
+                                class="mt-5
+                                       p-4
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900">
+
+                                <div
+                                    class="flex items-center
+                                           gap-3">
+
+                                    <div
+                                        class="w-9 h-9
+                                               rounded-lg
+                                               flex items-center
+                                               justify-center"
+                                        :class="form.status === 'published'
+                                            ? 'bg-green-500/10 text-green-500'
+                                            : 'bg-yellow-500/10 text-yellow-500'">
+
+                                        <i
+                                            class="fa-solid"
+                                            :class="form.status === 'published'
+                                                ? 'fa-globe'
+                                                : 'fa-file-pen'">
+                                        </i>
+
+                                    </div>
+
+                                    <div>
+
+                                        <div
+                                            class="text-sm
+                                                   font-semibold"
+                                            x-text="form.status === 'published'
+                                                ? 'Artikel Published'
+                                                : 'Artikel Draft'">
+                                        </div>
+
+                                        <div
+                                            class="text-xs
+                                                   text-gray-500">
+
+                                            <span
+                                                x-show="form.status === 'published'">
+
+                                                Akan tampil di Journal.
+
+                                            </span>
+
+                                            <span
+                                                x-show="form.status === 'draft'">
+
+                                                Tidak tampil untuk publik.
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Category -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <h3 class="font-bold mb-5">
+                                Kategori
+                            </h3>
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                Pilih Kategori
+
+                            </label>
+
+                            <select
+                                x-model="form.category_id"
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                                <option value="">
+                                    Tanpa Kategori
+                                </option>
+
+                                <template
+                                    x-for="category in categories"
+                                    :key="category.id">
+
+                                    <option
+                                        :value="category.id"
+                                        x-text="category.name">
+                                    </option>
+
+                                </template>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- Author -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <h3 class="font-bold mb-5">
+                                Penulis
+                            </h3>
+
+                            <input
+                                type="text"
+                                x-model="form.author_name"
+                                placeholder="Cyberind.id"
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                        </div>
+
+
+
+                        <!-- SEO -->
+
+                        <div
+                            class="glass rounded-2xl p-6">
+
+                            <h3 class="font-bold mb-2">
+                                SEO
+                            </h3>
+
+                            <p
+                                class="text-xs
+                                       text-gray-500
+                                       mb-5">
+
+                                Optimalkan artikel untuk mesin pencari.
+
+                            </p>
+
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mb-2">
+
+                                SEO Title
+
+                            </label>
+
+                            <input
+                                type="text"
+                                x-model="form.seo_title"
+                                maxlength="70"
+                                placeholder="Judul SEO..."
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+
+                            <div
+                                class="text-xs
+                                       text-gray-400
+                                       text-right
+                                       mt-1">
+
+                                <span
+                                    x-text="(form.seo_title || '').length">
+                                </span>/70
+
+                            </div>
+
+
+                            <label
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       mt-4 mb-2">
+
+                                SEO Description
+
+                            </label>
+
+                            <textarea
+                                x-model="form.seo_description"
+                                maxlength="160"
+                                rows="4"
+                                placeholder="Deskripsi SEO..."
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       bg-gray-50
+                                       dark:bg-gray-900
+                                       border
+                                       border-gray-200
+                                       dark:border-gray-700
+                                       outline-none
+                                       focus:border-red-500">
+                            </textarea>
+
+                            <div
+                                class="text-xs
+                                       text-gray-400
+                                       text-right
+                                       mt-1">
+
+                                <span
+                                    x-text="(form.seo_description || '').length">
+                                </span>/160
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Danger -->
+
+                        <div
+                            x-show="editing"
+                            class="glass rounded-2xl p-6
+                                   border border-red-500/20">
+
+                            <h3
+                                class="font-bold
+                                       text-red-500
+                                       mb-2">
+
+                                Zona Berbahaya
+
+                            </h3>
+
+                            <p
+                                class="text-xs
+                                       text-gray-500
+                                       mb-4">
+
+                                Menghapus artikel tidak dapat
+                                dibatalkan.
+
+                            </p>
+
+                            <button
+                                @click="deleteArticle(form)"
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-xl
+                                       border
+                                       border-red-500/30
+                                       text-red-500
+                                       hover:bg-red-500
+                                       hover:text-white
+                                       transition">
+
+                                <i class="fa-solid fa-trash mr-2"></i>
+
+                                Hapus Artikel
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    x-show="toast.show"
+    x-cloak
+    x-transition
+    class="fixed
+           bottom-5 right-5
+           z-[100]
+           max-w-sm">
+
+    <div
+        class="glass rounded-xl
+               shadow-2xl
+               px-5 py-4
+               flex items-start
+               gap-3">
+
+        <div
+            class="w-9 h-9
+                   rounded-lg
+                   flex items-center
+                   justify-center"
+            :class="toast.type === 'success'
+                ? 'bg-green-500/10 text-green-500'
+                : 'bg-red-500/10 text-red-500'">
+
+            <i
+                class="fa-solid"
+                :class="toast.type === 'success'
+                    ? 'fa-check'
+                    : 'fa-circle-exclamation'">
+            </i>
+
+        </div>
+
+        <div class="flex-1">
+
+            <div
+                class="font-semibold text-sm"
+                x-text="toast.title">
+            </div>
+
+            <div
+                class="text-xs
+                       text-gray-500
+                       mt-1"
+                x-text="toast.message">
+            </div>
+
+        </div>
+
+        <button
+            @click="toast.show = false"
+            class="text-gray-400">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+
+/*
+==============================================================
+SUPABASE
+==============================================================
+*/
+
+const SUPABASE_URL =
+    'https://lwolwingtzqdfsqoopra.supabase.co';
+
+const SUPABASE_KEY =
+    'sb_publishable_w8vzcXhO42RrHSopV8Gi9A_ecg6m_0A';
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+
+/*
+==============================================================
+ADMIN APP
+==============================================================
+*/
+
+function adminApp() {
+
+    return {
+
+        /* =====================================================
+           AUTH
+        ===================================================== */
+
+        session: null,
+
+        userEmail: '',
+
+        loginEmail: '',
+
+        loginPassword: '',
+
+        loginLoading: false,
+
+        loginError: '',
+
+        showPassword: false,
+
+
+        /* =====================================================
+           UI
+        ===================================================== */
+
+        dark: false,
+
+        mobileSidebar: false,
+
+        page: 'dashboard',
+
+        search: '',
+
+        statusFilter: 'all',
+
+
+        /* =====================================================
+           DATA
+        ===================================================== */
+
+        articles: [],
+
+        categories: [],
+
+
+        /* =====================================================
+           EDITOR
+        ===================================================== */
+
+        editing: false,
+
+        editingId: null,
+
+        saving: false,
+
+
+        form: {
+
+            title: '',
+
+            slug: '',
+
+            excerpt: '',
+
+            content: '',
+
+            featured_image: '',
+
+            category_id: '',
+
+            author_name: 'Cyberind.id',
+
+            status: 'draft',
+
+            seo_title: '',
+
+            seo_description: ''
+
+        },
+
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        toast: {
+
+            show: false,
+
+            type: 'success',
+
+            title: '',
+
+            message: ''
+
+        },
+
+
+        /* =====================================================
+           INIT
+        ===================================================== */
+
+        async init() {
+
+            this.loadTheme();
+
+
+            const {
+                data
+            } =
+                await supabaseClient
+                    .auth
+                    .getSession();
+
+
+            this.session =
+                data.session;
+
+
+            if (this.session) {
+
+                await this.afterLogin();
+
+            }
+
+
+            supabaseClient
+                .auth
+                .onAuthStateChange(
+                    async (event, session) => {
+
+                        this.session =
+                            session;
+
+
+                        if (session) {
+
+                            this.userEmail =
+                                session.user.email || '';
+
+                        }
+
+                    }
+                );
+
+        },
+
+
+        /* =====================================================
+           LOGIN
+        ===================================================== */
+
+        async login() {
+
+            this.loginError = '';
+
+            this.loginLoading = true;
+
+
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient
+                        .auth
+                        .signInWithPassword({
+
+                            email:
+                                this.loginEmail.trim(),
+
+                            password:
+                                this.loginPassword
+
+                        });
+
+
+                if (error) {
+
+                    throw error;
+
+                }
+
+
+                this.session =
+                    data.session;
+
+
+                await this.afterLogin();
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+
+                this.loginError =
+                    this.translateAuthError(
+                        error.message
+                    );
+
+            }
+
+            finally {
+
+                this.loginLoading = false;
+
+            }
+
+        },
+
+
+        /* =====================================================
+           AFTER LOGIN
+        ===================================================== */
+
+        async afterLogin() {
+
+            if (!this.session) {
+
+                return;
+
+            }
+
+
+            this.userEmail =
+                this.session.user.email || '';
+
+
+            /*
+            Check admin_users
+            */
+
+            const {
+                data: admin,
+                error
+            } =
+                await supabaseClient
+
+                    .from('admin_users')
+
+                    .select('user_id')
+
+                    .eq(
+                        'user_id',
+                        this.session.user.id
+                    )
+
+                    .maybeSingle();
+
+
+            if (error || !admin) {
+
+                await supabaseClient
+                    .auth
+                    .signOut();
+
+
+                this.session = null;
+
+                this.loginError =
+                    'Akun berhasil login tetapi tidak memiliki akses admin.';
+
+                return;
+
+            }
+
+
+            await this.loadData();
+
+        },
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        async logout() {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+
+            this.session = null;
+
+            this.page = 'dashboard';
+
+            this.articles = [];
+
+        },
+
+
+        /* =====================================================
+           LOAD DATA
+        ===================================================== */
+
+        async loadData() {
+
+            await Promise.all([
+
+                this.loadArticles(),
+
+                this.loadCategories()
+
+            ]);
+
+        },
+
+
+        /* =====================================================
+           LOAD ARTICLES
+        ===================================================== */
+
+        async loadArticles() {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from('articles')
+
+                    .select(`
+                        id,
+                        title,
+                        slug,
+                        excerpt,
+                        content,
+                        featured_image,
+                        category_id,
+                        author_name,
+                        status,
+                        seo_title,
+                        seo_description,
+                        views,
+                        published_at,
+                        created_at,
+                        updated_at,
+                        categories (
+                            id,
+                            name,
+                            slug
+                        )
+                    `)
+
+                    .order(
+                        'created_at',
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                this.showToast(
+                    'error',
+                    'Gagal',
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            this.articles =
+                data || [];
+
+        },
+
+
+        /* =====================================================
+           LOAD CATEGORIES
+        ===================================================== */
+
+        async loadCategories() {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from('categories')
+
+                    .select(`
+                        id,
+                        name,
+                        slug
+                    `)
+
+                    .order(
+                        'name',
+                        {
+                            ascending: true
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                return;
+
+            }
+
+
+            this.categories =
+                data || [];
+
+        },
+
+
+        /* =====================================================
+           COUNTERS
+        ===================================================== */
+
+        get publishedCount() {
+
+            return this.articles.filter(
+                article =>
+                    article.status === 'published'
+            ).length;
+
+        },
+
+
+        get draftCount() {
+
+            return this.articles.filter(
+                article =>
+                    article.status === 'draft'
+            ).length;
+
+        },
+
+
+        get totalViews() {
+
+            return this.articles.reduce(
+                (total, article) =>
+                    total +
+                    Number(article.views || 0),
+                0
+            );
+
+        },
+
+
+        get recentArticles() {
+
+            return this.articles.slice(
+                0,
+                5
+            );
+
+        },
+
+
+        /* =====================================================
+           FILTER
+        ===================================================== */
+
+        get filteredArticles() {
+
+            const search =
+                this.search
+                    .trim()
+                    .toLowerCase();
+
+
+            return this.articles.filter(
+                article => {
+
+                    const matchesSearch =
+                        !search ||
+                        article.title
+                            .toLowerCase()
+                            .includes(search) ||
+                        article.slug
+                            .toLowerCase()
+                            .includes(search);
+
+
+                    const matchesStatus =
+                        this.statusFilter === 'all' ||
+                        article.status ===
+                            this.statusFilter;
+
+
+                    return (
+                        matchesSearch &&
+                        matchesStatus
+                    );
+
+                }
+            );
+
+        },
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        get pageTitle() {
+
+            if (this.page === 'articles') {
+
+                return 'Artikel';
+
+            }
+
+            if (this.page === 'editor') {
+
+                return this.editing
+                    ? 'Edit Artikel'
+                    : 'Tulis Artikel';
+
+            }
+
+            return 'Dashboard';
+
+        },
+
+
+        changePage(page) {
+
+            this.page = page;
+
+            this.mobileSidebar = false;
+
+        },
+
+
+        /* =====================================================
+           NEW ARTICLE
+        ===================================================== */
+
+        newArticle() {
+
+            this.editing = false;
+
+            this.editingId = null;
+
+
+            this.form = {
+
+                title: '',
+
+                slug: '',
+
+                excerpt: '',
+
+                content:
+                    '<h2>Judul Section</h2><p>Tulis isi artikel di sini...</p>',
+
+                featured_image: '',
+
+                category_id: '',
+
+                author_name: 'Cyberind.id',
+
+                status: 'draft',
+
+                seo_title: '',
+
+                seo_description: ''
+
+            };
+
+
+            this.page = 'editor';
+
+            this.mobileSidebar = false;
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+        },
+
+
+        /* =====================================================
+           EDIT ARTICLE
+        ===================================================== */
+
+        editArticle(article) {
+
+            this.editing = true;
+
+            this.editingId =
+                article.id;
+
+
+            this.form = {
+
+                title:
+                    article.title || '',
+
+                slug:
+                    article.slug || '',
+
+                excerpt:
+                    article.excerpt || '',
+
+                content:
+                    article.content || '',
+
+                featured_image:
+                    article.featured_image || '',
+
+                category_id:
+                    article.category_id || '',
+
+                author_name:
+                    article.author_name ||
+                    'Cyberind.id',
+
+                status:
+                    article.status || 'draft',
+
+                seo_title:
+                    article.seo_title || '',
+
+                seo_description:
+                    article.seo_description || ''
+
+            };
+
+
+            this.page = 'editor';
+
+            this.mobileSidebar = false;
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+        },
+
+
+        /* =====================================================
+           SLUG
+        ===================================================== */
+
+        generateSlug() {
+
+            if (this.editing) {
+
+                return;
+
+            }
+
+
+            this.form.slug =
+                this.slugify(
+                    this.form.title
+                );
+
+        },
+
+
+        slugify(text) {
+
+            return String(text || '')
+
+                .toLowerCase()
+
+                .trim()
+
+                .replace(
+                    /[^\w\s-]/g,
+                    ''
+                )
+
+                .replace(
+                    /[\s_-]+/g,
+                    '-'
+                )
+
+                .replace(
+                    /^-+|-+$/g,
+                    ''
+                );
+
+        },
+
+
+        /* =====================================================
+           SAVE
+        ===================================================== */
+
+        async saveArticle() {
+
+            if (!this.form.title.trim()) {
+
+                this.showToast(
+                    'error',
+                    'Judul kosong',
+                    'Masukkan judul artikel.'
+                );
+
+                return;
+
+            }
+
+
+            if (!this.form.slug.trim()) {
+
+                this.form.slug =
+                    this.slugify(
+                        this.form.title
+                    );
+
+            }
+
+
+            if (!this.form.content.trim()) {
+
+                this.showToast(
+                    'error',
+                    'Isi artikel kosong',
+                    'Masukkan isi artikel.'
+                );
+
+                return;
+
+            }
+
+
+            this.saving = true;
+
+
+            try {
+
+                const payload = {
+
+                    title:
+                        this.form.title.trim(),
+
+                    slug:
+                        this.form.slug.trim(),
+
+                    excerpt:
+                        this.form.excerpt.trim() ||
+                        null,
+
+                    content:
+                        this.form.content,
+
+                    featured_image:
+                        this.form.featured_image.trim() ||
+                        null,
+
+                    category_id:
+                        this.form.category_id ||
+                        null,
+
+                    author_name:
+                        this.form.author_name.trim() ||
+                        'Cyberind.id',
+
+                    status:
+                        this.form.status,
+
+                    seo_title:
+                        this.form.seo_title.trim() ||
+                        null,
+
+                    seo_description:
+                        this.form.seo_description.trim() ||
+                        null,
+
+                    updated_at:
+                        new Date().toISOString()
+
+                };
+
+
+                /*
+                Publish date
+                */
+
+                if (
+                    this.form.status ===
+                    'published'
+                ) {
+
+                    payload.published_at =
+                        new Date().toISOString();
+
+                }
+
+
+                let result;
+
+
+                if (this.editing) {
+
+                    result =
+                        await supabaseClient
+
+                            .from('articles')
+
+                            .update(payload)
+
+                            .eq(
+                                'id',
+                                this.editingId
+                            )
+
+                            .select()
+
+                            .single();
+
+                }
+
+                else {
+
+                    result =
+                        await supabaseClient
+
+                            .from('articles')
+
+                            .insert(payload)
+
+                            .select()
+
+                            .single();
+
+                }
+
+
+                if (result.error) {
+
+                    throw result.error;
+
+                }
+
+
+                await this.loadArticles();
+
+
+                this.showToast(
+                    'success',
+                    'Berhasil',
+                    this.editing
+                        ? 'Artikel berhasil diperbarui.'
+                        : 'Artikel berhasil dibuat.'
+                );
+
+
+                /*
+                If new article,
+                switch to edit mode
+                */
+
+                if (!this.editing) {
+
+                    this.editing = true;
+
+                    this.editingId =
+                        result.data.id;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+
+                let message =
+                    error.message;
+
+
+                if (
+                    message &&
+                    message.toLowerCase()
+                        .includes('duplicate')
+                ) {
+
+                    message =
+                        'Slug tersebut sudah digunakan. Gunakan slug lain.';
+
+                }
+
+
+                this.showToast(
+                    'error',
+                    'Gagal menyimpan',
+                    message
+                );
+
+            }
+
+            finally {
+
+                this.saving = false;
+
+            }
+
+        },
+
+
+        /* =====================================================
+           DELETE
+        ===================================================== */
+
+        async deleteArticle(article) {
+
+            if (!article || !article.id) {
+
+                return;
+
+            }
+
+
+            const confirmed =
+                confirm(
+                    `Hapus artikel "${article.title}"?\n\nTindakan ini tidak dapat dibatalkan.`
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+
+                    .from('articles')
+
+                    .delete()
+
+                    .eq(
+                        'id',
+                        article.id
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                this.showToast(
+                    'error',
+                    'Gagal menghapus',
+                    error.message
+                );
+
+                return;
+
+            }
+
+
+            await this.loadArticles();
+
+
+            this.showToast(
+                'success',
+                'Berhasil',
+                'Artikel berhasil dihapus.'
+            );
+
+
+            if (
+                this.editing &&
+                this.editingId === article.id
+            ) {
+
+                this.changePage(
+                    'articles'
+                );
+
+            }
+
+        },
+
+
+        /* =====================================================
+           PREVIEW
+        ===================================================== */
+
+        previewCurrent() {
+
+            if (!this.form.slug) {
+
+                this.showToast(
+                    'error',
+                    'Slug belum ada',
+                    'Masukkan judul terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            const url =
+                '/blog/article.html?slug=' +
+                encodeURIComponent(
+                    this.form.slug
+                );
+
+
+            window.open(
+                url,
+                '_blank'
+            );
+
+        },
+
+
+        /* =====================================================
+           DATE
+        ===================================================== */
+
+        formatDate(date) {
+
+            if (!date) {
+
+                return '-';
+
+            }
+
+
+            try {
+
+                return new Intl.DateTimeFormat(
+                    'id-ID',
+                    {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    }
+                ).format(
+                    new Date(date)
+                );
+
+            }
+
+            catch {
+
+                return date;
+
+            }
+
+        },
+
+
+        /* =====================================================
+           NUMBER
+        ===================================================== */
+
+        formatNumber(number) {
+
+            return new Intl.NumberFormat(
+                'id-ID'
+            ).format(
+                Number(number || 0)
+            );
+
+        },
+
+
+        /* =====================================================
+           THEME
+        ===================================================== */
+
+        loadTheme() {
+
+            const saved =
+                localStorage.getItem(
+                    'cyberind-theme'
+                );
+
+
+            if (saved) {
+
+                this.dark =
+                    saved === 'dark';
+
+            }
+
+            else {
+
+                this.dark =
+                    window.matchMedia(
+                        '(prefers-color-scheme: dark)'
+                    ).matches;
+
+            }
+
+        },
+
+
+        toggleTheme() {
+
+            this.dark =
+                !this.dark;
+
+
+            localStorage.setItem(
+                'cyberind-theme',
+                this.dark
+                    ? 'dark'
+                    : 'light'
+            );
+
+        },
+
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        showToast(
+            type,
+            title,
+            message
+        ) {
+
+            this.toast = {
+
+                show: true,
+
+                type,
+
+                title,
+
+                message
+
+            };
+
+
+            setTimeout(
+                () => {
+
+                    this.toast.show =
+                        false;
+
+                },
+                4000
+            );
+
+        },
+
+
+        /* =====================================================
+           AUTH ERROR
+        ===================================================== */
+
+        translateAuthError(message) {
+
+            if (!message) {
+
+                return 'Login gagal.';
+
+            }
+
+
+            const text =
+                message.toLowerCase();
+
+
+            if (
+                text.includes(
+                    'invalid login credentials'
+                )
+            ) {
+
+                return 'Email atau password salah.';
+
+            }
+
+
+            if (
+                text.includes(
+                    'email not confirmed'
+                )
+            ) {
+
+                return 'Email akun belum dikonfirmasi.';
+
+            }
+
+
+            if (
+                text.includes(
+                    'too many requests'
+                )
+            ) {
+
+                return 'Terlalu banyak percobaan. Coba lagi nanti.';
+
+            }
+
+
+            return message;
+
+        }
+
+    };
+
+}
+
+</script>
+
+</body>
+</html>
