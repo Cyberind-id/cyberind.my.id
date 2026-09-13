@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberind Terminal Interface</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        /* Kontainer Terminal Utama dengan Efek Glassmorphism */
+        .terminal-container {
+            position: relative;
+            width: 650px;
+            max-width: 92%;
+            background: rgba(15, 23, 42, 0.5); /* Sedikit lebih pekat agar logo kontras */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Logo di Belakang Terminal (Dibuat Lebih Jelas & Besar) */
+        .terminal-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;   /* Ukuran logo diperbesar */
+            height: 320px;  /* Ukuran logo diperbesar */
+            background: url('https://www.cyberind.my.id/assets/images/logoo.png') no-repeat center center;
+            background-size: contain;
+            opacity: 0.35;  /* Dinaikkan dari sebelumnya (0.1) agar lebih jelas terlihat */
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header / Panel Atas Terminal */
+        .terminal-header {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .window-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .btn-close { background: #ff5f56; }
+        .btn-minimize { background: #ffbd2e; }
+        .btn-maximize { background: #27c93f; }
+
+        .terminal-title {
+            margin-left: 16px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        /* Isi Baris Terminal (Menurun ke Bawah) */
+        .terminal-body {
+            padding: 24px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #00ff66;
+        }
+
+        .terminal-line {
+            display: block;
+            margin-bottom: 6px;
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.4);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .terminal-link {
+            color: #00ffff;
+            text-decoration: none;
+        }
+
+        .terminal-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-container">
+        <!-- Header Terminal -->
+        <div class="terminal-header">
+            <div class="window-buttons">
+                <div class="win-btn btn-close"></div>
+                <div class="win-btn btn-minimize"></div>
+                <div class="win-btn btn-maximize"></div>
+            </div>
+            <div class="terminal-title">root@cyberind:~</div>
+        </div>
+
+        <!-- Body / Isi Terminal Menurun Ke Bawah -->
+        <div class="terminal-body">
+            <span class="terminal-line">$ ./cyberind --launch</span>
+            <span class="terminal-line">./root@j1337 [OK] CONNECTED.......</span>
+            <span class="terminal-line">./root@j1337 [OK] SECURE.......</span>
+            <span class="terminal-line">./root@j1337 [OK] LOADED.......</span>
+            <span class="terminal-line">./root@j1337 ACCESS GRANTED.......</span>
+            <span class="terminal-line">&gt; <a href="https://cyberind.my.id" class="terminal-link" target="_blank">cyberind.my.id</a></span>
+        </div>
+    </div>
+
+</body>
+</html>
