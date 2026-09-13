@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="id"
+      x-data="articleApp()"
+      :class="{ 'dark': dark }"
+      class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title x-text="pageTitle">
+        Cyberind Journal
+    </title>
+
+    <meta name="description"
+          :content="pageDescription">
+
+    <meta name="author"
+          content="Cyberind.id">
+
+    <meta property="og:type"
+          content="article">
+
+    <meta property="og:title"
+          :content="pageTitle">
+
+    <meta property="og:description"
+          :content="pageDescription">
+
+    <meta property="og:image"
+          :content="article?.featured_image || defaultImage">
+
+    <meta property="og:url"
+          :content="currentUrl">
+
+    <link rel="icon"
+          href="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png">
+
+    <link rel="apple-touch-icon"
+          href="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine -->
+    <script defer
+            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=PT+Sans:wght@400;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        :root {
+            --accent: #ef4444;
+            --accent-dark: #dc2626;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            transition:
+                background-color .3s ease,
+                color .3s ease;
+        }
+
+        .font-pt {
+            font-family: 'PT Sans', sans-serif;
+        }
+
+        /* Glass */
+        .glass {
+            background: rgba(255,255,255,.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0,0,0,.06);
+        }
+
+        .dark .glass {
+            background: rgba(15,15,15,.72);
+            border-color: rgba(255,255,255,.08);
+        }
+
+        /* Terminal */
+        .terminal {
+            background: #090909;
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.25);
+        }
+
+        .terminal-text {
+            font-family: monospace;
+            color: #d1d5db;
+        }
+
+        .terminal-red {
+            color: #ef4444;
+        }
+
+        /* Article */
+        .article-content {
+            font-family: 'PT Sans', sans-serif;
+            font-size: 1.08rem;
+            line-height: 1.9;
+            color: #374151;
+        }
+
+        .dark .article-content {
+            color: #d1d5db;
+        }
+
+        .article-content h1,
+        .article-content h2,
+        .article-content h3,
+        .article-content h4 {
+            font-family: 'DM Sans', sans-serif;
+            color: #111827;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .dark .article-content h1,
+        .dark .article-content h2,
+        .dark .article-content h3,
+        .dark .article-content h4 {
+            color: #f9fafb;
+        }
+
+        .article-content h1 {
+            font-size: 2rem;
+        }
+
+        .article-content h2 {
+            font-size: 1.6rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.3rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.25rem;
+        }
+
+        .article-content a {
+            color: #ef4444;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .article-content ul {
+            list-style: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .article-content ol {
+            list-style: decimal;
+            padding-left: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .article-content li {
+            margin-bottom: .5rem;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid #ef4444;
+            padding: .75rem 1rem;
+            margin: 1.5rem 0;
+            background: rgba(239,68,68,.06);
+            border-radius: .5rem;
+        }
+
+        .article-content pre {
+            overflow-x: auto;
+            background: #090909;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: .75rem;
+            margin: 1.5rem 0;
+            font-size: .9rem;
+        }
+
+        .article-content code {
+            font-family: monospace;
+        }
+
+        .article-content :not(pre) > code {
+            background: rgba(127,127,127,.15);
+            padding: .15rem .4rem;
+            border-radius: .3rem;
+            font-size: .9em;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 1rem;
+            margin: 1.5rem auto;
+            display: block;
+        }
+
+        .article-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .article-content th,
+        .article-content td {
+            border: 1px solid #d1d5db;
+            padding: .75rem;
+            text-align: left;
+        }
+
+        .dark .article-content th,
+        .dark .article-content td {
+            border-color: #374151;
+        }
+
+        /* Loading */
+        .loader {
+            width: 42px;
+            height: 42px;
+            border: 4px solid rgba(127,127,127,.2);
+            border-top-color: #ef4444;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Progress */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            z-index: 9999;
+            background: #ef4444;
+            transition: width .1s linear;
+        }
+
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 dark:bg-[#080808] dark:text-gray-100">
+
+    <!-- Progress -->
+    <div id="progressBar"></div>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="fixed top-0 left-0 right-0 z-50">
+
+        <nav class="glass">
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div class="h-16 flex items-center justify-between">
+
+                    <!-- Logo -->
+                    <a href="/"
+                       class="flex items-center gap-3">
+
+                        <img
+                            src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+                            alt="Cyberind.id"
+                            class="w-9 h-9 object-contain">
+
+                        <div class="leading-tight">
+
+                            <div class="font-bold">
+                                Cyberind<span class="text-red-500">.id</span>
+                            </div>
+
+                            <div class="text-[10px] text-gray-500 dark:text-gray-400">
+                                INDONESIAN CYBER TEAM
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                    <!-- Desktop -->
+                    <div class="hidden md:flex items-center gap-6">
+
+                        <a href="/"
+                           class="text-sm hover:text-red-500 transition">
+                            Home
+                        </a>
+
+                        <a href="/blog/"
+                           class="text-sm text-red-500 font-semibold">
+                            Journal
+                        </a>
+
+                        <a href="https://ahmatbadali.github.io/tools/"
+                           target="_blank"
+                           rel="noopener"
+                           class="text-sm hover:text-red-500 transition">
+                            Security Tools
+                        </a>
+
+                        <!-- Theme -->
+                        <button
+                            @click="toggleTheme()"
+                            class="w-9 h-9 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+
+                            <i
+                                class="fa-solid"
+                                :class="dark ? 'fa-sun' : 'fa-moon'">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                    <!-- Mobile -->
+                    <button
+                        @click="mobileMenu = !mobileMenu"
+                        class="md:hidden w-10 h-10">
+
+                        <i class="fa-solid fa-bars text-lg"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- Mobile menu -->
+            <div
+                x-show="mobileMenu"
+                x-transition
+                class="md:hidden border-t border-gray-200 dark:border-gray-800">
+
+                <div class="px-5 py-5 space-y-4">
+
+                    <a href="/"
+                       class="block">
+                        Home
+                    </a>
+
+                    <a href="/blog/"
+                       class="block text-red-500 font-semibold">
+                        Journal
+                    </a>
+
+                    <a href="https://ahmatbadali.github.io/tools/"
+                       target="_blank"
+                       rel="noopener"
+                       class="block">
+                        Security Tools
+                    </a>
+
+                    <button
+                        @click="toggleTheme()"
+                        class="flex items-center gap-3">
+
+                        <i
+                            class="fa-solid"
+                            :class="dark ? 'fa-sun' : 'fa-moon'">
+                        </i>
+
+                        <span x-text="dark ? 'Light Mode' : 'Dark Mode'"></span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="pt-16">
+
+        <!-- Loading -->
+        <section
+            x-show="loading"
+            class="min-h-[70vh] flex items-center justify-center">
+
+            <div class="text-center">
+
+                <div class="loader mx-auto mb-5"></div>
+
+                <p class="text-gray-500 dark:text-gray-400">
+                    Memuat artikel...
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Error / Not Found -->
+        <section
+            x-show="!loading && error"
+            x-cloak
+            class="min-h-[70vh] flex items-center justify-center px-5">
+
+            <div class="max-w-lg text-center">
+
+                <div
+                    class="text-6xl font-bold text-red-500 mb-5">
+                    404
+                </div>
+
+                <h1 class="text-2xl font-bold mb-3">
+                    Artikel tidak ditemukan
+                </h1>
+
+                <p class="text-gray-500 dark:text-gray-400 mb-7">
+                    Artikel yang kamu cari tidak tersedia,
+                    sudah dihapus, atau URL-nya tidak valid.
+                </p>
+
+                <a
+                    href="/blog/"
+                    class="inline-flex items-center gap-2
+                           px-5 py-3 rounded-xl
+                           bg-red-500 text-white
+                           hover:bg-red-600 transition">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Kembali ke Cyberind Journal
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= ARTICLE ================= -->
+
+        <article
+            x-show="!loading && !error && article"
+            x-cloak>
+
+            <!-- Hero -->
+            <section
+                class="relative overflow-hidden
+                       bg-gray-50 dark:bg-[#0d0d0d]
+                       border-b border-gray-200
+                       dark:border-gray-800">
+
+                <div
+                    class="max-w-5xl mx-auto
+                           px-5 sm:px-6 lg:px-8
+                           py-14 sm:py-20">
+
+                    <!-- Breadcrumb -->
+                    <div
+                        class="flex items-center gap-2
+                               text-sm text-gray-500
+                               dark:text-gray-400
+                               mb-7">
+
+                        <a href="/blog/"
+                           class="hover:text-red-500 transition">
+
+                            Cyberind Journal
+
+                        </a>
+
+                        <i class="fa-solid fa-angle-right text-xs"></i>
+
+                        <span
+                            x-text="article?.categories?.name || 'Article'">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Category -->
+                    <div
+                        x-show="article?.categories?.name"
+                        class="mb-5">
+
+                        <span
+                            class="inline-flex items-center gap-2
+                                   px-3 py-1.5
+                                   rounded-full
+                                   bg-red-500/10
+                                   text-red-500
+                                   text-xs font-semibold">
+
+                            <i class="fa-solid fa-tag"></i>
+
+                            <span
+                                x-text="article?.categories?.name">
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Title -->
+                    <h1
+                        class="font-pt
+                               text-3xl sm:text-4xl
+                               lg:text-5xl
+                               font-bold
+                               leading-tight
+                               tracking-tight
+                               max-w-4xl">
+
+                        <span x-text="article?.title"></span>
+
+                    </h1>
+
+
+                    <!-- Excerpt -->
+                    <p
+                        x-show="article?.excerpt"
+                        class="mt-6
+                               text-lg sm:text-xl
+                               leading-relaxed
+                               text-gray-600
+                               dark:text-gray-400
+                               max-w-3xl"
+                        x-text="article?.excerpt">
+                    </p>
+
+
+                    <!-- Meta -->
+                    <div
+                        class="mt-8
+                               flex flex-wrap
+                               items-center gap-x-5 gap-y-3
+                               text-sm
+                               text-gray-500
+                               dark:text-gray-400">
+
+                        <div class="flex items-center gap-2">
+
+                            <i class="fa-solid fa-user"></i>
+
+                            <span
+                                x-text="article?.author_name || 'Cyberind.id'">
+                            </span>
+
+                        </div>
+
+                        <div class="flex items-center gap-2">
+
+                            <i class="fa-regular fa-calendar"></i>
+
+                            <span
+                                x-text="formatDate(article?.published_at || article?.created_at)">
+                            </span>
+
+                        </div>
+
+                        <div
+                            x-show="article?.views !== undefined"
+                            class="flex items-center gap-2">
+
+                            <i class="fa-regular fa-eye"></i>
+
+                            <span
+                                x-text="formatNumber(article?.views || 0) + ' views'">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Article Body -->
+            <section
+                class="max-w-5xl mx-auto
+                       px-5 sm:px-6 lg:px-8
+                       py-10 sm:py-14">
+
+                <!-- Featured Image -->
+                <div
+                    x-show="article?.featured_image"
+                    class="mb-12">
+
+                    <img
+                        :src="article?.featured_image"
+                        :alt="article?.title"
+                        class="w-full max-h-[600px]
+                               object-cover
+                               rounded-2xl
+                               shadow-xl"
+                        loading="eager"
+                        @error="$event.target.style.display='none'">
+
+                </div>
+
+
+                <!-- Content -->
+                <div
+                    class="article-content max-w-4xl mx-auto"
+                    x-html="article?.content">
+                </div>
+
+
+                <!-- Share -->
+                <div
+                    class="max-w-4xl mx-auto
+                           mt-14 pt-8
+                           border-t
+                           border-gray-200
+                           dark:border-gray-800">
+
+                    <p
+                        class="text-sm font-semibold
+                               text-gray-500
+                               dark:text-gray-400
+                               mb-4">
+
+                        Bagikan artikel
+
+                    </p>
+
+                    <div class="flex flex-wrap gap-3">
+
+                        <!-- WhatsApp -->
+                        <a
+                            :href="whatsappUrl"
+                            target="_blank"
+                            rel="noopener"
+                            class="w-11 h-11
+                                   rounded-xl
+                                   flex items-center justify-center
+                                   bg-green-500
+                                   text-white
+                                   hover:scale-105
+                                   transition"
+                            aria-label="Bagikan ke WhatsApp">
+
+                            <i class="fa-brands fa-whatsapp"></i>
+
+                        </a>
+
+
+                        <!-- Telegram -->
+                        <a
+                            :href="telegramUrl"
+                            target="_blank"
+                            rel="noopener"
+                            class="w-11 h-11
+                                   rounded-xl
+                                   flex items-center justify-center
+                                   bg-sky-500
+                                   text-white
+                                   hover:scale-105
+                                   transition"
+                            aria-label="Bagikan ke Telegram">
+
+                            <i class="fa-brands fa-telegram"></i>
+
+                        </a>
+
+
+                        <!-- Copy -->
+                        <button
+                            @click="copyLink()"
+                            class="w-11 h-11
+                                   rounded-xl
+                                   flex items-center justify-center
+                                   bg-gray-900
+                                   dark:bg-gray-700
+                                   text-white
+                                   hover:scale-105
+                                   transition"
+                            aria-label="Salin link">
+
+                            <i
+                                class="fa-solid"
+                                :class="copied ? 'fa-check' : 'fa-link'">
+                            </i>
+
+                        </button>
+
+                    </div>
+
+                    <p
+                        x-show="copied"
+                        x-transition
+                        class="text-sm text-green-500 mt-3">
+
+                        Link berhasil disalin.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- Bottom Navigation -->
+            <section
+                class="max-w-5xl mx-auto
+                       px-5 sm:px-6 lg:px-8
+                       pb-16">
+
+                <div
+                    class="glass rounded-2xl
+                           p-6 sm:p-8
+                           flex flex-col
+                           sm:flex-row
+                           items-center
+                           justify-between
+                           gap-5">
+
+                    <div>
+
+                        <div
+                            class="text-xs uppercase
+                                   tracking-wider
+                                   text-gray-500
+                                   dark:text-gray-400
+                                   mb-2">
+
+                            Cyberind Journal
+
+                        </div>
+
+                        <div class="font-semibold">
+
+                            Dokumentasi, riset &
+                            edukasi keamanan siber.
+
+                        </div>
+
+                    </div>
+
+
+                    <a
+                        href="/blog/"
+                        class="inline-flex
+                               items-center gap-2
+                               px-5 py-3
+                               rounded-xl
+                               bg-red-500
+                               text-white
+                               hover:bg-red-600
+                               transition
+                               whitespace-nowrap">
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                        Kembali ke Journal
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        </article>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer
+        class="border-t
+               border-gray-200
+               dark:border-gray-800
+               bg-gray-50
+               dark:bg-[#0a0a0a]">
+
+        <div
+            class="max-w-7xl mx-auto
+                   px-5 sm:px-6 lg:px-8
+                   py-10">
+
+            <div
+                class="flex flex-col
+                       sm:flex-row
+                       items-center
+                       justify-between
+                       gap-5">
+
+                <div class="text-center sm:text-left">
+
+                    <div class="font-bold">
+
+                        Cyberind<span class="text-red-500">.id</span>
+
+                    </div>
+
+                    <p
+                        class="text-sm
+                               text-gray-500
+                               dark:text-gray-400
+                               mt-1">
+
+                        Indonesian Cyber Team
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="text-sm
+                           text-gray-500
+                           dark:text-gray-400">
+
+                    © <span x-text="year"></span>
+                    Cyberind.id
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ================= SUPABASE ================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <script>
+
+        /*
+        ============================================================
+        SUPABASE CONFIG
+        ============================================================
+        */
+
+        const SUPABASE_URL =
+            'https://lwolwingtzqdfsqoopra.supabase.co';
+
+        const SUPABASE_KEY =
+            'sb_publishable_w8vzcXhO42RrHSopV8Gi9A_ecg6m_0A';
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /*
+        ============================================================
+        ARTICLE APP
+        ============================================================
+        */
+
+        function articleApp() {
+
+            return {
+
+                /* ------------------------------
+                   STATE
+                ------------------------------ */
+
+                dark: false,
+
+                mobileMenu: false,
+
+                loading: true,
+
+                error: false,
+
+                article: null,
+
+                copied: false,
+
+                year: new Date().getFullYear(),
+
+                slug: '',
+
+                currentUrl: window.location.href,
+
+                defaultImage:
+                    'https://www.cyberind.my.id/assets/images/logo-cyberind.id.png',
+
+
+                /* ------------------------------
+                   SEO
+                ------------------------------ */
+
+                get pageTitle() {
+
+                    if (!this.article) {
+
+                        return 'Cyberind Journal';
+
+                    }
+
+                    return (
+                        this.article.seo_title ||
+                        this.article.title ||
+                        'Cyberind Journal'
+                    ) + ' — Cyberind.id';
+
+                },
+
+
+                get pageDescription() {
+
+                    if (!this.article) {
+
+                        return 'Cyberind Journal — dokumentasi, riset, edukasi, dan informasi keamanan siber.';
+
+                    }
+
+                    return (
+                        this.article.seo_description ||
+                        this.article.excerpt ||
+                        'Artikel Cyberind Journal mengenai keamanan siber, teknologi, riset, dan edukasi.'
+                    );
+
+                },
+
+
+                /* ------------------------------
+                   SHARE URL
+                ------------------------------ */
+
+                get whatsappUrl() {
+
+                    const text =
+                        `${this.article?.title || 'Cyberind Journal'}\n${this.currentUrl}`;
+
+                    return (
+                        'https://wa.me/?text=' +
+                        encodeURIComponent(text)
+                    );
+
+                },
+
+
+                get telegramUrl() {
+
+                    return (
+                        'https://t.me/share/url?url=' +
+                        encodeURIComponent(this.currentUrl) +
+                        '&text=' +
+                        encodeURIComponent(
+                            this.article?.title || 'Cyberind Journal'
+                        )
+                    );
+
+                },
+
+
+                /* ------------------------------
+                   INIT
+                ------------------------------ */
+
+                async init() {
+
+                    this.loadTheme();
+
+                    this.slug =
+                        new URLSearchParams(
+                            window.location.search
+                        ).get('slug') || '';
+
+                    if (!this.slug) {
+
+                        this.loading = false;
+
+                        this.error = true;
+
+                        document.title =
+                            'Artikel Tidak Ditemukan — Cyberind.id';
+
+                        return;
+
+                    }
+
+                    await this.loadArticle();
+
+                },
+
+
+                /* ------------------------------
+                   LOAD ARTICLE
+                ------------------------------ */
+
+                async loadArticle() {
+
+                    this.loading = true;
+
+                    this.error = false;
+
+
+                    try {
+
+                        const {
+                            data,
+                            error
+                        } = await supabaseClient
+
+                            .from('articles')
+
+                            .select(`
+                                id,
+                                title,
+                                slug,
+                                excerpt,
+                                content,
+                                featured_image,
+                                category_id,
+                                author_name,
+                                status,
+                                seo_title,
+                                seo_description,
+                                views,
+                                published_at,
+                                created_at,
+                                updated_at,
+                                categories (
+                                    id,
+                                    name,
+                                    slug
+                                )
+                            `)
+
+                            .eq(
+                                'slug',
+                                this.slug
+                            )
+
+                            .eq(
+                                'status',
+                                'published'
+                            )
+
+                            .maybeSingle();
+
+
+                        if (error) {
+
+                            console.error(
+                                'Supabase error:',
+                                error
+                            );
+
+                            throw error;
+
+                        }
+
+
+                        if (!data) {
+
+                            this.error = true;
+
+                            return;
+
+                        }
+
+
+                        this.article = data;
+
+
+                        /*
+                        Update browser title
+                        */
+
+                        document.title =
+                            this.pageTitle;
+
+
+                        /*
+                        Update meta description
+                        */
+
+                        const description =
+                            document.querySelector(
+                                'meta[name="description"]'
+                            );
+
+                        if (description) {
+
+                            description.setAttribute(
+                                'content',
+                                this.pageDescription
+                            );
+
+                        }
+
+
+                        /*
+                        Update OG tags
+                        */
+
+                        const ogTitle =
+                            document.querySelector(
+                                'meta[property="og:title"]'
+                            );
+
+                        if (ogTitle) {
+
+                            ogTitle.setAttribute(
+                                'content',
+                                this.pageTitle
+                            );
+
+                        }
+
+
+                        const ogDescription =
+                            document.querySelector(
+                                'meta[property="og:description"]'
+                            );
+
+                        if (ogDescription) {
+
+                            ogDescription.setAttribute(
+                                'content',
+                                this.pageDescription
+                            );
+
+                        }
+
+
+                        const ogImage =
+                            document.querySelector(
+                                'meta[property="og:image"]'
+                            );
+
+                        if (ogImage) {
+
+                            ogImage.setAttribute(
+                                'content',
+                                this.article.featured_image ||
+                                this.defaultImage
+                            );
+
+                        }
+
+
+                        const ogUrl =
+                            document.querySelector(
+                                'meta[property="og:url"]'
+                            );
+
+                        if (ogUrl) {
+
+                            ogUrl.setAttribute(
+                                'content',
+                                this.currentUrl
+                            );
+
+                        }
+
+                    }
+
+                    catch (err) {
+
+                        console.error(
+                            'Failed to load article:',
+                            err
+                        );
+
+                        this.error = true;
+
+                    }
+
+                    finally {
+
+                        this.loading = false;
+
+                    }
+
+                },
+
+
+                /* ------------------------------
+                   FORMAT DATE
+                ------------------------------ */
+
+                formatDate(date) {
+
+                    if (!date) {
+
+                        return '-';
+
+                    }
+
+                    try {
+
+                        return new Intl.DateTimeFormat(
+                            'id-ID',
+                            {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            }
+                        ).format(
+                            new Date(date)
+                        );
+
+                    }
+
+                    catch {
+
+                        return date;
+
+                    }
+
+                },
+
+
+                /* ------------------------------
+                   FORMAT NUMBER
+                ------------------------------ */
+
+                formatNumber(number) {
+
+                    return new Intl.NumberFormat(
+                        'id-ID'
+                    ).format(
+                        Number(number || 0)
+                    );
+
+                },
+
+
+                /* ------------------------------
+                   COPY LINK
+                ------------------------------ */
+
+                async copyLink() {
+
+                    try {
+
+                        await navigator.clipboard.writeText(
+                            this.currentUrl
+                        );
+
+                        this.copied = true;
+
+                        setTimeout(() => {
+
+                            this.copied = false;
+
+                        }, 2500);
+
+                    }
+
+                    catch (err) {
+
+                        console.error(
+                            'Copy failed:',
+                            err
+                        );
+
+                    }
+
+                },
+
+
+                /* ------------------------------
+                   THEME
+                ------------------------------ */
+
+                loadTheme() {
+
+                    const saved =
+                        localStorage.getItem(
+                            'cyberind-theme'
+                        );
+
+                    if (saved) {
+
+                        this.dark =
+                            saved === 'dark';
+
+                    }
+
+                    else {
+
+                        this.dark =
+                            window.matchMedia(
+                                '(prefers-color-scheme: dark)'
+                            ).matches;
+
+                    }
+
+                },
+
+
+                toggleTheme() {
+
+                    this.dark =
+                        !this.dark;
+
+                    localStorage.setItem(
+                        'cyberind-theme',
+                        this.dark
+                            ? 'dark'
+                            : 'light'
+                    );
+
+                }
+
+            };
+
+        }
+
+
+        /*
+        ============================================================
+        SCROLL PROGRESS
+        ============================================================
+        */
+
+        window.addEventListener(
+            'scroll',
+            function () {
+
+                const bar =
+                    document.getElementById(
+                        'progressBar'
+                    );
+
+                if (!bar) return;
+
+
+                const scrollTop =
+                    window.scrollY;
+
+                const height =
+                    document.documentElement.scrollHeight -
+                    window.innerHeight;
+
+
+                const progress =
+                    height > 0
+                        ? (scrollTop / height) * 100
+                        : 0;
+
+
+                bar.style.width =
+                    progress + '%';
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
