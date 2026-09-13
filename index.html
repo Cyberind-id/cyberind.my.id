@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indonesian Cyber Team (Cyberind.id)</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.75);
+            --text-color: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-color: #58a6ff;
+            --accent-green: #238636;
+            --accent-green-hover: #2ea043;
+            --border-color: rgba(240, 246, 252, 0.1);
+            --border-hover: rgba(240, 246, 252, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 50% 0%, #161b22 0%, #0d1117 100%);
+        }
+
+        /* GitHub Style Header / Navbar */
+        header {
+            background-color: #161b22;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .brand svg {
+            fill: var(--text-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main Layout (GitHub Profile Style) */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
+
+        /* Sidebar Profile */
+        .profile-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            aspect-ratio: 1/1;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .profile-info p.handle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .profile-info p.bio {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-org {
+            background-color: var(--accent-green);
+            color: #ffffff;
+            border: 1px solid rgba(240, 246, 252, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-org:hover {
+            background-color: var(--accent-green-hover);
+        }
+
+        /* Main Content Area */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* GitHub Style Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            gap: 1rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .tab-btn:hover {
+            border-bottom-color: var(--border-hover);
+        }
+
+        .tab-btn.active {
+            border-bottom-color: #f78166;
+            font-weight: 600;
+        }
+
+        /* Cards & Repositories Style */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .repo-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.2s;
+        }
+
+        .repo-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .repo-title {
+            color: var(--accent-color);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .repo-title:hover {
+            text-decoration: underline;
+        }
+
+        .repo-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .repo-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .lang-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #3572A5;
+            display: inline-block;
+        }
+
+        /* Contribution Activity Box (GitHub style) */
+        .contribution-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .contribution-header {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(26, 1fr);
+            gap: 4px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1/1;
+            background-color: #161b22;
+            border-radius: 2px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .heatmap-cell.lvl-1 { background-color: #0e4429; }
+        .heatmap-cell.lvl-2 { background-color: #006d32; }
+        .heatmap-cell.lvl-3 { background-color: #26a641; }
+        .heatmap-cell.lvl-4 { background-color: #39d353; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar ala GitHub -->
+    <header>
+        <div class="brand">
+            <!-- GitHub Octocat / Shield Icon -->
+            <svg height="24" viewBox="0 0 16 16" version="1.1" width="24" aria-hidden="true">
+                <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+            </svg>
+            <span>Cyberind.id / Indonesian Cyber Team</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" onclick="switchTab('overview', event)">Overview</a>
+            <a href="#" onclick="switchTab('repos', event)">Repositories</a>
+            <a href="#" onclick="switchTab('tools', event)">Security Tools</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar Profil Organisasi -->
+        aside class="profile-sidebar">
+            <div class="avatar-container">
+                <!-- Placeholder Logo / Inisial Tim -->
+                <svg height="100" width="100" viewBox="0 0 24 24" fill="#58a6ff">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <div class="profile-info">
+                <h1>Indonesian Cyber Team</h1>
+                <p class="handle">cyberind-id</p>
+                <p class="bio">Official organization profile focusing on cybersecurity research, penetration testing, and open-source security tools development in Indonesia.</p>
+                <a href="https://github.com/ahmatbadali" target="_blank" class="btn-org">Explore GitHub Profile</a>
+            </div>
+        </aside>
+
+        <!-- Area Konten Utama dengan Sistem Tab -->
+        <main class="content-area">
+            <!-- Tabs Navigasi -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('overview', event)">
+                    <span>Overview</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('repos', event)">
+                    <span>Repositories <span style="background: rgba(110,118,129,0.4); padding: 2px 6px; border-radius: 10px; font-size: 0.75rem;">4</span></span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('tools', event)">
+                    <span>Security Tools</span>
+                </button>
+            </div>
+
+            <!-- Tab 1: Overview -->
+            <div id="overview" class="tab-content active">
+                <div class="section-title">Pinned Repositories</div>
+                <div class="repo-grid">
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">cyberind-scanner</a>
+                            <p class="repo-desc">Advanced vulnerability scanner and reconnaissance utility for automated penetration testing.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #f1e05a;"></span> JavaScript</span>
+                            <span>🔒 Security</span>
+                        </div>
+                    </div>
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">indonesian-threatmap</a>
+                            <p class="repo-desc">Real-time cyber threat intelligence and visualization dashboard.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #3572A5;"></span> Python</span>
+                            <span>🛡️ Defensive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">Contribution Activity (Simulated)</div>
+                <div class="contribution-box">
+                    <div class="contribution-header">Commit activity over the last period</div>
+                    <div class="heatmap-grid" id="heatmap">
+                        <!-- Javascript akan mengisi kotak heatmap -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Repositories -->
+            <div id="repos" class="tab-content">
+                <div class="section-title">List of Repositories</div>
+                <div class="repo-grid">
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">cyberind-scanner</a>
+                            <p class="repo-desc">Advanced vulnerability scanner and reconnaissance utility for automated penetration testing.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #f1e05a;"></span> JavaScript</span>
+                        </div>
+                    </div>
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">indonesian-threatmap</a>
+                            <p class="repo-desc">Real-time cyber threat intelligence and visualization dashboard.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #3572A5;"></span> Python</span>
+                        </div>
+                    </div>
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">pentest-cheatsheet</a>
+                            <p class="repo-desc">Comprehensive compilation of penetration testing methodologies and payloads.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #e34c26;"></span> HTML/Markdown</span>
+                        </div>
+                    </div>
+                    <div class="repo-card">
+                        <div>
+                            <a href="#" class="repo-title">tools-collection</a>
+                            <p class="repo-desc">Online utility collection for web developers and security researchers.</p>
+                        </div>
+                        <div class="repo-meta">
+                            <span><span class="lang-dot" style="background-color: #f1e05a;"></span> JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Security Tools (Sesuai Preferensi Anda) -->
+            <div id="tools" class="tab-content">
+                <div class="section-title">Cyber Security & Pentesting Utility</div>
+                <div class="repo-card" style="padding: 1.5rem;">
+                    <h3 style="color: var(--accent-color); margin-bottom: 1rem; font-size: 1.1rem;">Online Reconnaissance Tool</h3>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Target Domain / IP:</label>
+                        <input type="text" id="targetInput" placeholder="contoh: target.com" style="width: 100%; padding: 0.5rem; background: #0d1117; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); outline: none;">
+                    </div>
+                    <button onclick="runTool()" style="background-color: var(--accent-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 500;">Run Lookup</button>
+                    <div id="resultOutput" style="margin-top: 1rem; background: #0d1117; border: 1px solid var(--border-color); padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; white-space: pre-wrap; color: #7ee787;">Hasil eksekusi alat keamanan akan ditampilkan di sini...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        &copy; 2026 Indonesian Cyber Team (Cyberind.id). Built with GitHub-inspired Architecture.
+    </footer>
+
+    <script>
+        // Fungsi Navigasi Tab
+        function switchTab(tabId, event) {
+            event.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            // Aktifkan tombol tab berdasarkan nama
+            const buttons = document.querySelectorAll('.tab-btn');
+            if(tabId === 'overview') buttons[0].classList.add('active');
+            if(tabId === 'repos') buttons[1].classList.add('active');
+            if(tabId === 'tools') buttons[2].classList.add('active');
+        }
+
+        // Simulasi Heatmap Kontribusi GitHub
+        const heatmapGrid = document.getElementById('heatmap');
+        const levels = ['', 'lvl-1', 'lvl-2', 'lvl-3', 'lvl-4'];
+        for(let i = 0; i < 104; i++) {
+            const cell = document.createElement('div');
+            cell.className = `heatmap-cell ${levels[Math.floor(Math.random() * levels.length)]}`;
+            heatmapGrid.appendChild(cell);
+        }
+
+        // Simulasi Jalankan Security Tool
+        function runTool() {
+            const target = document.getElementById('targetInput').value.trim();
+            const output = document.getElementById('resultOutput');
+            
+            if(!target) {
+                output.textContent = "[ERROR] Harap masukkan target domain atau IP terlebih dahulu!";
+                output.style.color = "#ff7b72";
+                return;
+            }
+
+            output.style.color = "#7ee787";
+            output.textContent = `[+] Inisialisasi pemindaian untuk target: ${target}\n[+] Menghubungkan ke modul API Cyberind...\n[SUCCESS] Status Target: Aktif. (Simulasi respons aman selesai).`;
+        }
+    </script>
+</body>
+</html>
+
