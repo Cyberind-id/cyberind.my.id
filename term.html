@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyberind Terminal Interface</title>
+    <title>Cyberind - Security & Development Team</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,49 +12,96 @@
         }
 
         body {
-            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-            height: 100vh;
+            /* Background khas web index portfolio modern (dark mode / cyber theme) */
+            background: linear-gradient(135deg, #050814 0%, #0d1b2a 50%, #1b263b 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Navigasi / Header Web Index Portofolio */
+        .portfolio-nav {
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(5, 8, 20, 0.6);
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff66;
+            letter-spacing: 2px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00ff66;
+        }
+
+        /* Area Utama / Konten Web (Tempat Terminal Berada) */
+        .main-container {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
+            padding: 40px 20px;
         }
 
-        /* Kontainer Terminal Utama dengan Efek Glassmorphism */
+        /* Kontainer Terminal dengan Efek Glassmorphism */
         .terminal-container {
             position: relative;
-            width: 650px;
-            max-width: 92%;
-            background: rgba(15, 23, 42, 0.5); /* Sedikit lebih pekat agar logo kontras */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 680px;
+            max-width: 100%;
+            background: rgba(13, 27, 42, 0.55); /* Efek kaca semi-transparan */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 255, 102, 0.25);
             border-radius: 12px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             overflow: hidden;
             z-index: 1;
         }
 
-        /* Logo di Belakang Terminal (Dibuat Lebih Jelas & Besar) */
+        /* Logo di Belakang Terminal (Jelas & Proporsional di Tengah) */
         .terminal-container::before {
             content: "";
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 320px;   /* Ukuran logo diperbesar */
-            height: 320px;  /* Ukuran logo diperbesar */
+            width: 320px;
+            height: 320px;
             background: url('https://www.cyberind.my.id/assets/images/logoo.png') no-repeat center center;
             background-size: contain;
-            opacity: 0.35;  /* Dinaikkan dari sebelumnya (0.1) agar lebih jelas terlihat */
+            opacity: 0.35; /* Jelas namun tetap menyatu dengan kaca */
             z-index: -1;
             pointer-events: none;
         }
 
         /* Header / Panel Atas Terminal */
         .terminal-header {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
             padding: 12px 16px;
             display: flex;
             align-items: center;
@@ -107,31 +154,73 @@
         .terminal-link:hover {
             text-decoration: underline;
         }
+
+        /* Footer Web Index Portfolio */
+        .portfolio-footer {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(5, 8, 20, 0.6);
+        }
+
+        /* Responsive Design untuk Mobile */
+        @media (max-width: 768px) {
+            .portfolio-nav {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-links {
+                gap: 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="terminal-container">
-        <!-- Header Terminal -->
-        <div class="terminal-header">
-            <div class="window-buttons">
-                <div class="win-btn btn-close"></div>
-                <div class="win-btn btn-minimize"></div>
-                <div class="win-btn btn-maximize"></div>
-            </div>
-            <div class="terminal-title">root@cyberind:~</div>
-        </div>
+    <!-- Navigasi / Header Website Portfolio Team -->
+    <header class="portfolio-nav">
+        <a href="https://cyberind.my.id" class="nav-link nav-logo">&lt;CYBERIND /&gt;</a>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#team">Team</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
 
-        <!-- Body / Isi Terminal Menurun Ke Bawah -->
-        <div class="terminal-body">
-            <span class="terminal-line">$ ./cyberind --launch</span>
-            <span class="terminal-line">./root@j1337 [OK] CONNECTED.......</span>
-            <span class="terminal-line">./root@j1337 [OK] SECURE.......</span>
-            <span class="terminal-line">./root@j1337 [OK] LOADED.......</span>
-            <span class="terminal-line">./root@j1337 ACCESS GRANTED.......</span>
-            <span class="terminal-line">&gt; <a href="https://cyberind.my.id" class="terminal-link" target="_blank">cyberind.my.id</a></span>
+    <!-- Konten Utama Portfolio (Terminal Interface di Tengah) -->
+    <main class="main-container">
+        <div class="terminal-container">
+            <!-- Header Terminal -->
+            <div class="terminal-header">
+                <div class="window-buttons">
+                    <div class="win-btn btn-close"></div>
+                    <div class="win-btn btn-minimize"></div>
+                    <div class="win-btn btn-maximize"></div>
+                </div>
+                <div class="terminal-title">root@cyberind:~</div>
+            </div>
+
+            <!-- Body / Isi Terminal Menurun Ke Bawah -->
+            <div class="terminal-body">
+                <span class="terminal-line">$ ./cyberind --launch</span>
+                <span class="terminal-line">./root@j1337 [OK] CONNECTED.......</span>
+                <span class="terminal-line">./root@j1337 [OK] SECURE.......</span>
+                <span class="terminal-line">./root@j1337 [OK] LOADED.......</span>
+                <span class="terminal-line">./root@j1337 ACCESS GRANTED.......</span>
+                <span class="terminal-line">&gt; <a href="https://cyberind.my.id" class="terminal-link" target="_blank">cyberind.my.id</a></span>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer Website Portfolio -->
+    <footer class="portfolio-footer">
+        &copy; 2026 Cyberind Team. All Rights Reserved.
+    </footer>
 
 </body>
 </html>
