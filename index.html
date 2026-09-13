@@ -203,25 +203,34 @@
 
   <div class="relative z-10 max-w-6xl mx-auto px-6 py-24 w-full">
     
-    <!-- TERMINAL: Samping kanan dibuat tanpa margin (full mentok ke kanan layar browser/kontainer) -->
-    <div class="reveal mb-12 -mx-6 sm:mx-0">
-      <div style="background: linear-gradient(135deg, rgba(16, 12, 30, 0.98), rgba(8, 6, 18, 0.99)); border: 1px solid rgba(147, 112, 219, 0.3); box-shadow: -20px 35px 70px -15px rgba(50, 10, 80, 0.6), 15px 35px 70px -15px rgba(20, 10, 50, 0.5), 0 0 40px rgba(126, 34, 206, 0.25); backdrop-blur: 20px;" class="sm:rounded-2xl p-5 sm:p-6 font-mono text-xs sm:text-sm text-zinc-200 overflow-x-auto relative">
+    <!-- TERMINAL: Margin kiri ada (mengikuti max-w container), sisi kanan 0 (mentok penuh), tanpa scroll samping -->
+    <div class="reveal mb-12 ml-0 sm:ml-0 mr-[-24px] sm:mr-0 pr-6 sm:pr-0">
+      <div style="background: #111318; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); backdrop-blur: 16px;" class="rounded-l-2xl sm:rounded-2xl p-5 sm:p-6 font-mono text-xs sm:text-sm text-zinc-300 relative overflow-hidden">
         
-        <!-- Header Terminal -->
-        <div class="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-purple-900/40 gap-3">
+        <!-- Header Terminal ala macOS (Tombol Merah, Kuning, Hijau di Kiri) -->
+        <div class="flex items-center justify-between pb-4 mb-3 border-b border-zinc-800">
           <div class="flex items-center gap-2">
-            <span class="text-purple-400 font-bold text-sm tracking-wide">🛡️ cyberind-init-system.sh</span>
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
           </div>
-          <div class="flex items-center gap-2 text-xs">
-            <span class="bg-purple-950/80 text-purple-300 border border-purple-800/50 px-3 py-1.5 rounded-md font-medium text-center">Est.<br>2018</span>
-            <span class="bg-zinc-900 text-zinc-300 border border-zinc-800 px-3 py-2 rounded-md font-medium">Active<br>Status</span>
-            <span class="bg-zinc-900 text-zinc-300 border border-zinc-800 px-3 py-2 rounded-md font-medium">Secure<br>Shell</span>
-          </div>
+          <div class="text-[11px] text-zinc-500 tracking-wider uppercase font-semibold">bash — cyberind@core:~</div>
         </div>
 
-        <!-- Output Terminal dengan Efek Mengetik Santai Melebar Full ke Kanan -->
-        <div id="terminalOutput" class="space-y-2 leading-relaxed min-h-[120px] whitespace-nowrap overflow-x-auto pb-2 pr-12">
-          <p class="text-purple-400">$ bash &lt;(curl -s https://cyberind.id/install-tools.sh)</p>
+        <!-- Output Terminal Persis Seperti Referensi Gambar -->
+        <div id="terminalOutput" class="space-y-1.5 leading-relaxed overflow-hidden">
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">1</span>[CYBERIND SYSTEM] &gt; Initializing <span class="text-red-400">Cyberind.my.id</span>...</p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">2</span>[OK] System Modules <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">3</span>[OK] Secure Connection <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">4</span>[OK] Domain Resolved <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">5</span>[OK] Server Connected <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">6</span>[OK] Interface Loaded <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">7</span>[OK] Security Active <span class="text-emerald-400 font-bold">✓</span></p>
+          <p class="text-zinc-700 select-none"><span class="text-zinc-600 mr-3">8</span>--------------------------------------------------------------------------------</p>
+          <p class="text-zinc-300"><span class="text-zinc-600 select-none mr-3">9</span>CYBERIND.MY.ID &bull;&bull; DIGITAL &bull;&bull; SECURITY &bull;&bull; TECHNOLOGY &bull;&bull; ACCESS GRANTED &bull;&bull; WELCOME TO CYBERIND</p>
+          <p class="text-zinc-700 select-none"><span class="text-zinc-600 mr-3">10</span>--------------------------------------------------------------------------------</p>
+          <p class="text-zinc-400"><span class="text-zinc-600 select-none mr-3">11</span>[<span class="bg-emerald-500 inline-block w-48 sm:w-96 h-3 rounded-sm align-middle mx-1 opacity-90"></span>] 100%</p>
+          <p class="text-accent font-medium"><span class="text-zinc-600 select-none mr-3">12</span>Launching Cyberind.my.id...</p>
         </div>
       </div>
     </div>
@@ -233,16 +242,16 @@
           Indonesian Cyber Team <span class="text-accent">(Cyberind.id)</span>
         </h1>
         <p class="reveal d2 text-base md:text-lg text-zinc-600 dark:text-zinc-400 font-light leading-relaxed max-w-xl mb-8">
-          Tempat nongkrong sekaligus wadah belajar bareng buat siapa saja yang tertarik sama dunia IT, keamanan informasi, dan cyber security. Di sini kita bebas diskusi, eksperimen, dan ngembangin skill bareng-bareng secara santai.
+          Wadah profesional riset, edukasi, dan kolaborasi keamanan siber yang berfokus pada pengujian penetrasi, analisis kerentanan, serta pengembangan utilitas pertahanan digital modern di Indonesia.
         </p>
         <div class="reveal d3 flex flex-wrap gap-4">
-          <a href="#about" class="btn-3d-inset glass-touch inline-flex items-center gap-2 bg-red-100/80 dark:bg-zinc-800 border border-red-200/80 dark:border-zinc-700 text-zinc-900 dark:text-white font-medium px-7 py-3.5 rounded-full hover:bg-red-200/50 transition-colors text-sm">Kenalan Yuk ↓</a>
-          <a href="#goals" class="btn-3d-inset glass-touch inline-flex items-center gap-2 bg-white/70 dark:bg-zinc-900/80 border border-red-200/60 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full transition-colors text-sm">Lihat Tujuan Kami</a>
+          <a href="#about" class="btn-3d-inset glass-touch inline-flex items-center gap-2 bg-red-100/80 dark:bg-zinc-800 border border-red-200/80 dark:border-zinc-700 text-zinc-900 dark:text-white font-medium px-7 py-3.5 rounded-full hover:bg-red-200/50 transition-colors text-sm">Pelajari Selengkapnya ↓</a>
+          <a href="#goals" class="btn-3d-inset glass-touch inline-flex items-center gap-2 bg-white/70 dark:bg-zinc-900/80 border border-red-200/60 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-medium px-7 py-3.5 rounded-full transition-colors text-sm">Visi & Misi</a>
         </div>
         <div class="reveal d4 flex gap-8 mt-14 pt-8 border-t border-red-100 dark:border-zinc-900">
-          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">2018</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Mulai berdiri</p></div>
-          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">Santai</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Terbuka untuk umum</p></div>
-          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">Aktif</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Riset & Eksperimen</p></div>
+          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">Est. 2018</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Berdiri Resmi</p></div>
+          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">Profesional</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Standar Etis</p></div>
+          <div><p class="font-display font-bold text-2xl md:text-3xl text-zinc-900 dark:text-white">Aktif</p><p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Riset & Inovasi</p></div>
         </div>
       </div>
 
@@ -250,9 +259,10 @@
         <div class="relative w-80 sm:w-[22rem] md:w-[25rem] aspect-square flex items-center justify-center">
           <div class="absolute -inset-5 rounded-[2.75rem] bg-gradient-to-br from-accent/25 via-accent-light/10 to-transparent blur-3xl -z-10"></div>
           
-          <!-- Gambar besar (cyb-logo.png) dengan penyesuaian otomatis kontras agar teks putih terlihat di mode terang & gelap -->
+          <!-- Logo Gambar Besar: cyb-logo.png untuk Mode Gelap & S-cyb.png untuk Mode Terang -->
           <div class="pf-clean w-full h-full flex items-center justify-center p-6">
-            <img src="https://www.cyberind.my.id/assets/images/cyb-logo.png" alt="Cyberind.id Large Logo" class="dark:brightness-100 dark:contrast-100 brightness-[0.85] contrast-125 transition-all duration-300">
+            <img src="https://www.cyberind.my.id/assets/images/cyb-logo.png" alt="Cyberind.id Large Logo" class="dark:block hidden w-full h-full object-contain drop-shadow-[0_15px_35px_rgba(239,68,68,0.25)]">
+            <img src="https://www.cyberind.my.id/assets/images/S-cyb.png" alt="Cyberind.id Large Logo Light" class="dark:hidden block w-full h-full object-contain drop-shadow-[0_15px_35px_rgba(239,68,68,0.25)]">
           </div>
 
           <div class="glass-touch absolute -bottom-2 -left-2 bg-accent/90 border border-white/20 text-white font-display font-bold text-xs px-4 py-2.5 rounded-2xl shadow-lg">Explore. Learn. Share. Build. Secure.</div>
@@ -267,18 +277,18 @@
     <div class="grid md:grid-cols-2 gap-12 items-start mb-16">
       <div>
         <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Tentang Komunitas</p>
-        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mb-6">Kenalan Sama Cyberind.id</h2>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mb-6">Indonesian Cyber Team</h2>
       </div>
       <div class="reveal d2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-5">
-        <p><strong>Indonesian Cyber Team (Cyberind.id)</strong> adalah komunitas independen yang sudah jalan sejak tahun 2018. Fokus kita simpel: belajar bareng, eksplorasi, riset, dan ngembangin ilmu seputar teknologi dan keamanan siber (cyber security).</p>
-        <p>Komunitas ini terbuka buat siapa aja. Mau kamu masih pemula yang baru penasaran soal dunia IT atau yang udah khatam soal keamanan informasi, semuanya bebas gabung untuk nambah wawasan, diskusi, atau sekadar eksperimen bareng.</p>
-        <p>Biar seru, kita aktif berbagi tutorial, hasil riset, write-up, atau bahan belajar lewat berbagai platform digital seperti blog, forum, media sosial, sampai dokumentasi open-source.</p>
+        <p><strong>Indonesian Cyber Team (Cyberind.id)</strong> merupakan komunitas independen yang didirikan sejak tahun 2018, berfokus pada edukasi, eksplorasi, penelitian, dan pengembangan pengetahuan di bidang teknologi dan keamanan siber (cyber security).</p>
+        <p>Cyberind.id menjadi wadah terbuka bagi praktisi, akademisi, maupun pegiat teknologi untuk memperdalam pemahaman mengenai keamanan informasi, berdiskusi, serta mengembangkan kapabilitas teknis secara terstruktur.</p>
+        <p>Dalam aktivitasnya, kami aktif mendokumentasikan hasil riset, tutorial, write-up, serta materi pembelajaran melalui berbagai platform digital guna memperkaya literasi keamanan siber di Indonesia.</p>
       </div>
     </div>
 
     <!-- Bidang Fokus -->
     <div class="reveal d3">
-      <h3 class="font-display font-bold text-2xl text-zinc-900 dark:text-white mb-6">Apa Aja yang Sering Kita Bahas?</h3>
+      <h3 class="font-display font-bold text-2xl text-zinc-900 dark:text-white mb-6">Bidang Perhatian & Riset</h3>
       <div class="flex flex-wrap gap-2.5">
         <span class="glass-card glass-touch px-4 py-2.5 rounded-xl text-zinc-800 dark:text-zinc-200 font-medium text-sm">Cyber Security</span>
         <span class="glass-card glass-touch px-4 py-2.5 rounded-xl text-zinc-800 dark:text-zinc-200 font-medium text-sm">Ethical Hacking</span>
@@ -301,23 +311,23 @@
   <div class="max-w-6xl mx-auto px-6">
     <div class="grid md:grid-cols-2 gap-12 items-center">
       <div>
-        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Prinsip Komunitas</p>
-        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mb-6">Bebas & Mandiri (Independen)</h2>
+        <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Prinsip Organisasi</p>
+        <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white mb-6">Keterbukaan & Independensi</h2>
         <div class="reveal d2 text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-4">
-          <p>Cyberind.id murni komunitas independen. Kita gak terikat secara struktur sama instansi, kampus, perusahaan, badan pemerintah, atau organisasi manapun.</p>
-          <p>Kita welcome banget sama siapa aja yang punya latar belakang atau cara pandang beda-beda. Intinya kita fokus ke proses asyiknya belajar teknologi.</p>
+          <p>Cyberind.id merupakan komunitas independen yang tidak terikat secara struktural maupun organisatoris dengan instansi, institusi pendidikan, korporasi, atau lembaga pemerintah tertentu.</p>
+          <p>Kami menyambut berbagai latar belakang sudut pandang guna membangun ekosistem riset yang objektif, profesional, dan berorientasi pada pengembangan teknologi berkualitas.</p>
         </div>
       </div>
       <div class="reveal d3 glass-card glass-touch rounded-3xl p-8 md:p-10">
-        <h3 class="font-display font-bold text-2xl text-zinc-900 dark:text-white mb-4">Gunakan Ilmu dengan Bijak</h3>
+        <h3 class="font-display font-bold text-2xl text-zinc-900 dark:text-white mb-4">Penggunaan Teknologi Bertanggung Jawab</h3>
         <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm mb-4">
-          Namanya juga belajar keamanan siber, kadang kita bakal bahas celah keamanan atau teknik eksploitasi yang sifatnya bisa bermata dua (dual-use).
+          Eksplorasi keamanan siber kerap mencakup analisis celah kerentanan serta teknologi berpotensi ganda (<span class="italic">dual-use</span>).
         </p>
         <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm mb-4">
-          Tapi ingat, di sini kita selalu ngajak anggota buat pakai ilmunya secara positif, bertanggung jawab, dan gak merugikan orang lain.
+          Oleh karena itu, kami senantiasa mengedepankan prinsip etis, mewajibkan penerapan ilmu secara bijaksana, serta fokus pada penguatan pertahanan sistem digital.
         </p>
         <blockquote class="border-l-4 border-accent pl-4 italic text-sm text-zinc-700 dark:text-zinc-300">
-          "Kalau mau tahu cara ngamanin rumah, kita harus paham dulu gimana celah maling bisa masuk. Intinya gitu!"
+          "Memahami potensi kerentanan sebuah sistem merupakan fondasi utama dalam merancang pertahanan dan pengamanan yang komprehensif."
         </blockquote>
       </div>
     </div>
@@ -328,44 +338,44 @@
   <div class="max-w-6xl mx-auto px-6">
     <div class="mb-14">
       <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Visi & Misi</p>
-      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Apa Aja Tujuan Kita?</h2>
+      <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white">Tujuan Komunitas</h2>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div class="reveal d1 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">01</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Wadah Santai</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Tempat nongkrong digital buat nambah ilmu cyber security tanpa tekanan.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Pusat Pembelajaran</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Menyediakan wadah kolaboratif untuk transfer pengetahuan teknologi dan keamanan informasi.</p>
       </div>
 
       <div class="reveal d2 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">02</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Melek Teknologi</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Bantu ningkatin kesadaran masyarakat umum seputar pentingnya jaga data pribadi dan info penting.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Literasi Keamanan</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Meningkatkan kesadaran masyarakat luas terhadap pentingnya standar keamanan data.</p>
       </div>
 
       <div class="reveal d3 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">03</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Eksplorasi Bebas</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Dukung riset dan uji coba teknologi terbaru secara mandiri dan kreatif.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Riset Teknologi</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Mendorong eksplorasi aktif terhadap perkembangan dan tren arsitektur sistem mutakhir.</p>
       </div>
 
       <div class="reveal d1 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">04</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Bikin Tools Sendiri</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Ngembangin aplikasi, script, atau tools praktis buat ngebantu proses belajar.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Pengembangan Tools</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Membangun utilitas, framework, dan skrip open-source guna mendukung riset keamanan.</p>
       </div>
 
       <div class="reveal d2 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">05</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Pentest Etis</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Belajar teknik penetration testing dan audit sistem dengan cara yang bener dan etis.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Standar Pentest Etis</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Mengedukasi praktik pengujian penetrasi dan asesmen keamanan secara profesional.</p>
       </div>
 
       <div class="reveal d3 card-h glass-card glass-touch rounded-2xl p-7">
         <div class="text-accent font-bold text-sm mb-3">06</div>
-        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Sharing Is Caring</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Saling bagi-bagi write-up dan pengalaman ke temen-temen komunitas.</p>
+        <h3 class="font-display font-bold text-lg text-zinc-900 dark:text-white mb-2">Dokumentasi Terbuka</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">Mendokumentasikan hasil investigasi dan membagikannya secara luas kepada publik.</p>
       </div>
     </div>
   </div>
@@ -379,7 +389,7 @@
         <div>
           <p class="text-xs font-medium text-accent tracking-widest uppercase mb-3">Cyber Security & Pentesting Tools</p>
           <h2 class="font-display font-bold text-3xl md:text-4xl text-zinc-900 dark:text-white mb-3">Cyberind Security Utilities</h2>
-          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-xl">Kumpulan tools online keren bikinan kita buat bantu ngecek dan eksplorasi keamanan sistem dengan cepat.</p>
+          <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-xl">Kumpulan perangkat utilitas pemindaian dan instrumen keamanan siber pilihan untuk mendukung kebutuhan audit teknis.</p>
         </div>
         <a href="https://ahmatbadali.github.io/tools/" target="_blank" rel="noopener noreferrer" class="btn-3d-inset glass-touch inline-flex items-center gap-3 bg-accent text-white font-medium px-8 py-4 rounded-full hover:bg-accent-light transition-colors text-sm shrink-0">
           <span>Buka Semua Tools</span>
@@ -389,7 +399,7 @@
 
       <div class="border-t border-red-100 dark:border-zinc-800/80 pt-8 mt-6">
         <div class="flex items-center justify-between mb-4">
-          <p class="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Rekomendasi Tool Hari Ini:</p>
+          <p class="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Featured Tool Pilihan:</p>
           <span class="text-[11px] bg-accent/10 text-accent font-medium px-3 py-1 rounded-full" x-text="tool.category"></span>
         </div>
         <div class="grid sm:grid-cols-1 gap-4">
@@ -421,30 +431,30 @@
       <div class="relative z-10">
         <p class="reveal text-xs font-medium text-accent tracking-widest uppercase mb-3">Kontak & Jaringan</p>
         <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-zinc-900 dark:text-white leading-tight mb-5">Explore. Learn. Share. Build. Secure.</h2>
-        <p class="reveal d2 text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl mb-10">Mau gabung, nanya-nanya, atau sekadar ngobrol santai seputar keamanan siber? Hubungi kita lewat tautan di bawah ini ya!</p>
+        <p class="reveal d2 text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl mb-10">Tertarik berkolaborasi atau berdiskusi seputar riset keamanan siber? Silakan hubungi saluran komunikasi resmi kami.</p>
 
         <div class="reveal d3 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <a href="mailto:ahmtbadali@gmail.com" class="icon-link glass-card glass-touch group rounded-2xl p-5 hover:border-accent/60 transition-all">
             <div class="text-2xl text-accent mb-3"><i class="fa-solid fa-envelope"></i></div>
-            <p class="text-xs text-zinc-500 mb-1">Email</p>
+            <p class="text-xs text-zinc-500 mb-1">Email Resmi</p>
             <p class="text-zinc-900 dark:text-white font-medium text-sm break-all">ahmtbadali@gmail.com</p>
           </a>
 
           <a href="https://github.com/ahmatbadali" target="_blank" rel="noopener noreferrer" class="icon-link glass-card glass-touch group rounded-2xl p-5 hover:border-accent/60 transition-all">
             <div class="text-2xl text-accent mb-3"><i class="fa-brands fa-github"></i></div>
-            <p class="text-xs text-zinc-500 mb-1">GitHub</p>
+            <p class="text-xs text-zinc-500 mb-1">GitHub Repository</p>
             <p class="text-zinc-900 dark:text-white font-medium">ahmatbadali</p>
           </a>
 
           <a href="https://ahmatbadali.github.io/tools/" target="_blank" rel="noopener noreferrer" class="icon-link glass-card glass-touch group rounded-2xl p-5 hover:border-accent/60 transition-all">
             <div class="text-2xl text-accent mb-3"><i class="fa-solid fa-toolbox"></i></div>
-            <p class="text-xs text-zinc-500 mb-1">Tools Center</p>
+            <p class="text-xs text-zinc-500 mb-1">Security Portal</p>
             <p class="text-zinc-900 dark:text-white font-medium">Cyberind Tools</p>
           </a>
 
           <a href="https://www.google.com/maps/search/?api=1&query=Kalimantan+Selatan+Indonesia" target="_blank" rel="noopener noreferrer" class="icon-link glass-card glass-touch group rounded-2xl p-5 hover:border-accent/60 transition-all">
             <div class="text-2xl text-accent mb-3"><i class="fa-solid fa-location-dot"></i></div>
-            <p class="text-xs text-zinc-500 mb-1">Lokasi</p>
+            <p class="text-xs text-zinc-500 mb-1">Basis Riset</p>
             <p class="text-zinc-900 dark:text-white font-medium text-sm">Kalimantan Selatan, ID</p>
           </a>
         </div>
@@ -457,56 +467,12 @@
 
 <footer class="border-t border-red-100 dark:border-zinc-900">
   <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-    <p class="text-sm text-zinc-500 dark:text-zinc-400">© <span id="yr"></span> Indonesian Cyber Team (Cyberind.id). Est. 2018.</p>
+    <p class="text-sm text-zinc-500 dark:text-zinc-400">© <span id="yr"></span> Indonesian Cyber Team (Cyberind.id). Est. 2018. All rights reserved.</p>
     <p class="text-xs text-accent font-medium">Explore. Learn. Share. Build. Secure.</p>
   </div>
 </footer>
 
 <script>
-// Skrip Animasi Terminal: Santai, Lambat seperti Terminal Asli yang Sedang Install
-const terminalLines = [
-  { text: "[*] Booting up Cyberind Core Engine (v2.6)...", color: "text-purple-300" },
-  { text: "[+] Menghubungkan ke repositori utama riset keamanan siber...", color: "text-blue-400" },
-  { text: "[+] Memuat modul penetration testing & ethical hacking tools...", color: "text-blue-400" },
-  { text: "[*] Menyiapkan ruang diskusi dan arsip edukasi open-source...", color: "text-amber-400" },
-  { text: "[SUCCESS] Sistem siap! Explore. Learn. Share. Build. Secure.", color: "text-emerald-400 font-semibold" }
-];
-
-function runTerminalAnimation() {
-  const container = document.getElementById('terminalOutput');
-  if (!container) return;
-
-  let index = 0;
-  function addNextLine() {
-    if (index < terminalLines.length) {
-      const lineData = terminalLines[index];
-      const p = document.createElement('p');
-      p.className = lineData.color;
-      container.appendChild(p);
-      
-      let charIndex = 0;
-      const textToType = lineData.text;
-      
-      // Durasi ketik per huruf dibuat santai (35ms)
-      const typingInterval = setInterval(() => {
-        if (charIndex < textToType.length) {
-          p.textContent += textToType.charAt(charIndex);
-          charIndex++;
-          // Auto scroll horizontal terminal ke kanan agar efek tenggelam memanjang terlihat
-          container.scrollLeft = container.scrollWidth;
-        } else {
-          clearInterval(typingInterval);
-          index++;
-          // Jeda antar baris agar terasa seperti instalasi asli
-          setTimeout(addNextLine, 600);
-        }
-      }, 35);
-    }
-  }
-
-  setTimeout(addNextLine, 500);
-}
-
 function randomTool() {
   const tools = [
     {
@@ -565,8 +531,6 @@ function app() {
       this.dark = localStorage.getItem('theme') === 'dark' ||
         (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
       this.$watch('dark', v => localStorage.setItem('theme', v ? 'dark' : 'light'));
-
-      runTerminalAnimation();
 
       const io = new IntersectionObserver(entries => {
         entries.forEach(e => {
