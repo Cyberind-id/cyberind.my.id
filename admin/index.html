@@ -6,129 +6,283 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Cyberind CMS — Admin</title>
+<title>Cyberind CMS — Admin</title>
 
-    <meta name="description"
-          content="Cyberind.id Content Management System">
+<meta name="description"
+      content="Cyberind.id Content Management System">
 
-    <link rel="icon"
-          href="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png">
+<link rel="icon"
+      href="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png">
 
-    <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Alpine -->
-    <script defer
-            src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script defer
+        src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=PT+Sans:wght@400;700&display=swap"
-          rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=PT+Sans:wght@400;700&display=swap"
+      rel="stylesheet">
 
 
-    <style>
+<style>
 
-        [x-cloak] {
-            display: none !important;
-        }
+[x-cloak] {
+    display:none !important;
+}
 
-        :root {
-            --accent: #ef4444;
-        }
+:root {
+    --accent:#ef4444;
+}
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-        }
+body {
+    font-family:'DM Sans',sans-serif;
+}
 
-        .font-pt {
-            font-family: 'PT Sans', sans-serif;
-        }
+.font-pt {
+    font-family:'PT Sans',sans-serif;
+}
 
-        .glass {
-            background: rgba(255,255,255,.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(0,0,0,.06);
-        }
+.glass {
+    background:rgba(255,255,255,.78);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid rgba(0,0,0,.06);
+}
 
-        .dark .glass {
-            background: rgba(15,15,15,.82);
-            border-color: rgba(255,255,255,.08);
-        }
+.dark .glass {
+    background:rgba(15,15,15,.82);
+    border-color:rgba(255,255,255,.08);
+}
 
-        .sidebar {
-            background: #080808;
-        }
+.sidebar {
+    background:#080808;
+}
 
-        .sidebar-item {
-            transition: all .2s ease;
-        }
+.sidebar-item {
+    transition:all .2s ease;
+}
 
-        .sidebar-item:hover {
-            background: rgba(255,255,255,.07);
-        }
+.sidebar-item:hover {
+    background:rgba(255,255,255,.07);
+}
 
-        .sidebar-item.active {
-            background: rgba(239,68,68,.12);
-            color: #ef4444;
-        }
+.sidebar-item.active {
+    background:rgba(239,68,68,.12);
+    color:#ef4444;
+}
 
-        .terminal {
-            background: #080808;
-            border: 1px solid rgba(255,255,255,.08);
-        }
+.terminal {
+    background:#080808;
+    border:1px solid rgba(255,255,255,.08);
+}
 
-        .loader {
-            width: 38px;
-            height: 38px;
-            border: 4px solid rgba(127,127,127,.2);
-            border-top-color: #ef4444;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+.stat-card {
+    transition:transform .2s ease;
+}
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+.stat-card:hover {
+    transform:translateY(-2px);
+}
 
-        textarea {
-            resize: vertical;
-        }
+.loader {
+    width:38px;
+    height:38px;
+    border:4px solid rgba(127,127,127,.2);
+    border-top-color:#ef4444;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
 
-        .editor {
-            min-height: 320px;
-        }
+@keyframes spin {
+    to {
+        transform:rotate(360deg);
+    }
+}
 
-        .stat-card {
-            transition: transform .2s ease;
-        }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
+/* =========================================================
+   VISUAL EDITOR
+========================================================= */
 
-    </style>
+.editor-toolbar {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px;
+    padding:8px;
+    border-bottom:1px solid rgba(127,127,127,.18);
+    background:rgba(127,127,127,.05);
+}
+
+.editor-btn {
+    width:38px;
+    height:36px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s;
+}
+
+.editor-btn:hover {
+    background:rgba(239,68,68,.12);
+    color:#ef4444;
+}
+
+.editor-select {
+    height:36px;
+    border-radius:8px;
+    padding:0 10px;
+    background:transparent;
+    border:1px solid rgba(127,127,127,.18);
+    outline:none;
+}
+
+.visual-editor {
+    min-height:420px;
+    padding:22px;
+    outline:none;
+    line-height:1.8;
+}
+
+.visual-editor:focus {
+    box-shadow:inset 0 0 0 2px rgba(239,68,68,.12);
+}
+
+.visual-editor h1,
+.preview-content h1 {
+    font-size:2rem;
+    font-weight:800;
+    margin:1.2em 0 .5em;
+}
+
+.visual-editor h2,
+.preview-content h2 {
+    font-size:1.6rem;
+    font-weight:800;
+    margin:1.2em 0 .5em;
+}
+
+.visual-editor h3,
+.preview-content h3 {
+    font-size:1.3rem;
+    font-weight:700;
+    margin:1.2em 0 .5em;
+}
+
+.visual-editor p,
+.preview-content p {
+    margin:0 0 1em;
+}
+
+.visual-editor ul,
+.preview-content ul {
+    list-style:disc;
+    padding-left:1.5rem;
+    margin:1em 0;
+}
+
+.visual-editor ol,
+.preview-content ol {
+    list-style:decimal;
+    padding-left:1.5rem;
+    margin:1em 0;
+}
+
+.visual-editor blockquote,
+.preview-content blockquote {
+    border-left:4px solid #ef4444;
+    padding:12px 18px;
+    margin:20px 0;
+    background:rgba(239,68,68,.06);
+    border-radius:0 10px 10px 0;
+}
+
+.visual-editor pre,
+.preview-content pre {
+    background:#080808;
+    color:#e5e7eb;
+    padding:18px;
+    border-radius:12px;
+    overflow:auto;
+    margin:20px 0;
+}
+
+.visual-editor img,
+.preview-content img {
+    max-width:100%;
+    height:auto;
+    border-radius:14px;
+    margin:20px 0;
+}
+
+.visual-editor a,
+.preview-content a {
+    color:#ef4444;
+    text-decoration:underline;
+}
+
+.visual-editor code,
+.preview-content code {
+    background:rgba(127,127,127,.12);
+    padding:2px 6px;
+    border-radius:5px;
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
+
+.upload-box {
+    border:2px dashed rgba(127,127,127,.25);
+    transition:.2s;
+}
+
+.upload-box:hover {
+    border-color:#ef4444;
+    background:rgba(239,68,68,.03);
+}
+
+.upload-box.dragging {
+    border-color:#ef4444;
+    background:rgba(239,68,68,.08);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+    width:8px;
+}
+
+::-webkit-scrollbar-track {
+    background:transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background:rgba(127,127,127,.3);
+    border-radius:20px;
+}
+
+</style>
 
 </head>
 
@@ -137,7 +291,7 @@
 
 
 <!-- =========================================================
-     LOGIN
+LOGIN
 ========================================================= -->
 
 <div
@@ -147,28 +301,26 @@
 
     <div class="w-full max-w-md">
 
-        <!-- Logo -->
-
         <div class="text-center mb-8">
 
             <img
                 src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
-                alt="Cyberind.id"
                 class="w-20 h-20 object-contain mx-auto mb-5">
 
             <h1 class="text-2xl font-bold">
-                Cyberind<span class="text-red-500">.id</span>
-                CMS
+
+                Cyberind<span class="text-red-500">.id</span> CMS
+
             </h1>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+
                 Content Management System
+
             </p>
 
         </div>
 
-
-        <!-- Login Card -->
 
         <div class="glass rounded-2xl p-7 shadow-xl">
 
@@ -185,11 +337,8 @@
             </div>
 
 
-            <!-- Error -->
-
             <div
                 x-show="loginError"
-                x-transition
                 class="mb-5 p-4 rounded-xl bg-red-500/10
                        border border-red-500/20
                        text-red-500 text-sm">
@@ -203,44 +352,25 @@
 
             <form @submit.prevent="login()">
 
-                <!-- Email -->
-
                 <div class="mb-5">
 
                     <label class="block text-sm font-semibold mb-2">
                         Email
                     </label>
 
-                    <div class="relative">
-
-                        <i
-                            class="fa-regular fa-envelope
-                                   absolute left-4 top-1/2
-                                   -translate-y-1/2
-                                   text-gray-400">
-                        </i>
-
-                        <input
-                            type="email"
-                            x-model="loginEmail"
-                            required
-                            autocomplete="email"
-                            placeholder="admin@example.com"
-                            class="w-full pl-11 pr-4 py-3
-                                   rounded-xl
-                                   border border-gray-200
-                                   dark:border-gray-700
-                                   bg-white dark:bg-gray-900
-                                   outline-none
-                                   focus:border-red-500
-                                   transition">
-
-                    </div>
+                    <input
+                        type="email"
+                        x-model="loginEmail"
+                        required
+                        autocomplete="email"
+                        placeholder="admin@example.com"
+                        class="w-full px-4 py-3 rounded-xl
+                               border border-gray-200 dark:border-gray-700
+                               bg-white dark:bg-gray-900
+                               outline-none focus:border-red-500">
 
                 </div>
 
-
-                <!-- Password -->
 
                 <div class="mb-6">
 
@@ -250,38 +380,25 @@
 
                     <div class="relative">
 
-                        <i
-                            class="fa-solid fa-lock
-                                   absolute left-4 top-1/2
-                                   -translate-y-1/2
-                                   text-gray-400">
-                        </i>
-
                         <input
                             :type="showPassword ? 'text' : 'password'"
                             x-model="loginPassword"
                             required
                             autocomplete="current-password"
                             placeholder="••••••••"
-                            class="w-full pl-11 pr-12 py-3
-                                   rounded-xl
-                                   border border-gray-200
-                                   dark:border-gray-700
+                            class="w-full px-4 py-3 pr-12 rounded-xl
+                                   border border-gray-200 dark:border-gray-700
                                    bg-white dark:bg-gray-900
-                                   outline-none
-                                   focus:border-red-500
-                                   transition">
+                                   outline-none focus:border-red-500">
 
                         <button
                             type="button"
-                            @click="showPassword = !showPassword"
-                            class="absolute right-4 top-1/2
-                                   -translate-y-1/2
-                                   text-gray-400">
+                            @click="showPassword=!showPassword"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
 
                             <i
                                 class="fa-solid"
-                                :class="showPassword ? 'fa-eye-slash' : 'fa-eye'">
+                                :class="showPassword?'fa-eye-slash':'fa-eye'">
                             </i>
 
                         </button>
@@ -291,19 +408,12 @@
                 </div>
 
 
-                <!-- Submit -->
-
                 <button
                     type="submit"
                     :disabled="loginLoading"
-                    class="w-full py-3.5
-                           rounded-xl
-                           bg-red-500
-                           hover:bg-red-600
-                           disabled:opacity-60
-                           text-white
-                           font-semibold
-                           transition">
+                    class="w-full py-3.5 rounded-xl bg-red-500
+                           hover:bg-red-600 disabled:opacity-60
+                           text-white font-semibold">
 
                     <span x-show="!loginLoading">
 
@@ -313,9 +423,7 @@
 
                     </span>
 
-                    <span
-                        x-show="loginLoading"
-                        x-cloak>
+                    <span x-show="loginLoading" x-cloak>
 
                         <i class="fa-solid fa-spinner fa-spin mr-2"></i>
 
@@ -329,14 +437,9 @@
 
 
             <div class="mt-6 pt-5 border-t
-                        border-gray-200
-                        dark:border-gray-800
-                        text-center">
+                        border-gray-200 dark:border-gray-800 text-center">
 
-                <a
-                    href="/"
-                    class="text-sm text-gray-500
-                           hover:text-red-500 transition">
+                <a href="/" class="text-sm text-gray-500 hover:text-red-500">
 
                     <i class="fa-solid fa-arrow-left mr-1"></i>
 
@@ -348,12 +451,8 @@
 
         </div>
 
-
-        <p class="text-center text-xs
-                  text-gray-400 mt-6">
-
+        <p class="text-center text-xs text-gray-400 mt-6">
             Cyberind.id CMS
-
         </p>
 
     </div>
@@ -363,7 +462,7 @@
 
 
 <!-- =========================================================
-     ADMIN APPLICATION
+ADMIN APP
 ========================================================= -->
 
 <div
@@ -372,2009 +471,1468 @@
     class="min-h-screen">
 
 
-    <!-- =====================================================
-         MOBILE HEADER
-    ====================================================== -->
+<!-- MOBILE HEADER -->
 
-    <header
-        class="lg:hidden fixed top-0 left-0 right-0
-               h-16 z-50
-               sidebar text-white
-               flex items-center justify-between
-               px-5">
+<header
+    class="lg:hidden fixed top-0 left-0 right-0 h-16 z-50
+           sidebar text-white flex items-center justify-between px-5">
 
-        <a href="/"
-           class="flex items-center gap-3">
+    <a href="/" class="flex items-center gap-3">
 
-            <img
-                src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
-                class="w-9 h-9 object-contain">
+        <img
+            src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+            class="w-9 h-9">
 
-            <span class="font-bold">
-                Cyberind<span class="text-red-500">.id</span>
-            </span>
+        <span class="font-bold">
+            Cyberind<span class="text-red-500">.id</span>
+        </span>
 
-        </a>
+    </a>
 
+    <button
+        @click="mobileSidebar=!mobileSidebar"
+        class="w-10 h-10">
+
+        <i
+            class="fa-solid"
+            :class="mobileSidebar?'fa-xmark':'fa-bars'">
+        </i>
+
+    </button>
+
+</header>
+
+
+
+<!-- SIDEBAR -->
+
+<aside
+    class="sidebar fixed top-0 bottom-0 left-0 w-64 z-40
+           text-white transform transition-transform duration-300
+           lg:translate-x-0"
+    :class="mobileSidebar?'translate-x-0':'-translate-x-full'">
+
+    <div class="h-full flex flex-col">
+
+        <div class="h-20 px-6 flex items-center border-b border-white/10">
+
+            <a href="/" class="flex items-center gap-3">
+
+                <img
+                    src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
+                    class="w-10 h-10">
+
+                <div>
+
+                    <div class="font-bold">
+                        Cyberind<span class="text-red-500">.id</span>
+                    </div>
+
+                    <div class="text-[9px] text-gray-500 tracking-wider">
+                        ADMIN CMS
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <div class="flex-1 px-4 py-6 overflow-y-auto">
+
+            <div class="text-[10px] uppercase tracking-widest
+                        text-gray-500 px-3 mb-3">
+                Main Menu
+            </div>
+
+
+            <button
+                @click="changePage('dashboard')"
+                class="sidebar-item w-full flex items-center gap-3
+                       px-3 py-3 rounded-xl mb-1"
+                :class="page==='dashboard'?'active':''">
+
+                <i class="fa-solid fa-chart-line w-5"></i>
+                <span>Dashboard</span>
+
+            </button>
+
+
+            <button
+                @click="changePage('articles')"
+                class="sidebar-item w-full flex items-center gap-3
+                       px-3 py-3 rounded-xl mb-1"
+                :class="page==='articles'?'active':''">
+
+                <i class="fa-regular fa-newspaper w-5"></i>
+                <span>Artikel</span>
+
+            </button>
+
+
+            <button
+                @click="newArticle()"
+                class="sidebar-item w-full flex items-center gap-3
+                       px-3 py-3 rounded-xl mb-1"
+                :class="page==='editor'?'active':''">
+
+                <i class="fa-solid fa-pen-to-square w-5"></i>
+                <span>Tulis Artikel</span>
+
+            </button>
+
+
+            <div class="text-[10px] uppercase tracking-widest
+                        text-gray-500 px-3 mt-8 mb-3">
+                Website
+            </div>
+
+
+            <a
+                href="/blog/"
+                target="_blank"
+                class="sidebar-item flex items-center gap-3
+                       px-3 py-3 rounded-xl mb-1">
+
+                <i class="fa-solid fa-book-open w-5"></i>
+
+                <span>Cyberind Journal</span>
+
+                <i class="fa-solid fa-arrow-up-right-from-square
+                          text-[10px] ml-auto text-gray-500">
+                </i>
+
+            </a>
+
+
+            <a
+                href="/"
+                target="_blank"
+                class="sidebar-item flex items-center gap-3
+                       px-3 py-3 rounded-xl">
+
+                <i class="fa-solid fa-globe w-5"></i>
+
+                <span>Website</span>
+
+                <i class="fa-solid fa-arrow-up-right-from-square
+                          text-[10px] ml-auto text-gray-500">
+                </i>
+
+            </a>
+
+        </div>
+
+
+        <div class="border-t border-white/10 p-4">
+
+            <button
+                @click="toggleTheme()"
+                class="sidebar-item w-full flex items-center gap-3
+                       px-3 py-3 rounded-xl mb-1">
+
+                <i
+                    class="fa-solid w-5"
+                    :class="dark?'fa-sun':'fa-moon'">
+                </i>
+
+                <span x-text="dark?'Light Mode':'Dark Mode'"></span>
+
+            </button>
+
+
+            <button
+                @click="logout()"
+                class="sidebar-item w-full flex items-center gap-3
+                       px-3 py-3 rounded-xl text-gray-300 hover:text-red-400">
+
+                <i class="fa-solid fa-right-from-bracket w-5"></i>
+
+                <span>Logout</span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<div
+    x-show="mobileSidebar"
+    x-cloak
+    @click="mobileSidebar=false"
+    class="fixed inset-0 z-30 bg-black/60 lg:hidden">
+</div>
+
+
+
+<!-- MAIN -->
+
+<main class="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
+
+
+<header
+    class="hidden lg:flex h-20 items-center justify-between px-8
+           border-b border-gray-200 dark:border-gray-800
+           bg-white dark:bg-[#080808]">
+
+    <div>
+
+        <h1 class="text-xl font-bold" x-text="pageTitle"></h1>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Kelola konten Cyberind Journal.
+        </p>
+
+    </div>
+
+
+    <div class="flex items-center gap-4">
 
         <button
-            @click="mobileSidebar = !mobileSidebar"
-            class="w-10 h-10">
+            @click="newArticle()"
+            class="px-4 py-2.5 rounded-xl bg-red-500
+                   hover:bg-red-600 text-white text-sm font-semibold">
 
-            <i
-                class="fa-solid"
-                :class="mobileSidebar ? 'fa-xmark' : 'fa-bars'">
-            </i>
+            <i class="fa-solid fa-plus mr-2"></i>
+            Artikel Baru
 
         </button>
 
-    </header>
 
+        <div class="flex items-center gap-3 pl-4
+                    border-l border-gray-200 dark:border-gray-800">
 
+            <div class="w-9 h-9 rounded-full bg-red-500/10
+                        text-red-500 flex items-center justify-center">
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-    <aside
-        class="sidebar fixed
-               top-0 bottom-0 left-0
-               w-64 z-40
-               text-white
-               transform transition-transform duration-300
-               lg:translate-x-0"
-        :class="mobileSidebar
-            ? 'translate-x-0'
-            : '-translate-x-full'">
-
-        <div class="h-full flex flex-col">
-
-
-            <!-- Logo -->
-
-            <div class="h-20 px-6
-                        flex items-center
-                        border-b border-white/10">
-
-                <a href="/"
-                   class="flex items-center gap-3">
-
-                    <img
-                        src="https://www.cyberind.my.id/assets/images/logo-cyberind.id.png"
-                        class="w-10 h-10 object-contain">
-
-                    <div>
-
-                        <div class="font-bold">
-
-                            Cyberind<span class="text-red-500">.id</span>
-
-                        </div>
-
-                        <div class="text-[9px]
-                                    text-gray-500
-                                    tracking-wider">
-
-                            ADMIN CMS
-
-                        </div>
-
-                    </div>
-
-                </a>
+                <i class="fa-solid fa-user"></i>
 
             </div>
 
+            <div class="text-sm">
 
+                <div class="font-semibold" x-text="userEmail"></div>
 
-            <!-- Navigation -->
-
-            <div class="flex-1 px-4 py-6 overflow-y-auto">
-
-                <div
-                    class="text-[10px] uppercase
-                           tracking-widest
-                           text-gray-500
-                           px-3 mb-3">
-
-                    Main Menu
-
+                <div class="text-xs text-gray-500">
+                    Administrator
                 </div>
-
-
-                <!-- Dashboard -->
-
-                <button
-                    @click="changePage('dashboard')"
-                    class="sidebar-item w-full
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1"
-                    :class="page === 'dashboard' ? 'active' : ''">
-
-                    <i class="fa-solid fa-chart-line w-5"></i>
-
-                    <span>Dashboard</span>
-
-                </button>
-
-
-                <!-- Articles -->
-
-                <button
-                    @click="changePage('articles')"
-                    class="sidebar-item w-full
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1"
-                    :class="page === 'articles' ? 'active' : ''">
-
-                    <i class="fa-regular fa-newspaper w-5"></i>
-
-                    <span>Artikel</span>
-
-                </button>
-
-
-                <!-- New Article -->
-
-                <button
-                    @click="newArticle()"
-                    class="sidebar-item w-full
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1"
-                    :class="page === 'editor' ? 'active' : ''">
-
-                    <i class="fa-solid fa-pen-to-square w-5"></i>
-
-                    <span>Tulis Artikel</span>
-
-                </button>
-
-
-                <div
-                    class="text-[10px] uppercase
-                           tracking-widest
-                           text-gray-500
-                           px-3 mt-8 mb-3">
-
-                    Website
-
-                </div>
-
-
-                <!-- Journal -->
-
-                <a
-                    href="/blog/"
-                    target="_blank"
-                    class="sidebar-item
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1">
-
-                    <i class="fa-solid fa-book-open w-5"></i>
-
-                    <span>Cyberind Journal</span>
-
-                    <i class="fa-solid fa-arrow-up-right-from-square
-                              text-[10px] ml-auto text-gray-500">
-                    </i>
-
-                </a>
-
-
-                <!-- Website -->
-
-                <a
-                    href="/"
-                    target="_blank"
-                    class="sidebar-item
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1">
-
-                    <i class="fa-solid fa-globe w-5"></i>
-
-                    <span>Website</span>
-
-                    <i class="fa-solid fa-arrow-up-right-from-square
-                              text-[10px] ml-auto text-gray-500">
-                    </i>
-
-                </a>
-
-            </div>
-
-
-
-            <!-- Bottom -->
-
-            <div
-                class="border-t border-white/10
-                       p-4">
-
-
-                <!-- Theme -->
-
-                <button
-                    @click="toggleTheme()"
-                    class="sidebar-item w-full
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl mb-1">
-
-                    <i
-                        class="fa-solid w-5"
-                        :class="dark ? 'fa-sun' : 'fa-moon'">
-                    </i>
-
-                    <span
-                        x-text="dark ? 'Light Mode' : 'Dark Mode'">
-                    </span>
-
-                </button>
-
-
-                <!-- Logout -->
-
-                <button
-                    @click="logout()"
-                    class="sidebar-item w-full
-                           flex items-center gap-3
-                           px-3 py-3 rounded-xl
-                           text-gray-300
-                           hover:text-red-400">
-
-                    <i class="fa-solid fa-right-from-bracket w-5"></i>
-
-                    <span>Logout</span>
-
-                </button>
 
             </div>
 
         </div>
 
-    </aside>
+    </div>
+
+</header>
 
 
 
-    <!-- Overlay mobile -->
+<div class="p-5 sm:p-7 lg:p-8">
 
-    <div
-        x-show="mobileSidebar"
-        x-cloak
-        @click="mobileSidebar = false"
-        class="fixed inset-0 z-30
-               bg-black/60 lg:hidden">
+
+<!-- =========================================================
+DASHBOARD
+========================================================= -->
+
+<section x-show="page==='dashboard'" x-cloak>
+
+    <div class="terminal rounded-2xl p-6 sm:p-8 text-white mb-7">
+
+        <div class="flex gap-2 mb-5">
+
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+
+        </div>
+
+        <div class="font-mono text-sm sm:text-base leading-8">
+
+            <div class="text-gray-500">
+                $ cyberind cms --status
+            </div>
+
+            <div class="text-green-400">
+                [OK] AUTHENTICATED
+            </div>
+
+            <div class="text-green-400">
+                [OK] DATABASE CONNECTED
+            </div>
+
+            <div class="text-gray-400">
+                > cyberind.my.id
+            </div>
+
+            <div class="text-red-400 font-bold mt-2">
+                ACCESS GRANTED
+            </div>
+
+        </div>
+
     </div>
 
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
 
-    <main class="lg:ml-64 pt-16 lg:pt-0 min-h-screen">
+        <div class="stat-card glass rounded-2xl p-6">
 
+            <p class="text-sm text-gray-500">
+                Total Artikel
+            </p>
 
-        <!-- =================================================
-             TOP BAR
-        ================================================== -->
+            <p class="text-3xl font-bold mt-2"
+               x-text="articles.length">
+            </p>
 
-        <header
-            class="hidden lg:flex h-20
-                   items-center justify-between
-                   px-8
-                   border-b
-                   border-gray-200
-                   dark:border-gray-800
-                   bg-white
-                   dark:bg-[#080808]">
+        </div>
 
-            <div>
 
-                <h1
-                    class="text-xl font-bold"
-                    x-text="pageTitle">
-                </h1>
+        <div class="stat-card glass rounded-2xl p-6">
 
-                <p
-                    class="text-sm text-gray-500
-                           dark:text-gray-400 mt-1">
+            <p class="text-sm text-gray-500">
+                Published
+            </p>
 
-                    Kelola konten Cyberind Journal.
+            <p class="text-3xl font-bold mt-2"
+               x-text="publishedCount">
+            </p>
 
-                </p>
+        </div>
 
-            </div>
 
+        <div class="stat-card glass rounded-2xl p-6">
 
-            <div class="flex items-center gap-4">
+            <p class="text-sm text-gray-500">
+                Draft
+            </p>
 
+            <p class="text-3xl font-bold mt-2"
+               x-text="draftCount">
+            </p>
 
-                <!-- New -->
+        </div>
 
-                <button
-                    @click="newArticle()"
-                    class="px-4 py-2.5
-                           rounded-xl
-                           bg-red-500
-                           hover:bg-red-600
-                           text-white
-                           text-sm
-                           font-semibold
-                           transition">
 
-                    <i class="fa-solid fa-plus mr-2"></i>
+        <div class="stat-card glass rounded-2xl p-6">
 
-                    Artikel Baru
+            <p class="text-sm text-gray-500">
+                Total Views
+            </p>
 
-                </button>
+            <p class="text-3xl font-bold mt-2"
+               x-text="formatNumber(totalViews)">
+            </p>
 
+        </div>
 
-                <!-- User -->
+    </div>
 
-                <div
-                    class="flex items-center gap-3
-                           pl-4
-                           border-l
-                           border-gray-200
-                           dark:border-gray-800">
 
-                    <div
-                        class="w-9 h-9
-                               rounded-full
-                               bg-red-500/10
-                               text-red-500
-                               flex items-center
-                               justify-center">
+    <div class="glass rounded-2xl overflow-hidden">
 
-                        <i class="fa-solid fa-user"></i>
+        <div class="p-6 border-b border-gray-200 dark:border-gray-800">
 
-                    </div>
+            <h2 class="font-bold text-lg">
+                Artikel Terbaru
+            </h2>
 
-                    <div class="text-sm">
+            <p class="text-sm text-gray-500 mt-1">
+                Lima artikel terakhir.
+            </p>
 
-                        <div
-                            class="font-semibold"
-                            x-text="userEmail">
-                        </div>
+        </div>
 
-                        <div
-                            class="text-xs
-                                   text-gray-500">
 
-                            Administrator
+        <div class="divide-y divide-gray-200 dark:divide-gray-800">
 
-                        </div>
+            <template x-for="article in recentArticles" :key="article.id">
 
-                    </div>
+                <div class="p-5 flex items-center gap-4">
 
-                </div>
+                    <div class="w-14 h-14 rounded-xl
+                                bg-gray-200 dark:bg-gray-800
+                                overflow-hidden shrink-0">
 
-            </div>
+                        <template x-if="article.featured_image">
 
-        </header>
+                            <img
+                                :src="article.featured_image"
+                                class="w-full h-full object-cover">
 
+                        </template>
 
+                        <template x-if="!article.featured_image">
 
-        <!-- =================================================
-             CONTENT
-        ================================================== -->
+                            <div class="w-full h-full flex items-center
+                                        justify-center text-gray-400">
 
-        <div class="p-5 sm:p-7 lg:p-8">
-
-
-            <!-- =============================================
-                 DASHBOARD
-            ============================================== -->
-
-            <section
-                x-show="page === 'dashboard'"
-                x-cloak>
-
-
-                <!-- Welcome Terminal -->
-
-                <div
-                    class="terminal rounded-2xl
-                           p-6 sm:p-8
-                           text-white mb-7">
-
-                    <div
-                        class="flex items-center gap-2
-                               mb-5">
-
-                        <span
-                            class="w-3 h-3 rounded-full
-                                   bg-red-500">
-                        </span>
-
-                        <span
-                            class="w-3 h-3 rounded-full
-                                   bg-yellow-500">
-                        </span>
-
-                        <span
-                            class="w-3 h-3 rounded-full
-                                   bg-green-500">
-                        </span>
-
-                    </div>
-
-                    <div
-                        class="font-mono
-                               text-sm sm:text-base
-                               leading-8">
-
-                        <div class="text-gray-500">
-                            $ cyberind cms --status
-                        </div>
-
-                        <div class="text-green-400">
-                            [OK] AUTHENTICATED
-                        </div>
-
-                        <div class="text-green-400">
-                            [OK] DATABASE CONNECTED
-                        </div>
-
-                        <div class="text-gray-400">
-                            > cyberind.my.id
-                        </div>
-
-                        <div class="text-red-400 font-bold mt-2">
-                            ACCESS GRANTED
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Stats -->
-
-                <div
-                    class="grid grid-cols-1
-                           sm:grid-cols-2
-                           xl:grid-cols-4
-                           gap-5 mb-8">
-
-
-                    <!-- Total -->
-
-                    <div
-                        class="stat-card glass
-                               rounded-2xl p-6">
-
-                        <div
-                            class="flex items-center
-                                   justify-between">
-
-                            <div>
-
-                                <p
-                                    class="text-sm
-                                           text-gray-500">
-
-                                    Total Artikel
-
-                                </p>
-
-                                <p
-                                    class="text-3xl
-                                           font-bold mt-2"
-                                    x-text="articles.length">
-                                </p>
-
-                            </div>
-
-                            <div
-                                class="w-12 h-12
-                                       rounded-xl
-                                       bg-red-500/10
-                                       text-red-500
-                                       flex items-center
-                                       justify-center">
-
-                                <i class="fa-regular fa-newspaper text-lg"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Published -->
-
-                    <div
-                        class="stat-card glass
-                               rounded-2xl p-6">
-
-                        <div
-                            class="flex items-center
-                                   justify-between">
-
-                            <div>
-
-                                <p
-                                    class="text-sm
-                                           text-gray-500">
-
-                                    Published
-
-                                </p>
-
-                                <p
-                                    class="text-3xl
-                                           font-bold mt-2"
-                                    x-text="publishedCount">
-                                </p>
-
-                            </div>
-
-                            <div
-                                class="w-12 h-12
-                                       rounded-xl
-                                       bg-green-500/10
-                                       text-green-500
-                                       flex items-center
-                                       justify-center">
-
-                                <i class="fa-solid fa-globe text-lg"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Draft -->
-
-                    <div
-                        class="stat-card glass
-                               rounded-2xl p-6">
-
-                        <div
-                            class="flex items-center
-                                   justify-between">
-
-                            <div>
-
-                                <p
-                                    class="text-sm
-                                           text-gray-500">
-
-                                    Draft
-
-                                </p>
-
-                                <p
-                                    class="text-3xl
-                                           font-bold mt-2"
-                                    x-text="draftCount">
-                                </p>
-
-                            </div>
-
-                            <div
-                                class="w-12 h-12
-                                       rounded-xl
-                                       bg-yellow-500/10
-                                       text-yellow-500
-                                       flex items-center
-                                       justify-center">
-
-                                <i class="fa-solid fa-file-pen text-lg"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Views -->
-
-                    <div
-                        class="stat-card glass
-                               rounded-2xl p-6">
-
-                        <div
-                            class="flex items-center
-                                   justify-between">
-
-                            <div>
-
-                                <p
-                                    class="text-sm
-                                           text-gray-500">
-
-                                    Total Views
-
-                                </p>
-
-                                <p
-                                    class="text-3xl
-                                           font-bold mt-2"
-                                    x-text="formatNumber(totalViews)">
-                                </p>
-
-                            </div>
-
-                            <div
-                                class="w-12 h-12
-                                       rounded-xl
-                                       bg-blue-500/10
-                                       text-blue-500
-                                       flex items-center
-                                       justify-center">
-
-                                <i class="fa-regular fa-eye text-lg"></i>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Recent Articles -->
-
-                <div
-                    class="glass rounded-2xl overflow-hidden">
-
-                    <div
-                        class="p-6
-                               border-b
-                               border-gray-200
-                               dark:border-gray-800
-                               flex items-center
-                               justify-between">
-
-                        <div>
-
-                            <h2 class="font-bold text-lg">
-                                Artikel Terbaru
-                            </h2>
-
-                            <p
-                                class="text-sm
-                                       text-gray-500
-                                       mt-1">
-
-                                Lima artikel terakhir.
-
-                            </p>
-
-                        </div>
-
-                        <button
-                            @click="changePage('articles')"
-                            class="text-sm
-                                   text-red-500
-                                   hover:text-red-600">
-
-                            Lihat semua
-
-                            <i class="fa-solid fa-arrow-right ml-1"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <div class="divide-y
-                                divide-gray-200
-                                dark:divide-gray-800">
-
-                        <template
-                            x-for="article in recentArticles"
-                            :key="article.id">
-
-                            <div
-                                class="p-5 sm:p-6
-                                       flex items-center
-                                       gap-4">
-
-                                <div
-                                    class="w-14 h-14
-                                           rounded-xl
-                                           bg-gray-200
-                                           dark:bg-gray-800
-                                           overflow-hidden
-                                           shrink-0">
-
-                                    <template
-                                        x-if="article.featured_image">
-
-                                        <img
-                                            :src="article.featured_image"
-                                            class="w-full h-full
-                                                   object-cover">
-
-                                    </template>
-
-                                    <template
-                                        x-if="!article.featured_image">
-
-                                        <div
-                                            class="w-full h-full
-                                                   flex items-center
-                                                   justify-center
-                                                   text-gray-400">
-
-                                            <i class="fa-regular fa-image"></i>
-
-                                        </div>
-
-                                    </template>
-
-                                </div>
-
-
-                                <div class="min-w-0 flex-1">
-
-                                    <h3
-                                        class="font-semibold
-                                               truncate"
-                                        x-text="article.title">
-                                    </h3>
-
-                                    <p
-                                        class="text-xs
-                                               text-gray-500
-                                               mt-1">
-
-                                        <span
-                                            x-text="formatDate(article.created_at)">
-                                        </span>
-
-                                        <span class="mx-1">•</span>
-
-                                        <span
-                                            x-text="article.author_name">
-                                        </span>
-
-                                    </p>
-
-                                </div>
-
-
-                                <span
-                                    class="px-2.5 py-1
-                                           rounded-full
-                                           text-xs font-semibold"
-                                    :class="article.status === 'published'
-                                        ? 'bg-green-500/10 text-green-500'
-                                        : 'bg-yellow-500/10 text-yellow-500'"
-                                    x-text="article.status === 'published'
-                                        ? 'Published'
-                                        : 'Draft'">
-                                </span>
+                                <i class="fa-regular fa-image"></i>
 
                             </div>
 
                         </template>
 
+                    </div>
 
-                        <div
-                            x-show="recentArticles.length === 0"
-                            class="p-10 text-center
-                                   text-gray-500">
 
-                            Belum ada artikel.
+                    <div class="flex-1 min-w-0">
 
+                        <div class="font-semibold truncate"
+                             x-text="article.title">
+                        </div>
+
+                        <div class="text-xs text-gray-500 mt-1"
+                             x-text="formatDate(article.created_at)">
                         </div>
 
                     </div>
+
+
+                    <span
+                        class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                        :class="article.status==='published'
+                            ?'bg-green-500/10 text-green-500'
+                            :'bg-yellow-500/10 text-yellow-500'"
+                        x-text="article.status==='published'
+                            ?'Published'
+                            :'Draft'">
+                    </span>
 
                 </div>
 
-            </section>
+            </template>
 
 
+            <div
+                x-show="recentArticles.length===0"
+                class="p-10 text-center text-gray-500">
 
-            <!-- =============================================
-                 ARTICLES
-            ============================================== -->
+                Belum ada artikel.
 
-            <section
-                x-show="page === 'articles'"
-                x-cloak>
+            </div>
 
+        </div>
 
-                <!-- Header -->
+    </div>
 
-                <div
-                    class="flex flex-col
-                           sm:flex-row
-                           sm:items-center
-                           justify-between
-                           gap-4 mb-6">
+</section>
 
-                    <div>
 
-                        <h2 class="text-2xl font-bold">
-                            Semua Artikel
-                        </h2>
 
-                        <p
-                            class="text-sm
-                                   text-gray-500
-                                   mt-1">
+<!-- =========================================================
+ARTICLES
+========================================================= -->
 
-                            Kelola artikel Cyberind Journal.
+<section x-show="page==='articles'" x-cloak>
 
-                        </p>
+    <div class="flex flex-col sm:flex-row sm:items-center
+                justify-between gap-4 mb-6">
 
-                    </div>
+        <div>
 
-                    <button
-                        @click="newArticle()"
-                        class="px-5 py-3
-                               rounded-xl
-                               bg-red-500
-                               text-white
-                               font-semibold
-                               hover:bg-red-600
-                               transition">
+            <h2 class="text-2xl font-bold">
+                Semua Artikel
+            </h2>
 
-                        <i class="fa-solid fa-plus mr-2"></i>
+            <p class="text-sm text-gray-500 mt-1">
+                Kelola artikel Cyberind Journal.
+            </p>
 
-                        Artikel Baru
+        </div>
 
-                    </button>
 
-                </div>
+        <button
+            @click="newArticle()"
+            class="px-5 py-3 rounded-xl bg-red-500
+                   text-white font-semibold hover:bg-red-600">
 
+            <i class="fa-solid fa-plus mr-2"></i>
 
+            Artikel Baru
 
-                <!-- Search / Filter -->
+        </button>
 
-                <div
-                    class="glass rounded-2xl p-4 mb-5
-                           flex flex-col
-                           md:flex-row
-                           gap-3">
+    </div>
 
-                    <div class="relative flex-1">
 
-                        <i
-                            class="fa-solid fa-magnifying-glass
-                                   absolute left-4 top-1/2
-                                   -translate-y-1/2
-                                   text-gray-400">
-                        </i>
+    <div class="glass rounded-2xl p-4 mb-5 flex flex-col md:flex-row gap-3">
 
-                        <input
-                            type="text"
-                            x-model="search"
-                            placeholder="Cari judul artikel..."
-                            class="w-full
-                                   pl-11 pr-4 py-3
-                                   rounded-xl
-                                   bg-gray-50
-                                   dark:bg-gray-900
-                                   border
-                                   border-gray-200
-                                   dark:border-gray-700
-                                   outline-none
-                                   focus:border-red-500">
+        <input
+            type="text"
+            x-model="search"
+            placeholder="Cari judul artikel..."
+            class="flex-1 px-4 py-3 rounded-xl
+                   bg-gray-50 dark:bg-gray-900
+                   border border-gray-200 dark:border-gray-700
+                   outline-none focus:border-red-500">
 
-                    </div>
 
+        <select
+            x-model="statusFilter"
+            class="px-4 py-3 rounded-xl
+                   bg-gray-50 dark:bg-gray-900
+                   border border-gray-200 dark:border-gray-700">
 
-                    <select
-                        x-model="statusFilter"
-                        class="px-4 py-3
-                               rounded-xl
-                               bg-gray-50
-                               dark:bg-gray-900
-                               border
-                               border-gray-200
-                               dark:border-gray-700
-                               outline-none">
+            <option value="all">
+                Semua Status
+            </option>
 
-                        <option value="all">
-                            Semua Status
-                        </option>
+            <option value="published">
+                Published
+            </option>
 
-                        <option value="published">
-                            Published
-                        </option>
+            <option value="draft">
+                Draft
+            </option>
 
-                        <option value="draft">
-                            Draft
-                        </option>
+        </select>
 
-                    </select>
+    </div>
 
-                </div>
 
+    <div class="glass rounded-2xl overflow-hidden">
 
+        <div class="overflow-x-auto">
 
-                <!-- Table -->
+            <table class="w-full text-sm">
 
-                <div
-                    class="glass rounded-2xl
-                           overflow-hidden">
+                <thead class="bg-gray-50 dark:bg-gray-900">
 
-                    <div class="overflow-x-auto">
+                    <tr>
 
-                        <table class="w-full text-sm">
+                        <th class="text-left px-6 py-4">
+                            Artikel
+                        </th>
 
-                            <thead
-                                class="bg-gray-50
-                                       dark:bg-gray-900
-                                       border-b
-                                       border-gray-200
-                                       dark:border-gray-800">
+                        <th class="text-left px-6 py-4">
+                            Status
+                        </th>
 
-                                <tr>
+                        <th class="text-left px-6 py-4">
+                            Views
+                        </th>
 
-                                    <th
-                                        class="text-left
-                                               px-6 py-4
-                                               font-semibold">
+                        <th class="text-right px-6 py-4">
+                            Aksi
+                        </th>
 
-                                        Artikel
+                    </tr>
 
-                                    </th>
+                </thead>
 
-                                    <th
-                                        class="text-left
-                                               px-6 py-4
-                                               font-semibold">
 
-                                        Status
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
 
-                                    </th>
+                    <template x-for="article in filteredArticles" :key="article.id">
 
-                                    <th
-                                        class="text-left
-                                               px-6 py-4
-                                               font-semibold">
+                        <tr>
 
-                                        Views
+                            <td class="px-6 py-4">
 
-                                    </th>
+                                <div class="flex items-center gap-4 min-w-[280px]">
 
-                                    <th
-                                        class="text-left
-                                               px-6 py-4
-                                               font-semibold">
+                                    <div class="w-12 h-12 rounded-xl
+                                                bg-gray-200 dark:bg-gray-800
+                                                overflow-hidden shrink-0">
 
-                                        Tanggal
+                                        <template x-if="article.featured_image">
 
-                                    </th>
+                                            <img
+                                                :src="article.featured_image"
+                                                class="w-full h-full object-cover">
 
-                                    <th
-                                        class="text-right
-                                               px-6 py-4
-                                               font-semibold">
-
-                                        Aksi
-
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody
-                                class="divide-y
-                                       divide-gray-200
-                                       dark:divide-gray-800">
-
-                                <template
-                                    x-for="article in filteredArticles"
-                                    :key="article.id">
-
-                                    <tr
-                                        class="hover:bg-gray-50
-                                               dark:hover:bg-gray-900/50
-                                               transition">
-
-                                        <!-- Article -->
-
-                                        <td class="px-6 py-4">
-
-                                            <div
-                                                class="flex items-center
-                                                       gap-4
-                                                       min-w-[280px]">
-
-                                                <div
-                                                    class="w-12 h-12
-                                                           rounded-xl
-                                                           bg-gray-200
-                                                           dark:bg-gray-800
-                                                           overflow-hidden
-                                                           shrink-0">
-
-                                                    <template
-                                                        x-if="article.featured_image">
-
-                                                        <img
-                                                            :src="article.featured_image"
-                                                            class="w-full h-full
-                                                                   object-cover">
-
-                                                    </template>
-
-                                                    <template
-                                                        x-if="!article.featured_image">
-
-                                                        <div
-                                                            class="w-full h-full
-                                                                   flex items-center
-                                                                   justify-center
-                                                                   text-gray-400">
-
-                                                            <i class="fa-regular fa-image"></i>
-
-                                                        </div>
-
-                                                    </template>
-
-                                                </div>
-
-
-                                                <div class="min-w-0">
-
-                                                    <div
-                                                        class="font-semibold
-                                                               truncate
-                                                               max-w-[380px]"
-                                                        x-text="article.title">
-                                                    </div>
-
-                                                    <div
-                                                        class="text-xs
-                                                               text-gray-500
-                                                               mt-1
-                                                               truncate
-                                                               max-w-[380px]"
-                                                        x-text="'/' + article.slug">
-                                                    </div>
-
-                                                </div>
-
-                                            </div>
-
-                                        </td>
-
-
-                                        <!-- Status -->
-
-                                        <td class="px-6 py-4">
-
-                                            <span
-                                                class="px-2.5 py-1
-                                                       rounded-full
-                                                       text-xs
-                                                       font-semibold"
-                                                :class="article.status === 'published'
-                                                    ? 'bg-green-500/10 text-green-500'
-                                                    : 'bg-yellow-500/10 text-yellow-500'"
-                                                x-text="article.status === 'published'
-                                                    ? 'Published'
-                                                    : 'Draft'">
-                                            </span>
-
-                                        </td>
-
-
-                                        <!-- Views -->
-
-                                        <td class="px-6 py-4">
-
-                                            <span
-                                                class="text-gray-500"
-                                                x-text="formatNumber(article.views || 0)">
-                                            </span>
-
-                                        </td>
-
-
-                                        <!-- Date -->
-
-                                        <td class="px-6 py-4 whitespace-nowrap">
-
-                                            <span
-                                                class="text-gray-500"
-                                                x-text="formatDate(article.created_at)">
-                                            </span>
-
-                                        </td>
-
-
-                                        <!-- Actions -->
-
-                                        <td class="px-6 py-4">
-
-                                            <div
-                                                class="flex items-center
-                                                       justify-end gap-2">
-
-                                                <!-- Preview -->
-
-                                                <a
-                                                    :href="'/blog/article.html?slug=' + encodeURIComponent(article.slug)"
-                                                    target="_blank"
-                                                    class="w-9 h-9
-                                                           rounded-lg
-                                                           bg-gray-100
-                                                           dark:bg-gray-800
-                                                           flex items-center
-                                                           justify-center
-                                                           hover:text-red-500
-                                                           transition"
-                                                    title="Preview">
-
-                                                    <i class="fa-regular fa-eye"></i>
-
-                                                </a>
-
-
-                                                <!-- Edit -->
-
-                                                <button
-                                                    @click="editArticle(article)"
-                                                    class="w-9 h-9
-                                                           rounded-lg
-                                                           bg-gray-100
-                                                           dark:bg-gray-800
-                                                           flex items-center
-                                                           justify-center
-                                                           hover:text-blue-500
-                                                           transition"
-                                                    title="Edit">
-
-                                                    <i class="fa-solid fa-pen"></i>
-
-                                                </button>
-
-
-                                                <!-- Delete -->
-
-                                                <button
-                                                    @click="deleteArticle(article)"
-                                                    class="w-9 h-9
-                                                           rounded-lg
-                                                           bg-gray-100
-                                                           dark:bg-gray-800
-                                                           flex items-center
-                                                           justify-center
-                                                           hover:text-red-500
-                                                           transition"
-                                                    title="Hapus">
-
-                                                    <i class="fa-solid fa-trash"></i>
-
-                                                </button>
-
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                </template>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    <!-- Empty -->
-
-                    <div
-                        x-show="filteredArticles.length === 0"
-                        class="p-14 text-center">
-
-                        <div
-                            class="w-16 h-16
-                                   rounded-2xl
-                                   bg-gray-100
-                                   dark:bg-gray-900
-                                   flex items-center
-                                   justify-center
-                                   mx-auto mb-5">
-
-                            <i
-                                class="fa-regular fa-newspaper
-                                       text-2xl
-                                       text-gray-400">
-                            </i>
-
-                        </div>
-
-                        <h3 class="font-semibold">
-                            Tidak ada artikel
-                        </h3>
-
-                        <p
-                            class="text-sm
-                                   text-gray-500
-                                   mt-1">
-
-                            Belum ada artikel yang sesuai.
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- =============================================
-                 EDITOR
-            ============================================== -->
-
-            <section
-                x-show="page === 'editor'"
-                x-cloak>
-
-
-                <!-- Header -->
-
-                <div
-                    class="flex flex-col
-                           sm:flex-row
-                           sm:items-center
-                           justify-between
-                           gap-4 mb-6">
-
-                    <div>
-
-                        <button
-                            @click="changePage('articles')"
-                            class="text-sm
-                                   text-gray-500
-                                   hover:text-red-500
-                                   mb-3">
-
-                            <i class="fa-solid fa-arrow-left mr-1"></i>
-
-                            Kembali ke Artikel
-
-                        </button>
-
-                        <h2
-                            class="text-2xl font-bold"
-                            x-text="editing
-                                ? 'Edit Artikel'
-                                : 'Tulis Artikel'">
-                        </h2>
-
-                    </div>
-
-
-                    <div class="flex gap-3">
-
-                        <button
-                            @click="previewCurrent()"
-                            class="px-4 py-3
-                                   rounded-xl
-                                   border
-                                   border-gray-200
-                                   dark:border-gray-700
-                                   hover:border-red-500
-                                   hover:text-red-500
-                                   transition">
-
-                            <i class="fa-regular fa-eye mr-2"></i>
-
-                            Preview
-
-                        </button>
-
-                        <button
-                            @click="saveArticle()"
-                            :disabled="saving"
-                            class="px-5 py-3
-                                   rounded-xl
-                                   bg-red-500
-                                   text-white
-                                   font-semibold
-                                   hover:bg-red-600
-                                   disabled:opacity-60
-                                   transition">
-
-                            <span x-show="!saving">
-
-                                <i class="fa-solid fa-floppy-disk mr-2"></i>
-
-                                Simpan
-
-                            </span>
-
-                            <span
-                                x-show="saving"
-                                x-cloak>
-
-                                <i class="fa-solid fa-spinner fa-spin mr-2"></i>
-
-                                Menyimpan...
-
-                            </span>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- Editor Layout -->
-
-                <div
-                    class="grid grid-cols-1
-                           xl:grid-cols-3
-                           gap-6">
-
-
-                    <!-- Main -->
-
-                    <div class="xl:col-span-2 space-y-6">
-
-
-                        <!-- Title -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Judul Artikel
-
-                            </label>
-
-                            <input
-                                type="text"
-                                x-model="form.title"
-                                @input="generateSlug()"
-                                placeholder="Masukkan judul artikel..."
-                                class="w-full
-                                       text-xl sm:text-2xl
-                                       font-bold
-                                       px-4 py-4
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                        </div>
-
-
-
-                        <!-- Slug -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Slug / URL
-
-                            </label>
-
-                            <div class="flex">
-
-                                <span
-                                    class="hidden sm:flex
-                                           items-center
-                                           px-4
-                                           rounded-l-xl
-                                           bg-gray-100
-                                           dark:bg-gray-800
-                                           text-gray-500
-                                           text-sm">
-
-                                    /blog/article.html?slug=
-
-                                </span>
-
-                                <input
-                                    type="text"
-                                    x-model="form.slug"
-                                    class="w-full
-                                           px-4 py-3
-                                           rounded-xl sm:rounded-l-none
-                                           sm:rounded-r-xl
-                                           bg-gray-50
-                                           dark:bg-gray-900
-                                           border
-                                           border-gray-200
-                                           dark:border-gray-700
-                                           outline-none
-                                           focus:border-red-500">
-
-                            </div>
-
-                            <p
-                                class="text-xs
-                                       text-gray-500
-                                       mt-2">
-
-                                Slug digunakan sebagai URL artikel.
-
-                            </p>
-
-                        </div>
-
-
-
-                        <!-- Excerpt -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Ringkasan / Excerpt
-
-                            </label>
-
-                            <textarea
-                                x-model="form.excerpt"
-                                rows="4"
-                                placeholder="Tuliskan ringkasan singkat artikel..."
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-                            </textarea>
-
-                        </div>
-
-
-
-                        <!-- Content -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <div
-                                class="flex items-center
-                                       justify-between
-                                       mb-3">
-
-                                <label
-                                    class="text-sm
-                                           font-semibold">
-
-                                    Isi Artikel
-
-                                </label>
-
-                                <span
-                                    class="text-xs
-                                           text-gray-500">
-
-                                    HTML Editor
-
-                                </span>
-
-                            </div>
-
-                            <textarea
-                                x-model="form.content"
-                                class="editor w-full
-                                       px-4 py-4
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500
-                                       font-mono text-sm"
-                                placeholder="<h2>Judul</h2><p>Isi artikel...</p>">
-                            </textarea>
-
-                            <p
-                                class="text-xs
-                                       text-gray-500
-                                       mt-3">
-
-                                Gunakan HTML sederhana seperti
-                                <code>&lt;h2&gt;</code>,
-                                <code>&lt;p&gt;</code>,
-                                <code>&lt;ul&gt;</code>,
-                                <code>&lt;img&gt;</code>,
-                                dan <code>&lt;pre&gt;</code>.
-
-                            </p>
-
-                        </div>
-
-
-
-                        <!-- Featured Image -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Featured Image URL
-
-                            </label>
-
-                            <input
-                                type="url"
-                                x-model="form.featured_image"
-                                placeholder="https://..."
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                            <template
-                                x-if="form.featured_image">
-
-                                <img
-                                    :src="form.featured_image"
-                                    class="mt-4
-                                           w-full
-                                           max-h-80
-                                           object-cover
-                                           rounded-xl"
-                                    @error="$event.target.style.display='none'">
-
-                            </template>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- Sidebar -->
-
-                    <div class="space-y-6">
-
-
-                        <!-- Publish -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <h3 class="font-bold mb-5">
-                                Publikasi
-                            </h3>
-
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Status
-
-                            </label>
-
-                            <select
-                                x-model="form.status"
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                                <option value="draft">
-                                    Draft
-                                </option>
-
-                                <option value="published">
-                                    Published
-                                </option>
-
-                            </select>
-
-
-                            <div
-                                class="mt-5
-                                       p-4
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900">
-
-                                <div
-                                    class="flex items-center
-                                           gap-3">
-
-                                    <div
-                                        class="w-9 h-9
-                                               rounded-lg
-                                               flex items-center
-                                               justify-center"
-                                        :class="form.status === 'published'
-                                            ? 'bg-green-500/10 text-green-500'
-                                            : 'bg-yellow-500/10 text-yellow-500'">
-
-                                        <i
-                                            class="fa-solid"
-                                            :class="form.status === 'published'
-                                                ? 'fa-globe'
-                                                : 'fa-file-pen'">
-                                        </i>
+                                        </template>
 
                                     </div>
 
-                                    <div>
+
+                                    <div class="min-w-0">
 
                                         <div
-                                            class="text-sm
-                                                   font-semibold"
-                                            x-text="form.status === 'published'
-                                                ? 'Artikel Published'
-                                                : 'Artikel Draft'">
+                                            class="font-semibold truncate max-w-[380px]"
+                                            x-text="article.title">
                                         </div>
 
                                         <div
-                                            class="text-xs
-                                                   text-gray-500">
-
-                                            <span
-                                                x-show="form.status === 'published'">
-
-                                                Akan tampil di Journal.
-
-                                            </span>
-
-                                            <span
-                                                x-show="form.status === 'draft'">
-
-                                                Tidak tampil untuk publik.
-
-                                            </span>
-
+                                            class="text-xs text-gray-500 mt-1 truncate max-w-[380px]"
+                                            x-text="'/' + article.slug">
                                         </div>
 
                                     </div>
 
                                 </div>
 
-                            </div>
-
-                        </div>
+                            </td>
 
 
-
-                        <!-- Category -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <h3 class="font-bold mb-5">
-                                Kategori
-                            </h3>
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                Pilih Kategori
-
-                            </label>
-
-                            <select
-                                x-model="form.category_id"
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                                <option value="">
-                                    Tanpa Kategori
-                                </option>
-
-                                <template
-                                    x-for="category in categories"
-                                    :key="category.id">
-
-                                    <option
-                                        :value="category.id"
-                                        x-text="category.name">
-                                    </option>
-
-                                </template>
-
-                            </select>
-
-                        </div>
-
-
-
-                        <!-- Author -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <h3 class="font-bold mb-5">
-                                Penulis
-                            </h3>
-
-                            <input
-                                type="text"
-                                x-model="form.author_name"
-                                placeholder="Cyberind.id"
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                        </div>
-
-
-
-                        <!-- SEO -->
-
-                        <div
-                            class="glass rounded-2xl p-6">
-
-                            <h3 class="font-bold mb-2">
-                                SEO
-                            </h3>
-
-                            <p
-                                class="text-xs
-                                       text-gray-500
-                                       mb-5">
-
-                                Optimalkan artikel untuk mesin pencari.
-
-                            </p>
-
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mb-2">
-
-                                SEO Title
-
-                            </label>
-
-                            <input
-                                type="text"
-                                x-model="form.seo_title"
-                                maxlength="70"
-                                placeholder="Judul SEO..."
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-
-                            <div
-                                class="text-xs
-                                       text-gray-400
-                                       text-right
-                                       mt-1">
+                            <td class="px-6 py-4">
 
                                 <span
-                                    x-text="(form.seo_title || '').length">
-                                </span>/70
+                                    class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                                    :class="article.status==='published'
+                                        ?'bg-green-500/10 text-green-500'
+                                        :'bg-yellow-500/10 text-yellow-500'"
+                                    x-text="article.status==='published'
+                                        ?'Published'
+                                        :'Draft'">
+                                </span>
 
-                            </div>
-
-
-                            <label
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       mt-4 mb-2">
-
-                                SEO Description
-
-                            </label>
-
-                            <textarea
-                                x-model="form.seo_description"
-                                maxlength="160"
-                                rows="4"
-                                placeholder="Deskripsi SEO..."
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       bg-gray-50
-                                       dark:bg-gray-900
-                                       border
-                                       border-gray-200
-                                       dark:border-gray-700
-                                       outline-none
-                                       focus:border-red-500">
-                            </textarea>
-
-                            <div
-                                class="text-xs
-                                       text-gray-400
-                                       text-right
-                                       mt-1">
-
-                                <span
-                                    x-text="(form.seo_description || '').length">
-                                </span>/160
-
-                            </div>
-
-                        </div>
+                            </td>
 
 
+                            <td class="px-6 py-4"
+                                x-text="formatNumber(article.views)">
+                            </td>
 
-                        <!-- Danger -->
 
-                        <div
-                            x-show="editing"
-                            class="glass rounded-2xl p-6
-                                   border border-red-500/20">
+                            <td class="px-6 py-4">
 
-                            <h3
-                                class="font-bold
-                                       text-red-500
-                                       mb-2">
+                                <div class="flex justify-end gap-2">
 
-                                Zona Berbahaya
+                                    <a
+                                        :href="'/blog/article.html?slug='+encodeURIComponent(article.slug)"
+                                        target="_blank"
+                                        class="w-9 h-9 rounded-lg bg-gray-100
+                                               dark:bg-gray-800 flex items-center
+                                               justify-center hover:text-red-500">
 
-                            </h3>
+                                        <i class="fa-regular fa-eye"></i>
 
-                            <p
-                                class="text-xs
-                                       text-gray-500
-                                       mb-4">
+                                    </a>
 
-                                Menghapus artikel tidak dapat
-                                dibatalkan.
 
-                            </p>
+                                    <button
+                                        @click="editArticle(article)"
+                                        class="w-9 h-9 rounded-lg bg-gray-100
+                                               dark:bg-gray-800 hover:text-blue-500">
 
-                            <button
-                                @click="deleteArticle(form)"
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-xl
-                                       border
-                                       border-red-500/30
-                                       text-red-500
-                                       hover:bg-red-500
-                                       hover:text-white
-                                       transition">
+                                        <i class="fa-solid fa-pen"></i>
 
-                                <i class="fa-solid fa-trash mr-2"></i>
+                                    </button>
 
-                                Hapus Artikel
 
-                            </button>
+                                    <button
+                                        @click="deleteArticle(article)"
+                                        class="w-9 h-9 rounded-lg bg-gray-100
+                                               dark:bg-gray-800 hover:text-red-500">
 
-                        </div>
+                                        <i class="fa-solid fa-trash"></i>
 
-                    </div>
+                                    </button>
 
-                </div>
+                                </div>
 
-            </section>
+                            </td>
+
+                        </tr>
+
+                    </template>
+
+                </tbody>
+
+            </table>
 
         </div>
 
-    </main>
+
+        <div
+            x-show="filteredArticles.length===0"
+            class="p-14 text-center text-gray-500">
+
+            Tidak ada artikel.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+EDITOR
+========================================================= -->
+
+<section x-show="page==='editor'" x-cloak>
+
+
+<div class="flex flex-col sm:flex-row sm:items-center
+            justify-between gap-4 mb-6">
+
+    <div>
+
+        <button
+            @click="changePage('articles')"
+            class="text-sm text-gray-500 hover:text-red-500 mb-3">
+
+            <i class="fa-solid fa-arrow-left mr-1"></i>
+
+            Kembali ke Artikel
+
+        </button>
+
+
+        <h2
+            class="text-2xl font-bold"
+            x-text="editing?'Edit Artikel':'Tulis Artikel'">
+        </h2>
+
+    </div>
+
+
+    <div class="flex gap-3">
+
+        <button
+            @click="previewCurrent()"
+            class="px-4 py-3 rounded-xl border
+                   border-gray-200 dark:border-gray-700
+                   hover:border-red-500 hover:text-red-500">
+
+            <i class="fa-regular fa-eye mr-2"></i>
+
+            Preview
+
+        </button>
+
+
+        <button
+            @click="saveArticle()"
+            :disabled="saving"
+            class="px-5 py-3 rounded-xl bg-red-500
+                   text-white font-semibold
+                   hover:bg-red-600 disabled:opacity-60">
+
+            <span x-show="!saving">
+
+                <i class="fa-solid fa-floppy-disk mr-2"></i>
+
+                Simpan
+
+            </span>
+
+            <span x-show="saving" x-cloak>
+
+                <i class="fa-solid fa-spinner fa-spin mr-2"></i>
+
+                Menyimpan...
+
+            </span>
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+
+<!-- MAIN EDITOR -->
+
+<div class="xl:col-span-2 space-y-6">
+
+
+<!-- TITLE -->
+
+<div class="glass rounded-2xl p-6">
+
+    <label class="block text-sm font-semibold mb-2">
+        Judul Artikel
+    </label>
+
+    <input
+        type="text"
+        x-model="form.title"
+        @input="generateSlug()"
+        placeholder="Masukkan judul artikel..."
+        class="w-full text-xl sm:text-2xl font-bold
+               px-4 py-4 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700
+               outline-none focus:border-red-500">
+
+</div>
+
+
+
+<!-- SLUG -->
+
+<div class="glass rounded-2xl p-6">
+
+    <label class="block text-sm font-semibold mb-2">
+        Slug / URL
+    </label>
+
+    <div class="flex">
+
+        <span class="hidden sm:flex items-center px-4
+                     rounded-l-xl bg-gray-100 dark:bg-gray-800
+                     text-gray-500 text-sm">
+
+            /blog/article.html?slug=
+
+        </span>
+
+        <input
+            type="text"
+            x-model="form.slug"
+            class="w-full px-4 py-3 rounded-xl sm:rounded-l-none
+                   sm:rounded-r-xl
+                   bg-gray-50 dark:bg-gray-900
+                   border border-gray-200 dark:border-gray-700
+                   outline-none focus:border-red-500">
+
+    </div>
+
+</div>
+
+
+
+<!-- EXCERPT -->
+
+<div class="glass rounded-2xl p-6">
+
+    <label class="block text-sm font-semibold mb-2">
+        Ringkasan / Excerpt
+    </label>
+
+    <textarea
+        x-model="form.excerpt"
+        rows="4"
+        placeholder="Ringkasan singkat artikel..."
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700
+               outline-none focus:border-red-500">
+    </textarea>
+
+</div>
+
+
+
+<!-- VISUAL EDITOR -->
+
+<div class="glass rounded-2xl overflow-hidden">
+
+    <div class="p-6 pb-0">
+
+        <div class="flex items-center justify-between mb-3">
+
+            <label class="text-sm font-semibold">
+                Isi Artikel
+            </label>
+
+            <span class="text-xs text-green-500">
+                Visual Editor
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOOLBAR -->
+
+    <div class="editor-toolbar">
+
+        <select
+            class="editor-select"
+            @change="formatBlock($event.target.value);$event.target.value=''">
+
+            <option value="">
+                Format
+            </option>
+
+            <option value="p">
+                Paragraph
+            </option>
+
+            <option value="h2">
+                Heading 2
+            </option>
+
+            <option value="h3">
+                Heading 3
+            </option>
+
+        </select>
+
+
+        <button
+            type="button"
+            @click="exec('bold')"
+            class="editor-btn"
+            title="Bold">
+
+            <i class="fa-solid fa-bold"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('italic')"
+            class="editor-btn"
+            title="Italic">
+
+            <i class="fa-solid fa-italic"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('underline')"
+            class="editor-btn"
+            title="Underline">
+
+            <i class="fa-solid fa-underline"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('insertUnorderedList')"
+            class="editor-btn"
+            title="Bullet List">
+
+            <i class="fa-solid fa-list-ul"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('insertOrderedList')"
+            class="editor-btn"
+            title="Numbered List">
+
+            <i class="fa-solid fa-list-ol"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="createLink()"
+            class="editor-btn"
+            title="Link">
+
+            <i class="fa-solid fa-link"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('formatBlock','blockquote')"
+            class="editor-btn"
+            title="Blockquote">
+
+            <i class="fa-solid fa-quote-left"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="insertCodeBlock()"
+            class="editor-btn"
+            title="Code">
+
+            <i class="fa-solid fa-code"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="insertImageFromUpload()"
+            class="editor-btn"
+            title="Masukkan Gambar">
+
+            <i class="fa-regular fa-image"></i>
+
+        </button>
+
+
+        <button
+            type="button"
+            @click="exec('removeFormat')"
+            class="editor-btn"
+            title="Clear Format">
+
+            <i class="fa-solid fa-eraser"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- CONTENTEDITABLE -->
+
+    <div
+        id="visualEditor"
+        contenteditable="true"
+        class="visual-editor bg-white dark:bg-gray-950"
+        @input="syncEditor()"
+        @blur="syncEditor()"
+        @click="saveSelection()"
+        @keyup="saveSelection()"
+        @mouseup="saveSelection()"
+        data-placeholder="Mulai menulis artikel...">
+
+    </div>
+
+
+    <div class="px-6 pb-5">
+
+        <p class="text-xs text-gray-500">
+
+            Tulis artikel secara visual seperti editor WordPress.
+            Gambar dapat dimasukkan langsung dari Supabase Storage.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- IMAGE UPLOAD -->
+
+<div class="glass rounded-2xl p-6">
+
+    <div class="flex items-center justify-between mb-4">
+
+        <div>
+
+            <h3 class="font-bold">
+                Media
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+                Upload gambar ke Supabase Storage.
+            </p>
+
+        </div>
+
+        <i class="fa-regular fa-images text-red-500 text-xl"></i>
+
+    </div>
+
+
+    <input
+        id="contentImageInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleContentImage($event)">
+
+
+    <label
+        for="contentImageInput"
+        class="upload-box rounded-2xl p-8
+               flex flex-col items-center justify-center
+               cursor-pointer text-center">
+
+        <div
+            class="w-14 h-14 rounded-2xl
+                   bg-red-500/10 text-red-500
+                   flex items-center justify-center mb-4">
+
+            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+
+        </div>
+
+        <div class="font-semibold">
+            Upload Gambar
+        </div>
+
+        <div class="text-xs text-gray-500 mt-1">
+            JPG, PNG, WEBP — maksimal 5 MB
+        </div>
+
+        <div
+            x-show="uploading"
+            class="text-xs text-red-500 mt-3">
+
+            <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+
+            Mengupload...
+
+        </div>
+
+    </label>
+
+</div>
+
+
+
+<!-- FEATURED IMAGE -->
+
+<div class="glass rounded-2xl p-6">
+
+    <div class="flex items-center justify-between mb-4">
+
+        <div>
+
+            <h3 class="font-bold">
+                Featured Image
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+                Gambar utama artikel.
+            </p>
+
+        </div>
+
+        <i class="fa-regular fa-image text-red-500"></i>
+
+    </div>
+
+
+    <input
+        id="featuredImageInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleFeaturedImage($event)">
+
+
+    <label
+        for="featuredImageInput"
+        class="upload-box rounded-xl p-6
+               flex items-center justify-center
+               cursor-pointer">
+
+        <template x-if="!form.featured_image">
+
+            <div class="text-center">
+
+                <i class="fa-solid fa-plus text-red-500 text-xl"></i>
+
+                <div class="text-sm font-semibold mt-2">
+                    Pilih Featured Image
+                </div>
+
+            </div>
+
+        </template>
+
+
+        <template x-if="form.featured_image">
+
+            <img
+                :src="form.featured_image"
+                class="max-h-72 w-full object-cover rounded-xl">
+
+        </template>
+
+    </label>
+
+</div>
+
+</div>
+
+
+
+<!-- SIDEBAR -->
+
+<div class="space-y-6">
+
+
+<!-- PUBLISH -->
+
+<div class="glass rounded-2xl p-6">
+
+    <h3 class="font-bold mb-5">
+        Publikasi
+    </h3>
+
+
+    <label class="block text-sm font-semibold mb-2">
+        Status
+    </label>
+
+    <select
+        x-model="form.status"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+
+        <option value="draft">
+            Draft
+        </option>
+
+        <option value="published">
+            Published
+        </option>
+
+    </select>
+
+
+    <div class="mt-5 p-4 rounded-xl bg-gray-50 dark:bg-gray-900">
+
+        <div class="flex gap-3">
+
+            <div
+                class="w-9 h-9 rounded-lg flex items-center justify-center"
+                :class="form.status==='published'
+                    ?'bg-green-500/10 text-green-500'
+                    :'bg-yellow-500/10 text-yellow-500'">
+
+                <i
+                    class="fa-solid"
+                    :class="form.status==='published'
+                        ?'fa-globe'
+                        :'fa-file-pen'">
+                </i>
+
+            </div>
+
+
+            <div>
+
+                <div
+                    class="text-sm font-semibold"
+                    x-text="form.status==='published'
+                        ?'Artikel Published'
+                        :'Artikel Draft'">
+                </div>
+
+                <div class="text-xs text-gray-500">
+
+                    <span x-show="form.status==='published'">
+                        Akan tampil di Journal.
+                    </span>
+
+                    <span x-show="form.status==='draft'">
+                        Tidak tampil untuk publik.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- CATEGORY -->
+
+<div class="glass rounded-2xl p-6">
+
+    <h3 class="font-bold mb-5">
+        Kategori
+    </h3>
+
+    <select
+        x-model="form.category_id"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+
+        <option value="">
+            Tanpa Kategori
+        </option>
+
+        <template x-for="category in categories" :key="category.id">
+
+            <option
+                :value="category.id"
+                x-text="category.name">
+            </option>
+
+        </template>
+
+    </select>
+
+</div>
+
+
+
+<!-- TAGS -->
+
+<div class="glass rounded-2xl p-6">
+
+    <h3 class="font-bold mb-2">
+        Tags
+    </h3>
+
+    <p class="text-xs text-gray-500 mb-4">
+        Pisahkan dengan koma.
+    </p>
+
+    <input
+        type="text"
+        x-model="form.tags"
+        placeholder="XSS, Web Security, Pentest"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+
+</div>
+
+
+
+<!-- AUTHOR -->
+
+<div class="glass rounded-2xl p-6">
+
+    <h3 class="font-bold mb-5">
+        Penulis
+    </h3>
+
+    <input
+        type="text"
+        x-model="form.author_name"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+
+</div>
+
+
+
+<!-- SEO -->
+
+<div class="glass rounded-2xl p-6">
+
+    <h3 class="font-bold mb-2">
+        SEO
+    </h3>
+
+    <p class="text-xs text-gray-500 mb-5">
+        Optimalkan artikel untuk mesin pencari.
+    </p>
+
+
+    <label class="block text-sm font-semibold mb-2">
+        SEO Title
+    </label>
+
+    <input
+        type="text"
+        x-model="form.seo_title"
+        maxlength="70"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+
+    <div class="text-xs text-gray-400 text-right mt-1">
+
+        <span x-text="(form.seo_title||'').length"></span>/70
+
+    </div>
+
+
+    <label class="block text-sm font-semibold mt-4 mb-2">
+        SEO Description
+    </label>
+
+    <textarea
+        x-model="form.seo_description"
+        maxlength="160"
+        rows="4"
+        class="w-full px-4 py-3 rounded-xl
+               bg-gray-50 dark:bg-gray-900
+               border border-gray-200 dark:border-gray-700">
+    </textarea>
+
+    <div class="text-xs text-gray-400 text-right mt-1">
+
+        <span x-text="(form.seo_description||'').length"></span>/160
+
+    </div>
+
+</div>
+
+
+
+<!-- DELETE -->
+
+<div
+    x-show="editing"
+    class="glass rounded-2xl p-6 border border-red-500/20">
+
+    <h3 class="font-bold text-red-500 mb-2">
+        Zona Berbahaya
+    </h3>
+
+    <p class="text-xs text-gray-500 mb-4">
+        Menghapus artikel tidak dapat dibatalkan.
+    </p>
+
+    <button
+        @click="deleteArticle(form)"
+        class="w-full px-4 py-3 rounded-xl
+               border border-red-500/30 text-red-500
+               hover:bg-red-500 hover:text-white">
+
+        <i class="fa-solid fa-trash mr-2"></i>
+
+        Hapus Artikel
+
+    </button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
 
 </div>
 
 
 
 <!-- =========================================================
-     TOAST
+TOAST
 ========================================================= -->
 
 <div
     x-show="toast.show"
     x-cloak
-    x-transition
-    class="fixed
-           bottom-5 right-5
-           z-[100]
-           max-w-sm">
+    class="fixed bottom-5 right-5 z-[100] max-w-sm">
 
-    <div
-        class="glass rounded-xl
-               shadow-2xl
-               px-5 py-4
-               flex items-start
-               gap-3">
+    <div class="glass rounded-xl shadow-2xl px-5 py-4 flex gap-3">
 
         <div
-            class="w-9 h-9
-                   rounded-lg
-                   flex items-center
-                   justify-center"
-            :class="toast.type === 'success'
-                ? 'bg-green-500/10 text-green-500'
-                : 'bg-red-500/10 text-red-500'">
+            class="w-9 h-9 rounded-lg flex items-center justify-center"
+            :class="toast.type==='success'
+                ?'bg-green-500/10 text-green-500'
+                :'bg-red-500/10 text-red-500'">
 
             <i
                 class="fa-solid"
-                :class="toast.type === 'success'
-                    ? 'fa-check'
-                    : 'fa-circle-exclamation'">
+                :class="toast.type==='success'
+                    ?'fa-check'
+                    :'fa-circle-exclamation'">
             </i>
 
         </div>
 
-        <div class="flex-1">
+        <div>
 
             <div
                 class="font-semibold text-sm"
@@ -2382,21 +1940,11 @@
             </div>
 
             <div
-                class="text-xs
-                       text-gray-500
-                       mt-1"
+                class="text-xs text-gray-500 mt-1"
                 x-text="toast.message">
             </div>
 
         </div>
-
-        <button
-            @click="toast.show = false"
-            class="text-gray-400">
-
-            <i class="fa-solid fa-xmark"></i>
-
-        </button>
 
     </div>
 
@@ -2405,24 +1953,21 @@
 
 
 <!-- =========================================================
-     JAVASCRIPT
+JAVASCRIPT
 ========================================================= -->
 
 <script>
 
 
-/*
-==============================================================
+/* =========================================================
 SUPABASE
-==============================================================
-*/
+========================================================= */
 
 const SUPABASE_URL =
     'https://lwolwingtzqdfsqoopra.supabase.co';
 
 const SUPABASE_KEY =
     'sb_publishable_w8vzcXhO42RrHSopV8Gi9A_ecg6m_0A';
-
 
 const supabaseClient =
     window.supabase.createClient(
@@ -2431,1237 +1976,1650 @@ const supabaseClient =
     );
 
 
-
-/*
-==============================================================
+/* =========================================================
 ADMIN APP
-==============================================================
-*/
+========================================================= */
 
 function adminApp() {
 
-    return {
-
-        /* =====================================================
-           AUTH
-        ===================================================== */
-
-        session: null,
-
-        userEmail: '',
-
-        loginEmail: '',
-
-        loginPassword: '',
-
-        loginLoading: false,
-
-        loginError: '',
-
-        showPassword: false,
+return {
 
 
-        /* =====================================================
-           UI
-        ===================================================== */
+/* AUTH */
 
-        dark: false,
+session:null,
 
-        mobileSidebar: false,
+userEmail:'',
 
-        page: 'dashboard',
+loginEmail:'',
 
-        search: '',
+loginPassword:'',
 
-        statusFilter: 'all',
+loginLoading:false,
 
+loginError:'',
 
-        /* =====================================================
-           DATA
-        ===================================================== */
-
-        articles: [],
-
-        categories: [],
+showPassword:false,
 
 
-        /* =====================================================
-           EDITOR
-        ===================================================== */
+/* UI */
 
-        editing: false,
+dark:false,
 
-        editingId: null,
+mobileSidebar:false,
 
-        saving: false,
+page:'dashboard',
 
+search:'',
 
-        form: {
-
-            title: '',
-
-            slug: '',
-
-            excerpt: '',
-
-            content: '',
-
-            featured_image: '',
-
-            category_id: '',
-
-            author_name: 'Cyberind.id',
-
-            status: 'draft',
-
-            seo_title: '',
-
-            seo_description: ''
-
-        },
+statusFilter:'all',
 
 
-        /* =====================================================
-           TOAST
-        ===================================================== */
+/* DATA */
 
-        toast: {
+articles:[],
 
-            show: false,
-
-            type: 'success',
-
-            title: '',
-
-            message: ''
-
-        },
+categories:[],
 
 
-        /* =====================================================
-           INIT
-        ===================================================== */
+/* EDITOR */
 
-        async init() {
+editing:false,
 
-            this.loadTheme();
+editingId:null,
 
+saving:false,
 
-            const {
-                data
-            } =
-                await supabaseClient
-                    .auth
-                    .getSession();
+uploading:false,
+
+savedSelection:null,
 
 
-            this.session =
-                data.session;
+form:{
+
+    title:'',
+
+    slug:'',
+
+    excerpt:'',
+
+    content:'',
+
+    featured_image:'',
+
+    category_id:'',
+
+    tags:'',
+
+    author_name:'Cyberind.id',
+
+    status:'draft',
+
+    seo_title:'',
+
+    seo_description:''
+
+},
 
 
-            if (this.session) {
+/* TOAST */
 
-                await this.afterLogin();
+toast:{
+
+    show:false,
+
+    type:'success',
+
+    title:'',
+
+    message:''
+
+},
+
+
+/* =========================================================
+INIT
+========================================================= */
+
+async init(){
+
+    this.loadTheme();
+
+    const {
+        data
+    } =
+    await supabaseClient.auth.getSession();
+
+    this.session=data.session;
+
+    if(this.session){
+
+        await this.afterLogin();
+
+    }
+
+    supabaseClient.auth.onAuthStateChange(
+        async(event,session)=>{
+
+            this.session=session;
+
+            if(session){
+
+                this.userEmail=
+                    session.user.email||'';
 
             }
 
+        }
+    );
 
-            supabaseClient
-                .auth
-                .onAuthStateChange(
-                    async (event, session) => {
+},
 
-                        this.session =
-                            session;
 
+/* =========================================================
+LOGIN
+========================================================= */
 
-                        if (session) {
+async login(){
 
-                            this.userEmail =
-                                session.user.email || '';
+    this.loginError='';
 
-                        }
+    this.loginLoading=true;
 
-                    }
-                );
+    try{
 
-        },
+        const {
+            data,
+            error
+        } =
+        await supabaseClient.auth.signInWithPassword({
 
+            email:this.loginEmail.trim(),
 
-        /* =====================================================
-           LOGIN
-        ===================================================== */
+            password:this.loginPassword
 
-        async login() {
+        });
 
-            this.loginError = '';
+        if(error) throw error;
 
-            this.loginLoading = true;
+        this.session=data.session;
 
+        await this.afterLogin();
 
-            try {
+    }
+    catch(error){
 
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-                        .auth
-                        .signInWithPassword({
+        console.error(error);
 
-                            email:
-                                this.loginEmail.trim(),
+        this.loginError=
+            this.translateAuthError(error.message);
 
-                            password:
-                                this.loginPassword
+    }
+    finally{
 
-                        });
+        this.loginLoading=false;
 
+    }
 
-                if (error) {
+},
 
-                    throw error;
 
-                }
+/* =========================================================
+AFTER LOGIN
+========================================================= */
 
+async afterLogin(){
 
-                this.session =
-                    data.session;
+    if(!this.session)return;
 
+    this.userEmail=
+        this.session.user.email||'';
 
-                await this.afterLogin();
+    const {
+        data:admin,
+        error
+    } =
+    await supabaseClient
+        .from('admin_users')
+        .select('user_id')
+        .eq(
+            'user_id',
+            this.session.user.id
+        )
+        .maybeSingle();
 
-            }
+    if(error){
 
-            catch (error) {
+        console.error(error);
 
-                console.error(error);
+        await supabaseClient.auth.signOut();
 
+        this.session=null;
 
-                this.loginError =
-                    this.translateAuthError(
-                        error.message
-                    );
+        this.loginError=
+            'Tidak dapat memverifikasi akses admin.';
 
-            }
+        return;
 
-            finally {
+    }
 
-                this.loginLoading = false;
+    if(!admin){
 
-            }
+        await supabaseClient.auth.signOut();
 
-        },
+        this.session=null;
 
+        this.loginError=
+            'Akun berhasil login tetapi tidak memiliki akses admin.';
 
-        /* =====================================================
-           AFTER LOGIN
-        ===================================================== */
+        return;
 
-        async afterLogin() {
+    }
 
-            if (!this.session) {
+    await this.loadData();
 
-                return;
+},
 
-            }
 
+/* =========================================================
+LOGOUT
+========================================================= */
 
-            this.userEmail =
-                this.session.user.email || '';
+async logout(){
 
+    await supabaseClient.auth.signOut();
 
-            /*
-            Check admin_users
-            */
+    this.session=null;
 
-            const {
-                data: admin,
-                error
-            } =
-                await supabaseClient
+    this.articles=[];
 
-                    .from('admin_users')
+    this.page='dashboard';
 
-                    .select('user_id')
+},
 
-                    .eq(
-                        'user_id',
-                        this.session.user.id
-                    )
 
-                    .maybeSingle();
+/* =========================================================
+LOAD DATA
+========================================================= */
 
+async loadData(){
 
-            if (error || !admin) {
+    await Promise.all([
 
-                await supabaseClient
-                    .auth
-                    .signOut();
+        this.loadArticles(),
 
+        this.loadCategories()
 
-                this.session = null;
+    ]);
 
-                this.loginError =
-                    'Akun berhasil login tetapi tidak memiliki akses admin.';
+},
 
-                return;
 
-            }
+/* =========================================================
+LOAD ARTICLES
+========================================================= */
 
+async loadArticles(){
 
-            await this.loadData();
-
-        },
-
-
-        /* =====================================================
-           LOGOUT
-        ===================================================== */
-
-        async logout() {
-
-            await supabaseClient
-                .auth
-                .signOut();
-
-
-            this.session = null;
-
-            this.page = 'dashboard';
-
-            this.articles = [];
-
-        },
-
-
-        /* =====================================================
-           LOAD DATA
-        ===================================================== */
-
-        async loadData() {
-
-            await Promise.all([
-
-                this.loadArticles(),
-
-                this.loadCategories()
-
-            ]);
-
-        },
-
-
-        /* =====================================================
-           LOAD ARTICLES
-        ===================================================== */
-
-        async loadArticles() {
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient
-
-                    .from('articles')
-
-                    .select(`
-                        id,
-                        title,
-                        slug,
-                        excerpt,
-                        content,
-                        featured_image,
-                        category_id,
-                        author_name,
-                        status,
-                        seo_title,
-                        seo_description,
-                        views,
-                        published_at,
-                        created_at,
-                        updated_at,
-                        categories (
-                            id,
-                            name,
-                            slug
-                        )
-                    `)
-
-                    .order(
-                        'created_at',
-                        {
-                            ascending: false
-                        }
-                    );
-
-
-            if (error) {
-
-                console.error(error);
-
-                this.showToast(
-                    'error',
-                    'Gagal',
-                    error.message
-                );
-
-                return;
-
-            }
-
-
-            this.articles =
-                data || [];
-
-        },
-
-
-        /* =====================================================
-           LOAD CATEGORIES
-        ===================================================== */
-
-        async loadCategories() {
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient
-
-                    .from('categories')
-
-                    .select(`
-                        id,
-                        name,
-                        slug
-                    `)
-
-                    .order(
-                        'name',
-                        {
-                            ascending: true
-                        }
-                    );
-
-
-            if (error) {
-
-                console.error(error);
-
-                return;
-
-            }
-
-
-            this.categories =
-                data || [];
-
-        },
-
-
-        /* =====================================================
-           COUNTERS
-        ===================================================== */
-
-        get publishedCount() {
-
-            return this.articles.filter(
-                article =>
-                    article.status === 'published'
-            ).length;
-
-        },
-
-
-        get draftCount() {
-
-            return this.articles.filter(
-                article =>
-                    article.status === 'draft'
-            ).length;
-
-        },
-
-
-        get totalViews() {
-
-            return this.articles.reduce(
-                (total, article) =>
-                    total +
-                    Number(article.views || 0),
-                0
-            );
-
-        },
-
-
-        get recentArticles() {
-
-            return this.articles.slice(
-                0,
-                5
-            );
-
-        },
-
-
-        /* =====================================================
-           FILTER
-        ===================================================== */
-
-        get filteredArticles() {
-
-            const search =
-                this.search
-                    .trim()
-                    .toLowerCase();
-
-
-            return this.articles.filter(
-                article => {
-
-                    const matchesSearch =
-                        !search ||
-                        article.title
-                            .toLowerCase()
-                            .includes(search) ||
-                        article.slug
-                            .toLowerCase()
-                            .includes(search);
-
-
-                    const matchesStatus =
-                        this.statusFilter === 'all' ||
-                        article.status ===
-                            this.statusFilter;
-
-
-                    return (
-                        matchesSearch &&
-                        matchesStatus
-                    );
-
-                }
-            );
-
-        },
-
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        get pageTitle() {
-
-            if (this.page === 'articles') {
-
-                return 'Artikel';
-
-            }
-
-            if (this.page === 'editor') {
-
-                return this.editing
-                    ? 'Edit Artikel'
-                    : 'Tulis Artikel';
-
-            }
-
-            return 'Dashboard';
-
-        },
-
-
-        changePage(page) {
-
-            this.page = page;
-
-            this.mobileSidebar = false;
-
-        },
-
-
-        /* =====================================================
-           NEW ARTICLE
-        ===================================================== */
-
-        newArticle() {
-
-            this.editing = false;
-
-            this.editingId = null;
-
-
-            this.form = {
-
-                title: '',
-
-                slug: '',
-
-                excerpt: '',
-
-                content:
-                    '<h2>Judul Section</h2><p>Tulis isi artikel di sini...</p>',
-
-                featured_image: '',
-
-                category_id: '',
-
-                author_name: 'Cyberind.id',
-
-                status: 'draft',
-
-                seo_title: '',
-
-                seo_description: ''
-
-            };
-
-
-            this.page = 'editor';
-
-            this.mobileSidebar = false;
-
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-
-        },
-
-
-        /* =====================================================
-           EDIT ARTICLE
-        ===================================================== */
-
-        editArticle(article) {
-
-            this.editing = true;
-
-            this.editingId =
-                article.id;
-
-
-            this.form = {
-
-                title:
-                    article.title || '',
-
-                slug:
-                    article.slug || '',
-
-                excerpt:
-                    article.excerpt || '',
-
-                content:
-                    article.content || '',
-
-                featured_image:
-                    article.featured_image || '',
-
-                category_id:
-                    article.category_id || '',
-
-                author_name:
-                    article.author_name ||
-                    'Cyberind.id',
-
-                status:
-                    article.status || 'draft',
-
-                seo_title:
-                    article.seo_title || '',
-
-                seo_description:
-                    article.seo_description || ''
-
-            };
-
-
-            this.page = 'editor';
-
-            this.mobileSidebar = false;
-
-
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-
-        },
-
-
-        /* =====================================================
-           SLUG
-        ===================================================== */
-
-        generateSlug() {
-
-            if (this.editing) {
-
-                return;
-
-            }
-
-
-            this.form.slug =
-                this.slugify(
-                    this.form.title
-                );
-
-        },
-
-
-        slugify(text) {
-
-            return String(text || '')
-
-                .toLowerCase()
-
-                .trim()
-
-                .replace(
-                    /[^\w\s-]/g,
-                    ''
-                )
-
-                .replace(
-                    /[\s_-]+/g,
-                    '-'
-                )
-
-                .replace(
-                    /^-+|-+$/g,
-                    ''
-                );
-
-        },
-
-
-        /* =====================================================
-           SAVE
-        ===================================================== */
-
-        async saveArticle() {
-
-            if (!this.form.title.trim()) {
-
-                this.showToast(
-                    'error',
-                    'Judul kosong',
-                    'Masukkan judul artikel.'
-                );
-
-                return;
-
-            }
-
-
-            if (!this.form.slug.trim()) {
-
-                this.form.slug =
-                    this.slugify(
-                        this.form.title
-                    );
-
-            }
-
-
-            if (!this.form.content.trim()) {
-
-                this.showToast(
-                    'error',
-                    'Isi artikel kosong',
-                    'Masukkan isi artikel.'
-                );
-
-                return;
-
-            }
-
-
-            this.saving = true;
-
-
-            try {
-
-                const payload = {
-
-                    title:
-                        this.form.title.trim(),
-
-                    slug:
-                        this.form.slug.trim(),
-
-                    excerpt:
-                        this.form.excerpt.trim() ||
-                        null,
-
-                    content:
-                        this.form.content,
-
-                    featured_image:
-                        this.form.featured_image.trim() ||
-                        null,
-
-                    category_id:
-                        this.form.category_id ||
-                        null,
-
-                    author_name:
-                        this.form.author_name.trim() ||
-                        'Cyberind.id',
-
-                    status:
-                        this.form.status,
-
-                    seo_title:
-                        this.form.seo_title.trim() ||
-                        null,
-
-                    seo_description:
-                        this.form.seo_description.trim() ||
-                        null,
-
-                    updated_at:
-                        new Date().toISOString()
-
-                };
-
-
-                /*
-                Publish date
-                */
-
-                if (
-                    this.form.status ===
-                    'published'
-                ) {
-
-                    payload.published_at =
-                        new Date().toISOString();
-
-                }
-
-
-                let result;
-
-
-                if (this.editing) {
-
-                    result =
-                        await supabaseClient
-
-                            .from('articles')
-
-                            .update(payload)
-
-                            .eq(
-                                'id',
-                                this.editingId
-                            )
-
-                            .select()
-
-                            .single();
-
-                }
-
-                else {
-
-                    result =
-                        await supabaseClient
-
-                            .from('articles')
-
-                            .insert(payload)
-
-                            .select()
-
-                            .single();
-
-                }
-
-
-                if (result.error) {
-
-                    throw result.error;
-
-                }
-
-
-                await this.loadArticles();
-
-
-                this.showToast(
-                    'success',
-                    'Berhasil',
-                    this.editing
-                        ? 'Artikel berhasil diperbarui.'
-                        : 'Artikel berhasil dibuat.'
-                );
-
-
-                /*
-                If new article,
-                switch to edit mode
-                */
-
-                if (!this.editing) {
-
-                    this.editing = true;
-
-                    this.editingId =
-                        result.data.id;
-
-                }
-
-            }
-
-            catch (error) {
-
-                console.error(error);
-
-
-                let message =
-                    error.message;
-
-
-                if (
-                    message &&
-                    message.toLowerCase()
-                        .includes('duplicate')
-                ) {
-
-                    message =
-                        'Slug tersebut sudah digunakan. Gunakan slug lain.';
-
-                }
-
-
-                this.showToast(
-                    'error',
-                    'Gagal menyimpan',
-                    message
-                );
-
-            }
-
-            finally {
-
-                this.saving = false;
-
-            }
-
-        },
-
-
-        /* =====================================================
-           DELETE
-        ===================================================== */
-
-        async deleteArticle(article) {
-
-            if (!article || !article.id) {
-
-                return;
-
-            }
-
-
-            const confirmed =
-                confirm(
-                    `Hapus artikel "${article.title}"?\n\nTindakan ini tidak dapat dibatalkan.`
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient
-
-                    .from('articles')
-
-                    .delete()
-
-                    .eq(
-                        'id',
-                        article.id
-                    );
-
-
-            if (error) {
-
-                console.error(error);
-
-                this.showToast(
-                    'error',
-                    'Gagal menghapus',
-                    error.message
-                );
-
-                return;
-
-            }
-
-
-            await this.loadArticles();
-
-
-            this.showToast(
-                'success',
-                'Berhasil',
-                'Artikel berhasil dihapus.'
-            );
-
-
-            if (
-                this.editing &&
-                this.editingId === article.id
-            ) {
-
-                this.changePage(
-                    'articles'
-                );
-
-            }
-
-        },
-
-
-        /* =====================================================
-           PREVIEW
-        ===================================================== */
-
-        previewCurrent() {
-
-            if (!this.form.slug) {
-
-                this.showToast(
-                    'error',
-                    'Slug belum ada',
-                    'Masukkan judul terlebih dahulu.'
-                );
-
-                return;
-
-            }
-
-
-            const url =
-                '/blog/article.html?slug=' +
-                encodeURIComponent(
-                    this.form.slug
-                );
-
-
-            window.open(
-                url,
-                '_blank'
-            );
-
-        },
-
-
-        /* =====================================================
-           DATE
-        ===================================================== */
-
-        formatDate(date) {
-
-            if (!date) {
-
-                return '-';
-
-            }
-
-
-            try {
-
-                return new Intl.DateTimeFormat(
-                    'id-ID',
-                    {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                    }
-                ).format(
-                    new Date(date)
-                );
-
-            }
-
-            catch {
-
-                return date;
-
-            }
-
-        },
-
-
-        /* =====================================================
-           NUMBER
-        ===================================================== */
-
-        formatNumber(number) {
-
-            return new Intl.NumberFormat(
-                'id-ID'
-            ).format(
-                Number(number || 0)
-            );
-
-        },
-
-
-        /* =====================================================
-           THEME
-        ===================================================== */
-
-        loadTheme() {
-
-            const saved =
-                localStorage.getItem(
-                    'cyberind-theme'
-                );
-
-
-            if (saved) {
-
-                this.dark =
-                    saved === 'dark';
-
-            }
-
-            else {
-
-                this.dark =
-                    window.matchMedia(
-                        '(prefers-color-scheme: dark)'
-                    ).matches;
-
-            }
-
-        },
-
-
-        toggleTheme() {
-
-            this.dark =
-                !this.dark;
-
-
-            localStorage.setItem(
-                'cyberind-theme',
-                this.dark
-                    ? 'dark'
-                    : 'light'
-            );
-
-        },
-
-
-        /* =====================================================
-           TOAST
-        ===================================================== */
-
-        showToast(
-            type,
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from('articles')
+        .select(`
+            id,
             title,
-            message
-        ) {
+            slug,
+            excerpt,
+            content,
+            featured_image,
+            category_id,
+            author_name,
+            status,
+            seo_title,
+            seo_description,
+            views,
+            published_at,
+            created_at,
+            updated_at,
+            categories (
+                id,
+                name,
+                slug
+            )
+        `)
+        .order(
+            'created_at',
+            {ascending:false}
+        );
 
-            this.toast = {
+    if(error){
 
-                show: true,
+        console.error(error);
 
-                type,
+        this.showToast(
+            'error',
+            'Gagal',
+            error.message
+        );
 
-                title,
+        return;
 
-                message
+    }
 
-            };
+    this.articles=data||[];
+
+},
 
 
-            setTimeout(
-                () => {
+/* =========================================================
+LOAD CATEGORIES
+========================================================= */
 
-                    this.toast.show =
-                        false;
+async loadCategories(){
 
-                },
-                4000
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from('categories')
+        .select(`
+            id,
+            name,
+            slug
+        `)
+        .order(
+            'name',
+            {ascending:true}
+        );
+
+    if(error){
+
+        console.error(error);
+
+        return;
+
+    }
+
+    this.categories=data||[];
+
+},
+
+
+/* =========================================================
+COUNTERS
+========================================================= */
+
+get publishedCount(){
+
+    return this.articles.filter(
+        a=>a.status==='published'
+    ).length;
+
+},
+
+get draftCount(){
+
+    return this.articles.filter(
+        a=>a.status==='draft'
+    ).length;
+
+},
+
+get totalViews(){
+
+    return this.articles.reduce(
+        (total,a)=>
+            total+Number(a.views||0),
+        0
+    );
+
+},
+
+get recentArticles(){
+
+    return this.articles.slice(0,5);
+
+},
+
+
+/* =========================================================
+FILTER
+========================================================= */
+
+get filteredArticles(){
+
+    const search=
+        this.search.trim().toLowerCase();
+
+    return this.articles.filter(article=>{
+
+        const matchesSearch=
+            !search||
+            article.title.toLowerCase().includes(search)||
+            article.slug.toLowerCase().includes(search);
+
+        const matchesStatus=
+            this.statusFilter==='all'||
+            article.status===this.statusFilter;
+
+        return matchesSearch&&matchesStatus;
+
+    });
+
+},
+
+
+/* =========================================================
+PAGE
+========================================================= */
+
+get pageTitle(){
+
+    if(this.page==='articles')
+        return'Artikel';
+
+    if(this.page==='editor')
+        return this.editing
+            ?'Edit Artikel'
+            :'Tulis Artikel';
+
+    return'Dashboard';
+
+},
+
+
+changePage(page){
+
+    this.page=page;
+
+    this.mobileSidebar=false;
+
+},
+
+
+/* =========================================================
+NEW ARTICLE
+========================================================= */
+
+newArticle(){
+
+    this.editing=false;
+
+    this.editingId=null;
+
+    this.form={
+
+        title:'',
+
+        slug:'',
+
+        excerpt:'',
+
+        content:
+            '<p>Mulai menulis artikel di sini...</p>',
+
+        featured_image:'',
+
+        category_id:'',
+
+        tags:'',
+
+        author_name:'Cyberind.id',
+
+        status:'draft',
+
+        seo_title:'',
+
+        seo_description:''
+
+    };
+
+    this.page='editor';
+
+    this.mobileSidebar=false;
+
+    this.$nextTick(()=>{
+
+        const editor=
+            document.getElementById(
+                'visualEditor'
             );
 
-        },
+        if(editor){
 
-
-        /* =====================================================
-           AUTH ERROR
-        ===================================================== */
-
-        translateAuthError(message) {
-
-            if (!message) {
-
-                return 'Login gagal.';
-
-            }
-
-
-            const text =
-                message.toLowerCase();
-
-
-            if (
-                text.includes(
-                    'invalid login credentials'
-                )
-            ) {
-
-                return 'Email atau password salah.';
-
-            }
-
-
-            if (
-                text.includes(
-                    'email not confirmed'
-                )
-            ) {
-
-                return 'Email akun belum dikonfirmasi.';
-
-            }
-
-
-            if (
-                text.includes(
-                    'too many requests'
-                )
-            ) {
-
-                return 'Terlalu banyak percobaan. Coba lagi nanti.';
-
-            }
-
-
-            return message;
+            editor.innerHTML=
+                this.form.content;
 
         }
 
+    });
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+
+},
+
+
+/* =========================================================
+EDIT ARTICLE
+========================================================= */
+
+async editArticle(article){
+
+    this.editing=true;
+
+    this.editingId=article.id;
+
+    let tags='';
+
+    try{
+
+        const {
+            data
+        } =
+        await supabaseClient
+            .from('article_tags')
+            .select(`
+                tags (
+                    name
+                )
+            `)
+            .eq(
+                'article_id',
+                article.id
+            );
+
+        tags=
+            (data||[])
+                .map(item=>item.tags?.name)
+                .filter(Boolean)
+                .join(', ');
+
+    }
+    catch(error){
+
+        console.warn(
+            'Tag tidak dapat dimuat:',
+            error
+        );
+
+    }
+
+
+    this.form={
+
+        title:article.title||'',
+
+        slug:article.slug||'',
+
+        excerpt:article.excerpt||'',
+
+        content:article.content||'',
+
+        featured_image:
+            article.featured_image||'',
+
+        category_id:
+            article.category_id||'',
+
+        tags,
+
+        author_name:
+            article.author_name||
+            'Cyberind.id',
+
+        status:
+            article.status||
+            'draft',
+
+        seo_title:
+            article.seo_title||'',
+
+        seo_description:
+            article.seo_description||''
+
     };
+
+    this.page='editor';
+
+    this.mobileSidebar=false;
+
+    this.$nextTick(()=>{
+
+        const editor=
+            document.getElementById(
+                'visualEditor'
+            );
+
+        if(editor){
+
+            editor.innerHTML=
+                this.form.content;
+
+        }
+
+    });
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+
+},
+
+
+/* =========================================================
+SLUG
+========================================================= */
+
+generateSlug(){
+
+    if(this.editing)return;
+
+    this.form.slug=
+        this.slugify(
+            this.form.title
+        );
+
+},
+
+
+slugify(text){
+
+    return String(text||'')
+
+        .toLowerCase()
+
+        .trim()
+
+        .replace(
+            /[^\w\s-]/g,
+            ''
+        )
+
+        .replace(
+            /[\s_-]+/g,
+            '-'
+        )
+
+        .replace(
+            /^-+|-+$/g,
+            '');
+
+},
+
+
+/* =========================================================
+EDITOR
+========================================================= */
+
+syncEditor(){
+
+    const editor=
+        document.getElementById(
+            'visualEditor'
+        );
+
+    if(!editor)return;
+
+    this.form.content=
+        editor.innerHTML;
+
+},
+
+
+saveSelection(){
+
+    const selection=
+        window.getSelection();
+
+    if(!selection||
+       selection.rangeCount===0){
+
+        return;
+
+    }
+
+    const range=
+        selection.getRangeAt(0);
+
+    const editor=
+        document.getElementById(
+            'visualEditor'
+        );
+
+    if(
+        editor &&
+        editor.contains(range.commonAncestorContainer)
+    ){
+
+        this.savedSelection=range;
+
+    }
+
+},
+
+
+restoreSelection(){
+
+    if(!this.savedSelection)return;
+
+    const selection=
+        window.getSelection();
+
+    selection.removeAllRanges();
+
+    selection.addRange(
+        this.savedSelection
+    );
+
+},
+
+
+exec(command,value=null){
+
+    const editor=
+        document.getElementById(
+            'visualEditor'
+        );
+
+    if(!editor)return;
+
+    editor.focus();
+
+    this.restoreSelection();
+
+    document.execCommand(
+        command,
+        false,
+        value
+    );
+
+    this.syncEditor();
+
+    this.saveSelection();
+
+},
+
+
+formatBlock(tag){
+
+    if(!tag)return;
+
+    this.exec(
+        'formatBlock',
+        tag
+    );
+
+},
+
+
+createLink(){
+
+    const url=
+        prompt(
+            'Masukkan URL:',
+            'https://'
+        );
+
+    if(!url)return;
+
+    this.exec(
+        'createLink',
+        url
+    );
+
+},
+
+
+insertCodeBlock(){
+
+    const code=
+        prompt(
+            'Masukkan kode:'
+        );
+
+    if(code===null)return;
+
+    const html=
+        `<pre><code>${this.escapeHtml(code)}</code></pre>`;
+
+    this.insertHTML(html);
+
+},
+
+
+insertHTML(html){
+
+    const editor=
+        document.getElementById(
+            'visualEditor'
+        );
+
+    if(!editor)return;
+
+    editor.focus();
+
+    this.restoreSelection();
+
+    document.execCommand(
+        'insertHTML',
+        false,
+        html
+    );
+
+    this.syncEditor();
+
+    this.saveSelection();
+
+},
+
+
+escapeHtml(text){
+
+    const div=
+        document.createElement(
+            'div'
+        );
+
+    div.textContent=text;
+
+    return div.innerHTML;
+
+},
+
+
+/* =========================================================
+UPLOAD
+========================================================= */
+
+async uploadImage(file){
+
+    if(!file)return null;
+
+    if(!file.type.startsWith('image/')){
+
+        this.showToast(
+            'error',
+            'File tidak valid',
+            'Pilih file gambar.'
+        );
+
+        return null;
+
+    }
+
+    if(file.size>5*1024*1024){
+
+        this.showToast(
+            'error',
+            'File terlalu besar',
+            'Ukuran gambar maksimal 5 MB.'
+        );
+
+        return null;
+
+    }
+
+    const extension=
+        file.name
+            .split('.')
+            .pop()
+            .toLowerCase();
+
+    const fileName=
+        `${crypto.randomUUID()}.${extension}`;
+
+    const filePath=
+        `articles/${fileName}`;
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .storage
+        .from('article-images')
+        .upload(
+            filePath,
+            file,
+            {
+                cacheControl:'3600',
+                upsert:false
+            }
+        );
+
+    if(error){
+
+        console.error(error);
+
+        throw error;
+
+    }
+
+
+    const {
+        data
+    } =
+    supabaseClient
+        .storage
+        .from('article-images')
+        .getPublicUrl(
+            filePath
+        );
+
+
+    return data.publicUrl;
+
+},
+
+
+async handleFeaturedImage(event){
+
+    const file=
+        event.target.files?.[0];
+
+    if(!file)return;
+
+    this.uploading=true;
+
+    try{
+
+        const url=
+            await this.uploadImage(file);
+
+        if(url){
+
+            this.form.featured_image=
+                url;
+
+            this.showToast(
+                'success',
+                'Upload berhasil',
+                'Featured image berhasil diupload.'
+            );
+
+        }
+
+    }
+    catch(error){
+
+        this.showToast(
+            'error',
+            'Upload gagal',
+            error.message
+        );
+
+    }
+    finally{
+
+        this.uploading=false;
+
+        event.target.value='';
+
+    }
+
+},
+
+
+async handleContentImage(event){
+
+    const file=
+        event.target.files?.[0];
+
+    if(!file)return;
+
+    this.uploading=true;
+
+    try{
+
+        const url=
+            await this.uploadImage(file);
+
+        if(url){
+
+            this.insertHTML(
+                `<img src="${url}" alt="${this.escapeHtml(file.name)}">`
+            );
+
+            this.showToast(
+                'success',
+                'Gambar berhasil',
+                'Gambar dimasukkan ke artikel.'
+            );
+
+        }
+
+    }
+    catch(error){
+
+        this.showToast(
+            'error',
+            'Upload gagal',
+            error.message
+        );
+
+    }
+    finally{
+
+        this.uploading=false;
+
+        event.target.value='';
+
+    }
+
+},
+
+
+insertImageFromUpload(){
+
+    const input=
+        document.getElementById(
+            'contentImageInput'
+        );
+
+    if(input){
+
+        input.click();
+
+    }
+
+},
+
+
+/* =========================================================
+SAVE ARTICLE
+========================================================= */
+
+async saveArticle(){
+
+    this.syncEditor();
+
+    if(!this.form.title.trim()){
+
+        this.showToast(
+            'error',
+            'Judul kosong',
+            'Masukkan judul artikel.'
+        );
+
+        return;
+
+    }
+
+
+    if(!this.form.slug.trim()){
+
+        this.form.slug=
+            this.slugify(
+                this.form.title
+            );
+
+    }
+
+
+    if(!this.form.content.trim()){
+
+        this.showToast(
+            'error',
+            'Isi artikel kosong',
+            'Masukkan isi artikel.'
+        );
+
+        return;
+
+    }
+
+
+    this.saving=true;
+
+
+    try{
+
+        const payload={
+
+            title:
+                this.form.title.trim(),
+
+            slug:
+                this.form.slug.trim(),
+
+            excerpt:
+                this.form.excerpt.trim()||
+                null,
+
+            content:
+                this.form.content,
+
+            featured_image:
+                this.form.featured_image.trim()||
+                null,
+
+            category_id:
+                this.form.category_id||
+                null,
+
+            author_name:
+                this.form.author_name.trim()||
+                'Cyberind.id',
+
+            status:
+                this.form.status,
+
+            seo_title:
+                this.form.seo_title.trim()||
+                null,
+
+            seo_description:
+                this.form.seo_description.trim()||
+                null,
+
+            updated_at:
+                new Date().toISOString()
+
+        };
+
+
+        /*
+        =====================================================
+        PUBLISH DATE
+        =====================================================
+        */
+
+        const existing=
+            this.articles.find(
+                a=>a.id===this.editingId
+            );
+
+
+        if(
+            this.form.status==='published' &&
+            (
+                !existing ||
+                existing.status!=='published'
+            )
+        ){
+
+            payload.published_at=
+                new Date().toISOString();
+
+        }
+
+
+        if(
+            this.form.status==='draft'
+        ){
+
+            payload.published_at=null;
+
+        }
+
+
+        let result;
+
+
+        if(this.editing){
+
+            result=
+                await supabaseClient
+                    .from('articles')
+                    .update(payload)
+                    .eq(
+                        'id',
+                        this.editingId
+                    )
+                    .select()
+                    .single();
+
+        }
+        else{
+
+            result=
+                await supabaseClient
+                    .from('articles')
+                    .insert(payload)
+                    .select()
+                    .single();
+
+        }
+
+
+        if(result.error){
+
+            throw result.error;
+
+        }
+
+
+        const articleId=
+            result.data.id;
+
+
+        /*
+        =====================================================
+        TAGS
+        =====================================================
+        */
+
+        await this.saveTags(
+            articleId,
+            this.form.tags
+        );
+
+
+        await this.loadArticles();
+
+
+        this.showToast(
+            'success',
+            'Berhasil',
+            this.editing
+                ?'Artikel berhasil diperbarui.'
+                :'Artikel berhasil dibuat.'
+        );
+
+
+        if(!this.editing){
+
+            this.editing=true;
+
+            this.editingId=
+                articleId;
+
+        }
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        let message=
+            error.message||
+            'Terjadi kesalahan.';
+
+        if(
+            message
+                .toLowerCase()
+                .includes('duplicate')
+        ){
+
+            message=
+                'Slug tersebut sudah digunakan. Gunakan slug lain.';
+
+        }
+
+        this.showToast(
+            'error',
+            'Gagal menyimpan',
+            message
+        );
+
+    }
+    finally{
+
+        this.saving=false;
+
+    }
+
+},
+
+
+/* =========================================================
+TAGS
+========================================================= */
+
+async saveTags(articleId,tagsText){
+
+    const tags=
+        String(tagsText||'')
+            .split(',')
+            .map(tag=>tag.trim())
+            .filter(Boolean);
+
+
+    await supabaseClient
+        .from('article_tags')
+        .delete()
+        .eq(
+            'article_id',
+            articleId
+        );
+
+
+    if(!tags.length)return;
+
+
+    for(const tagName of tags){
+
+        const slug=
+            this.slugify(tagName);
+
+
+        let {
+            data:tag
+        } =
+        await supabaseClient
+            .from('tags')
+            .select('id')
+            .eq(
+                'slug',
+                slug
+            )
+            .maybeSingle();
+
+
+        if(!tag){
+
+            const result=
+                await supabaseClient
+                    .from('tags')
+                    .insert({
+
+                        name:tagName,
+
+                        slug
+
+                    })
+                    .select('id')
+                    .single();
+
+
+            if(result.error){
+
+                console.warn(
+                    'Tag gagal dibuat:',
+                    result.error
+                );
+
+                continue;
+
+            }
+
+            tag=result.data;
+
+        }
+
+
+        await supabaseClient
+            .from('article_tags')
+            .insert({
+
+                article_id:articleId,
+
+                tag_id:tag.id
+
+            });
+
+    }
+
+},
+
+
+/* =========================================================
+DELETE
+========================================================= */
+
+async deleteArticle(article){
+
+    if(!article?.id)return;
+
+    const confirmed=
+        confirm(
+            `Hapus artikel "${article.title}"?\n\nTindakan ini tidak dapat dibatalkan.`
+        );
+
+    if(!confirmed)return;
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from('articles')
+        .delete()
+        .eq(
+            'id',
+            article.id
+        );
+
+
+    if(error){
+
+        this.showToast(
+            'error',
+            'Gagal menghapus',
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await this.loadArticles();
+
+
+    this.showToast(
+        'success',
+        'Berhasil',
+        'Artikel berhasil dihapus.'
+    );
+
+
+    if(
+        this.editing &&
+        this.editingId===article.id
+    ){
+
+        this.changePage(
+            'articles'
+        );
+
+    }
+
+},
+
+
+/* =========================================================
+PREVIEW
+========================================================= */
+
+previewCurrent(){
+
+    this.syncEditor();
+
+    if(!this.form.slug){
+
+        this.showToast(
+            'error',
+            'Slug belum ada',
+            'Masukkan judul terlebih dahulu.'
+        );
+
+        return;
+
+    }
+
+
+    /*
+    Jika artikel sudah disimpan,
+    buka halaman publik.
+    */
+
+    window.open(
+        '/blog/article.html?slug='+
+        encodeURIComponent(
+            this.form.slug
+        ),
+        '_blank'
+    );
+
+},
+
+
+/* =========================================================
+DATE
+========================================================= */
+
+formatDate(date){
+
+    if(!date)return'-';
+
+    try{
+
+        return new Intl.DateTimeFormat(
+            'id-ID',
+            {
+                day:'numeric',
+                month:'short',
+                year:'numeric'
+            }
+        ).format(
+            new Date(date)
+        );
+
+    }
+    catch{
+
+        return date;
+
+    }
+
+},
+
+
+/* =========================================================
+NUMBER
+========================================================= */
+
+formatNumber(number){
+
+    return new Intl.NumberFormat(
+        'id-ID'
+    ).format(
+        Number(number||0)
+    );
+
+},
+
+
+/* =========================================================
+THEME
+========================================================= */
+
+loadTheme(){
+
+    const saved=
+        localStorage.getItem(
+            'cyberind-theme'
+        );
+
+    if(saved){
+
+        this.dark=
+            saved==='dark';
+
+    }
+    else{
+
+        this.dark=
+            window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches;
+
+    }
+
+},
+
+
+toggleTheme(){
+
+    this.dark=!this.dark;
+
+    localStorage.setItem(
+        'cyberind-theme',
+        this.dark?'dark':'light'
+    );
+
+},
+
+
+/* =========================================================
+TOAST
+========================================================= */
+
+showToast(
+    type,
+    title,
+    message
+){
+
+    this.toast={
+
+        show:true,
+
+        type,
+
+        title,
+
+        message
+
+    };
+
+
+    setTimeout(
+        ()=>{
+            this.toast.show=false;
+        },
+        4000
+    );
+
+},
+
+
+/* =========================================================
+AUTH ERROR
+========================================================= */
+
+translateAuthError(message){
+
+    if(!message)
+        return'Login gagal.';
+
+    const text=
+        message.toLowerCase();
+
+    if(
+        text.includes(
+            'invalid login credentials'
+        )
+    )
+        return'Email atau password salah.';
+
+    if(
+        text.includes(
+            'email not confirmed'
+        )
+    )
+        return'Email akun belum dikonfirmasi.';
+
+    if(
+        text.includes(
+            'too many requests'
+        )
+    )
+        return'Terlalu banyak percobaan. Coba lagi nanti.';
+
+    return message;
+
+}
+
+};
 
 }
 
