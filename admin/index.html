@@ -28,7 +28,16 @@ tailwind.config={darkMode:'class'};
 <script>
 const SUPABASE_URL='https://lwolwingtzqdfsqoopra.supabase.co';
 const SUPABASE_KEY='sb_publishable_w8vzcXhO42RrHSopV8Gi9A_ecg6m_0A';
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let supabaseClient = null;
+
+try {
+  if (window.supabase) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (e) {
+  console.error("Supabase initialization error:", e);
+}
+
 const STORAGE_BUCKET='article-images';
 
 function escapeHTML(v=''){const d=document.createElement('div');d.textContent=String(v);return d.innerHTML}
@@ -36,9 +45,10 @@ function slugify(v=''){return v.toString().normalize('NFD').replace(/[\u0300-\u0
 function safeURL(value){try{const u=new URL(String(value).trim());if(!['http:','https:'].includes(u.protocol))return null;return u.href}catch{return null}}
 function safeHttpsURL(value){try{const u=new URL(String(value).trim());return u.protocol==='https:'?u:null}catch{return null}}
 function wordCountFromHTML(html=''){const d=document.createElement('div');d.innerHTML=html||'';return (d.textContent||'').trim().split(/\s+/).filter(Boolean).length}
-const ALLOWED_IFRAME_HOSTS=['youtube.com','www.youtube.com','youtu.be','youtube-nocookie.com','www.youtube-nocookie.com','player.vimeo.com','vimeo.com','open.spotify.com','w.soundcloud.com','soundcloud.com','www.google.com','maps.google.com'];
+const ALLOWED_IFRAME_HOSTS=['youtube.com','www.youtube.com','youtu.be','youtube-nocookie.com','www.youtube-nocookie.com','player.vimeo.com','vimeo.com','soundcloud.com','www.google.com'];
 function hostAllowed(host){host=host.toLowerCase();return ALLOWED_IFRAME_HOSTS.some(x=>host===x||host.endsWith('.'+x))}
 function sanitizeHTML(html=''){
+  if(!window.DOMPurify) return html;
   let clean=DOMPurify.sanitize(String(html),{
     USE_PROFILES:{html:true},
     ADD_TAGS:['iframe'],
@@ -56,170 +66,185 @@ function sanitizeHTML(html=''){
 }
 function youtubeEmbed(v){try{const u=new URL(v);let id=u.searchParams.get('v');if(u.hostname==='youtu.be')id=u.pathname.slice(1);if(!id&&u.pathname.includes('/embed/'))id=u.pathname.split('/embed/')[1].split('/')[0];return id&&/^[\w-]{6,20}$/.test(id)?`https://www.youtube-nocookie.com/embed/${id}`:null}catch{return null}}
 function vimeoEmbed(v){try{const u=new URL(v);const m=u.pathname.match(/\/(?:video\/)?(\d+)/);return m?`https://player.vimeo.com/video/${m[1]}`:null}catch{return null}}
-function spotifyEmbed(v){try{const u=new URL(v);if(!hostAllowed(u.hostname))return null;const m=u.pathname.match(/\/(track|album|playlist|episode|show)\/([A-Za-z0-9]+)/);return m?`https://open.spotify.com/embed/${m[1]}/${m[2]}`:null}catch{return null}}
 function soundcloudEmbed(v){try{const u=new URL(v);return /soundcloud\.com$/i.test(u.hostname)||/\.soundcloud\.com$/i.test(u.hostname)?`https://w.soundcloud.com/player/api.html?url=${encodeURIComponent(u.href)}&color=%23ef4444&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&visual=false`:null}catch{return null}}
-function mapsEmbed(v){try{const u=new URL(v);if(!hostAllowed(u.hostname))return null;return u.href.includes('/maps/embed')?u.href:`https://www.google.com/maps?q=${encodeURIComponent(u.href)}&output=embed`}catch{return null}}
+function mapsEmbed(v){try{const u=new URL(v);if(!hostAllowed(u.hostname))return null;return u.href.includes('/maps/embed')?u.href:`https://maps.google.com/maps?q=${encodeURIComponent(u.href)}&output=embed`}catch{return null}}
 
-document.addEventListener('alpine:init',()=>Alpine.data('cmsApp',()=>({
-  dark:localStorage.getItem('cyberind-dark')==='true',
-  loading:true,authenticated:false,currentUser:null,mobileMenu:false,page:'dashboard',
-  loginForm:{email:'',password:''},loginError:'',loggingIn:false,showPassword:false,
-  articles:[],categories:[],search:'',statusFilter:'all',editing:false,saving:false,
-  form:{},sourceMode:false,selectedRange:null,toast:null,
-  linkModal:false,linkForm:{text:'',url:'',newTab:true,nofollow:false},
-  imageModal:false,imageTab:'upload',imageForFeatured:false,uploading:false,
-  externalImage:{url:'',alt:''},
-  embedModal:false,embedForm:{provider:'youtube',url:''},
-  categoryModal:false,newCategory:{name:''},previewModal:false,previewArticleData:null,
-  init(){
-    this.form=this.emptyForm();
-    supabaseClient.auth.getSession().then(async({data})=>{
-      if(data.session?.user){const ok=await this.verifyAdmin(data.session.user);if(ok){this.currentUser=data.session.user;this.authenticated=true;await this.loadData()}}
-      this.loading=false;
-    });
-    supabaseClient.auth.onAuthStateChange(async(_event,session)=>{
-      if(session?.user&&!this.authenticated){const ok=await this.verifyAdmin(session.user);if(ok){this.currentUser=session.user;this.authenticated=true;await this.loadData()}}
-      if(!session){this.authenticated=false;this.currentUser=null}
-    });
-  },
-  get pageTitle(){return this.page==='dashboard'?'Dashboard':this.page==='articles'?'Artikel':this.page==='editor'?(this.editing?'Edit Artikel':'Tulis Artikel'):'Cyberind CMS'},
-  get publishedCount(){return this.articles.filter(a=>a.status==='published').length},
-  get draftCount(){return this.articles.filter(a=>a.status==='draft').length},
-  get totalViews(){return this.articles.reduce((s,a)=>s+Number(a.views||0),0)},
-  get filteredArticles(){
-    const q=this.search.trim().toLowerCase();
-    return this.articles.filter(a=>(!q||(a.title||'').toLowerCase().includes(q)||(a.slug||'').toLowerCase().includes(q)||(a.excerpt||'').toLowerCase().includes(q))&&(this.statusFilter==='all'||a.status===this.statusFilter));
-  },
-  get wordCount(){return wordCountFromHTML(this.sourceMode?this.form.content:(this.$refs.editor?.innerHTML||''))},
-  emptyForm(){return{id:null,title:'',slug:'',excerpt:'',content:'',featured_image:'',category_id:'',author_name:'Cyberind.id',status:'draft',seo_title:'',seo_description:'',views:0,published_at:null,created_at:null,updated_at:null,tags:''}},
-  notify(message,type='success'){this.toast={message,type};setTimeout(()=>{this.toast=null},3200)},
-  async login(){
-    this.loggingIn=true;this.loginError='';
-    const {data,error}=await supabaseClient.auth.signInWithPassword({email:this.loginForm.email.trim(),password:this.loginForm.password});
-    if(error){this.loginError=error.message;this.loggingIn=false;return}
-    const ok=await this.verifyAdmin(data.user);
-    if(!ok){await supabaseClient.auth.signOut();this.loginError='Login berhasil, tetapi akun ini bukan administrator Cyberind CMS.';this.loggingIn=false;return}
-    this.currentUser=data.user;this.authenticated=true;await this.loadData();this.loggingIn=false;
-  },
-  async verifyAdmin(user){if(!user)return false;const{data,error}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();return !error&&!!data},
-  async logout(){await supabaseClient.auth.signOut();this.authenticated=false;this.currentUser=null;this.page='dashboard'},
-  async loadData(){await Promise.all([this.loadArticles(),this.loadCategories()])},
-  async loadArticles(){
-    const{data,error}=await supabaseClient.from('articles').select('id,title,slug,excerpt,content,featured_image,category_id,author_name,status,seo_title,seo_description,views,published_at,created_at,updated_at,categories(id,name,slug)').order('created_at',{ascending:false});
-    if(error){this.notify(error.message,'error');return}this.articles=data||[];
-  },
-  async loadCategories(){
-    const{data,error}=await supabaseClient.from('categories').select('id,name,slug').order('name',{ascending:true});
-    if(error){this.notify(error.message,'error');return}this.categories=data||[];
-  },
-  newArticle(){
-    this.editing=false;this.form=this.emptyForm();this.sourceMode=false;this.selectedRange=null;this.page='editor';
-    this.$nextTick(()=>this.mountEditorContent());
-  },
-  editArticle(article){
-    this.editing=true;
-    this.form={...this.emptyForm(),id:article.id,title:article.title||'',slug:article.slug||'',excerpt:article.excerpt||'',content:sanitizeHTML(article.content||''),featured_image:article.featured_image||'',category_id:article.category_id||'',author_name:article.author_name||'Cyberind.id',status:article.status||'draft',seo_title:article.seo_title||'',seo_description:article.seo_description||'',views:Number(article.views||0),published_at:article.published_at||null,created_at:article.created_at||null,updated_at:article.updated_at||null,tags:''};
-    this.sourceMode=false;this.selectedRange=null;this.page='editor';
-    this.$nextTick(()=>{this.mountEditorContent();this.loadArticleTags(article.id)});
-  },
-  mountEditorContent(attempt=0){
-    const editor=this.$refs.editor;
-    if(!editor){if(attempt<40)setTimeout(()=>this.mountEditorContent(attempt+1),50);return}
-    const content=sanitizeHTML(this.form.content||'');editor.innerHTML=content;this.form.content=content;
-  },
-  async loadArticleTags(articleId){
-    const{data,error}=await supabaseClient.from('article_tags').select('tag_id,tags(id,name,slug)').eq('article_id',articleId);
-    if(error){this.form.tags='';return}
-    this.form.tags=(data||[]).map(r=>r.tags?.name).filter(Boolean).join(', ');
-  },
-  autoSlug(){if(!this.editing||!this.form.slug)this.form.slug=slugify(this.form.title)},
-  saveSelection(){const s=window.getSelection();if(s?.rangeCount)this.selectedRange=s.getRangeAt(0).cloneRange()},
-  restoreSelection(){if(!this.selectedRange)return;const s=window.getSelection();try{s.removeAllRanges();s.addRange(this.selectedRange)}catch{}},
-  syncEditorToForm(){const e=this.$refs.editor;if(e&&!this.sourceMode)this.form.content=sanitizeHTML(e.innerHTML||'');return this.form.content},
-  editorCommand(command,value=null){if(this.sourceMode)return;const e=this.$refs.editor;if(!e)return;e.focus();this.restoreSelection();document.execCommand(command,false,value);this.saveSelection();this.syncEditorToForm()},
-  formatBlock(tag){if(tag)this.editorCommand('formatBlock',tag)},
-  toggleSource(){
-    if(!this.sourceMode){
-      const e=this.$refs.editor;if(!e)return;
-      this.form.content=sanitizeHTML(e.innerHTML||'');this.sourceMode=true;
-    }else{
-      this.form.content=sanitizeHTML(this.form.content||'');this.sourceMode=false;
+document.addEventListener('alpine:init',()=>{
+  Alpine.data('cmsApp',()=>({
+    dark:localStorage.getItem('cyberind-dark')==='true',
+    loading:true,authenticated:false,currentUser:null,mobileMenu:false,page:'dashboard',
+    loginForm:{email:'',password:''},loginError:'',loggingIn:false,showPassword:false,
+    articles:[],categories:[],search:'',statusFilter:'all',editing:false,saving:false,
+    form:{},sourceMode:false,selectedRange:null,toast:null,
+    linkModal:false,linkForm:{text:'',url:'',newTab:true,nofollow:false},
+    imageModal:false,imageTab:'upload',imageForFeatured:false,uploading:false,
+    externalImage:{url:'',alt:''},
+    embedModal:false,embedForm:{provider:'youtube',url:''},
+    categoryModal:false,newCategory:{name:''},previewModal:false,previewArticleData:null,
+    init(){
+      this.form=this.emptyForm();
+      if(!supabaseClient){
+        this.loading=false;
+        this.notify('Gagal memuat Supabase Client. Periksa koneksi internet/CDN.', 'error');
+        return;
+      }
+      supabaseClient.auth.getSession().then(async({data})=>{
+        if(data.session?.user){const ok=await this.verifyAdmin(data.session.user);if(ok){this.currentUser=data.session.user;this.authenticated=true;await this.loadData()}}
+        this.loading=false;
+      }).catch(()=>{this.loading=false;});
+      
+      supabaseClient.auth.onAuthStateChange(async(_event,session)=>{
+        if(session?.user&&!this.authenticated){const ok=await this.verifyAdmin(session.user);if(ok){this.currentUser=session.user;this.authenticated=true;await this.loadData()}}
+        if(!session){this.authenticated=false;this.currentUser=null}
+      });
+    },
+    get pageTitle(){return this.page==='dashboard'?'Dashboard':this.page==='articles'?'Artikel':this.page==='editor'?(this.editing?'Edit Artikel':'Tulis Artikel'):'Cyberind CMS'},
+    get publishedCount(){return this.articles.filter(a=>a.status==='published').length},
+    get draftCount(){return this.articles.filter(a=>a.status==='draft').length},
+    get totalViews(){return this.articles.reduce((s,a)=>s+Number(a.views||0),0)},
+    get filteredArticles(){
+      const q=this.search.trim().toLowerCase();
+      return this.articles.filter(a=>(!q||(a.title||'').toLowerCase().includes(q)||(a.slug||'').toLowerCase().includes(q)||(a.excerpt||'').toLowerCase().includes(q))&&(this.statusFilter==='all'||a.status===this.statusFilter));
+    },
+    get wordCount(){return wordCountFromHTML(this.sourceMode?this.form.content:(this.$refs.editor?.innerHTML||''))},
+    emptyForm(){return{id:null,title:'',slug:'',excerpt:'',content:'',featured_image:'',category_id:'',author_name:'Cyberind.id',status:'draft',seo_title:'',seo_description:'',views:0,published_at:null,created_at:null,updated_at:null,tags:''}},
+    notify(message,type='success'){this.toast={message,type};setTimeout(()=>{this.toast=null},3200)},
+    async login(){
+      if(!supabaseClient)return;
+      this.loggingIn=true;this.loginError='';
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email:this.loginForm.email.trim(),password:this.loginForm.password});
+      if(error){this.loginError=error.message;this.loggingIn=false;return}
+      const ok=await this.verifyAdmin(data.user);
+      if(!ok){await supabaseClient.auth.signOut();this.loginError='Login berhasil, tetapi akun ini bukan administrator Cyberind CMS.';this.loggingIn=false;return}
+      this.currentUser=data.user;this.authenticated=true;await this.loadData();this.loggingIn=false;
+    },
+    async verifyAdmin(user){if(!user||!supabaseClient)return false;const{data,error}=await supabaseClient.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();return !error&&!!data},
+    async logout(){if(supabaseClient)await supabaseClient.auth.signOut();this.authenticated=false;this.currentUser=null;this.page='dashboard'},
+    async loadData(){await Promise.all([this.loadArticles(),this.loadCategories()])},
+    async loadArticles(){
+      if(!supabaseClient)return;
+      const{data,error}=await supabaseClient.from('articles').select('id,title,slug,excerpt,content,featured_image,category_id,author_name,status,seo_title,seo_description,views,published_at,created_at,updated_at,categories(id,name,slug)').order('created_at',{ascending:false});
+      if(error){this.notify(error.message,'error');return}this.articles=data||[];
+    },
+    async loadCategories(){
+      if(!supabaseClient)return;
+      const{data,error}=await supabaseClient.from('categories').select('id,name,slug').order('name',{ascending:true});
+      if(error){this.notify(error.message,'error');return}this.categories=data||[];
+    },
+    newArticle(){
+      this.editing=false;this.form=this.emptyForm();this.sourceMode=false;this.selectedRange=null;this.page='editor';
       this.$nextTick(()=>this.mountEditorContent());
+    },
+    editArticle(article){
+      this.editing=true;
+      this.form={...this.emptyForm(),id:article.id,title:article.title||'',slug:article.slug||'',excerpt:article.excerpt||'',content:sanitizeHTML(article.content||''),featured_image:article.featured_image||'',category_id:article.category_id||'',author_name:article.author_name||'Cyberind.id',status:article.status||'draft',seo_title:article.seo_title||'',seo_description:article.seo_description||'',views:Number(article.views||0),published_at:article.published_at||null,created_at:article.created_at||null,updated_at:article.updated_at||null,tags:''};
+      this.sourceMode=false;this.selectedRange=null;this.page='editor';
+      this.$nextTick(()=>{this.mountEditorContent();this.loadArticleTags(article.id)});
+    },
+    mountEditorContent(attempt=0){
+      const editor=this.$refs.editor;
+      if(!editor){if(attempt<40)setTimeout(()=>this.mountEditorContent(attempt+1),50);return}
+      const content=sanitizeHTML(this.form.content||'');editor.innerHTML=content;this.form.content=content;
+    },
+    async loadArticleTags(articleId){
+      if(!supabaseClient)return;
+      const{data,error}=await supabaseClient.from('article_tags').select('tag_id,tags(id,name,slug)').eq('article_id',articleId);
+      if(error){this.form.tags='';return}
+      this.form.tags=(data||[]).map(r=>r.tags?.name).filter(Boolean).join(', ');
+    },
+    autoSlug(){if(!this.editing||!this.form.slug)this.form.slug=slugify(this.form.title)},
+    saveSelection(){const s=window.getSelection();if(s?.rangeCount)this.selectedRange=s.getRangeAt(0).cloneRange()},
+    restoreSelection(){if(!this.selectedRange)return;const s=window.getSelection();try{s.removeAllRanges();s.addRange(this.selectedRange)}catch{}},
+    syncEditorToForm(){const e=this.$refs.editor;if(e&&!this.sourceMode)this.form.content=sanitizeHTML(e.innerHTML||'');return this.form.content},
+    editorCommand(command,value=null){if(this.sourceMode)return;const e=this.$refs.editor;if(!e)return;e.focus();this.restoreSelection();document.execCommand(command,false,value);this.saveSelection();this.syncEditorToForm()},
+    formatBlock(tag){if(tag)this.editorCommand('formatBlock',tag)},
+    toggleSource(){
+      if(!this.sourceMode){
+        const e=this.$refs.editor;if(!e)return;
+        this.form.content=sanitizeHTML(e.innerHTML||'');this.sourceMode=true;
+      }else{
+        this.form.content=sanitizeHTML(this.form.content||'');this.sourceMode=false;
+        this.$nextTick(()=>this.mountEditorContent());
+      }
+    },
+    openLinkModal(){this.saveSelection();this.linkForm={text:this.getSelectedText(),url:'',newTab:true,nofollow:false};this.linkModal=true},
+    getSelectedText(){const s=window.getSelection();return s?s.toString():''},
+    insertLink(){
+      const url=safeURL(this.linkForm.url);if(!url){this.notify('URL tidak valid.','error');return}
+      const text=this.linkForm.text||url;this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();
+      const selected=this.getSelectedText();
+      if(selected)document.execCommand('createLink',false,url);else document.execCommand('insertHTML',false,`<a href="${escapeHTML(url)}">${escapeHTML(text)}</a>`);
+      e.querySelectorAll('a').forEach(a=>{if(a.getAttribute('href')===url){if(this.linkForm.newTab){a.target='_blank';a.rel=this.linkForm.nofollow?'noopener noreferrer nofollow':'noopener noreferrer'}else{a.removeAttribute('target');a.rel=this.linkForm.nofollow?'nofollow':''}}});
+      this.linkModal=false;this.saveSelection();this.syncEditorToForm();
+    },
+    openImageModal(featured=false){this.saveSelection();this.imageForFeatured=featured;this.imageTab='upload';this.externalImage={url:'',alt:''};this.imageModal=true},
+    async uploadImage(event){
+      if(!supabaseClient)return;
+      const file=event.target.files?.[0];if(!file)return;
+      if(!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)){this.notify('Format gambar tidak didukung.','error');return}
+      if(file.size>5*1024*1024){this.notify('Ukuran gambar maksimal 5 MB.','error');return}
+      this.uploading=true;const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const path=`articles/${crypto.randomUUID()}.${ext}`;
+      const{error}=await supabaseClient.storage.from(STORAGE_BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+      if(error){this.uploading=false;this.notify('Upload gagal: '+error.message,'error');return}
+      const{data}=supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);this.insertImageURL(data.publicUrl,'Cyberind.id');this.uploading=false;this.imageModal=false;
+    },
+    insertExternalImage(){const u=safeHttpsURL(this.externalImage.url);if(!u){this.notify('URL gambar harus HTTPS dan valid.','error');return}this.insertImageURL(u.href,this.externalImage.alt||'Cyberind.id');this.imageModal=false},
+    insertImageURL(url,alt='Cyberind.id'){
+      if(this.imageForFeatured){this.form.featured_image=url;return}
+      this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();document.execCommand('insertHTML',false,`<p><img src="${escapeHTML(url)}" alt="${escapeHTML(alt)}" loading="lazy"></p>`);this.saveSelection();this.syncEditorToForm()
+    },
+    openEmbedModal(){this.saveSelection();this.embedForm={provider:'youtube',url:''};this.embedModal=true},
+    insertEmbed(){
+      const p=this.embedForm.provider,u=this.embedForm.url.trim();let src=null;
+      if(p==='youtube')src=youtubeEmbed(u);if(p==='vimeo')src=vimeoEmbed(u);if(p==='soundcloud')src=soundcloudEmbed(u);if(p==='maps')src=mapsEmbed(u);
+      if(p==='iframe'){try{const x=new URL(u);if(x.protocol==='https:'&&hostAllowed(x.hostname))src=x.href}catch{}}
+      if(!src){this.notify('URL embed tidak valid atau tidak didukung.','error');return}
+      this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();
+      const html=`<p><iframe src="${escapeHTML(src)}" title="${escapeHTML(p)}" loading="lazy" allowfullscreen></iframe></p>`;
+      document.execCommand('insertHTML',false,html);this.saveSelection();this.syncEditorToForm();this.embedModal=false
+    },
+    async saveArticle(){
+      if(!supabaseClient || this.saving)return;this.saving=true;
+      if(this.sourceMode)this.form.content=sanitizeHTML(this.form.content||'');else{const e=this.$refs.editor;if(!e){this.notify('Editor belum siap. Coba lagi.','error');this.saving=false;return}this.form.content=sanitizeHTML(e.innerHTML||'')}
+      const title=this.form.title.trim(),slug=slugify(this.form.slug||this.form.title);
+      if(!title){this.notify('Judul artikel wajib diisi.','error');this.saving=false;return}
+      if(!slug){this.notify('Slug tidak valid.','error');this.saving=false;return}
+      if(!this.form.content.trim()){this.notify('Isi artikel masih kosong.','error');this.saving=false;return}
+      const publishedAt=this.form.status==='published'?(this.form.published_at||new Date().toISOString()):null;
+      const payload={title,slug,excerpt:this.form.excerpt.trim()||null,content:this.form.content,featured_image:this.form.featured_image||null,category_id:this.form.category_id||null,author_name:this.form.author_name.trim()||'Cyberind.id',status:this.form.status,seo_title:this.form.seo_title.trim()||null,seo_description:this.form.seo_description.trim()||null,published_at:publishedAt};
+      let articleId=this.form.id;
+      let error;
+      if(articleId){({error}=await supabaseClient.from('articles').update(payload).eq('id',articleId))}else{const r=await supabaseClient.from('articles').insert(payload).select('id').single();error=r.error;articleId=r.data?.id}
+      if(error){this.notify('Gagal menyimpan: '+error.message,'error');this.saving=false;return}
+      await this.saveTags(articleId,this.form.tags||'');
+      await this.loadArticles();this.form.id=articleId;this.editing=true;this.notify('Artikel berhasil disimpan.');this.saving=false
+    },
+    async saveTags(articleId,raw){
+      if(!supabaseClient)return;
+      const names=[...new Set(raw.split(',').map(x=>x.trim()).filter(Boolean))];await supabaseClient.from('article_tags').delete().eq('article_id',articleId);
+      for(const name of names){
+        const slug=slugify(name);if(!slug)continue;
+        let{data}=await supabaseClient.from('tags').select('id').eq('slug',slug).maybeSingle();
+        if(!data){const r=await supabaseClient.from('tags').insert({name,slug}).select('id').single();data=r.data}
+        if(data?.id)await supabaseClient.from('article_tags').insert({article_id:articleId,tag_id:data.id})
+      }
+    },
+    async deleteArticle(article){
+      if(!supabaseClient)return;
+      if(!confirm(`Hapus artikel "${article.title}"?`))return;
+      const{error}=await supabaseClient.from('articles').delete().eq('id',article.id);if(error){this.notify(error.message,'error');return}
+      await this.loadArticles();this.notify('Artikel berhasil dihapus.')
+    },
+    previewArticle(article){this.previewArticleData=article;this.previewModal=true},
+    formatDate(v){if(!v)return '-';try{return new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short'}).format(new Date(v))}catch{return v}},
+    async createCategory(){
+      if(!supabaseClient)return;
+      const name=this.newCategory.name.trim();if(!name)return;
+      const slug=slugify(name);const{data,error}=await supabaseClient.from('categories').insert({name,slug}).select('id,name,slug').single();
+      if(error){this.notify(error.message,'error');return}this.categories.push(data);this.form.category_id=data.id;this.newCategory.name='';this.categoryModal=false;this.notify('Kategori ditambahkan.')
     }
-  },
-  openLinkModal(){this.saveSelection();this.linkForm={text:this.getSelectedText(),url:'',newTab:true,nofollow:false};this.linkModal=true},
-  getSelectedText(){const s=window.getSelection();return s?s.toString():''},
-  insertLink(){
-    const url=safeURL(this.linkForm.url);if(!url){this.notify('URL tidak valid.','error');return}
-    const text=this.linkForm.text||url;this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();
-    const selected=this.getSelectedText();
-    if(selected)document.execCommand('createLink',false,url);else document.execCommand('insertHTML',false,`<a href="${escapeHTML(url)}">${escapeHTML(text)}</a>`);
-    e.querySelectorAll('a').forEach(a=>{if(a.getAttribute('href')===url){if(this.linkForm.newTab){a.target='_blank';a.rel=this.linkForm.nofollow?'noopener noreferrer nofollow':'noopener noreferrer'}else{a.removeAttribute('target');a.rel=this.linkForm.nofollow?'nofollow':''}}});
-    this.linkModal=false;this.saveSelection();this.syncEditorToForm();
-  },
-  openImageModal(featured=false){this.saveSelection();this.imageForFeatured=featured;this.imageTab='upload';this.externalImage={url:'',alt:''};this.imageModal=true},
-  async uploadImage(event){
-    const file=event.target.files?.[0];if(!file)return;
-    if(!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)){this.notify('Format gambar tidak didukung.','error');return}
-    if(file.size>5*1024*1024){this.notify('Ukuran gambar maksimal 5 MB.','error');return}
-    this.uploading=true;const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const path=`articles/${crypto.randomUUID()}.${ext}`;
-    const{error}=await supabaseClient.storage.from(STORAGE_BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
-    if(error){this.uploading=false;this.notify('Upload gagal: '+error.message,'error');return}
-    const{data}=supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);this.insertImageURL(data.publicUrl,'Cyberind.id');this.uploading=false;this.imageModal=false;
-  },
-  insertExternalImage(){const u=safeHttpsURL(this.externalImage.url);if(!u){this.notify('URL gambar harus HTTPS dan valid.','error');return}this.insertImageURL(u.href,this.externalImage.alt||'Cyberind.id');this.imageModal=false},
-  insertImageURL(url,alt='Cyberind.id'){
-    if(this.imageForFeatured){this.form.featured_image=url;return}
-    this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();document.execCommand('insertHTML',false,`<p><img src="${escapeHTML(url)}" alt="${escapeHTML(alt)}" loading="lazy"></p>`);this.saveSelection();this.syncEditorToForm()
-  },
-  openEmbedModal(){this.saveSelection();this.embedForm={provider:'youtube',url:''};this.embedModal=true},
-  insertEmbed(){
-    const p=this.embedForm.provider,u=this.embedForm.url.trim();let src=null;
-    if(p==='youtube')src=youtubeEmbed(u);if(p==='vimeo')src=vimeoEmbed(u);if(p==='spotify')src=spotifyEmbed(u);if(p==='soundcloud')src=soundcloudEmbed(u);if(p==='maps')src=mapsEmbed(u);
-    if(p==='iframe'){try{const x=new URL(u);if(x.protocol==='https:'&&hostAllowed(x.hostname))src=x.href}catch{}}
-    if(!src){this.notify('URL embed tidak valid atau tidak didukung.','error');return}
-    this.restoreSelection();const e=this.$refs.editor;if(!e)return;e.focus();
-    const html=`<p><iframe src="${escapeHTML(src)}" title="${escapeHTML(p)}" loading="lazy" allowfullscreen></iframe></p>`;
-    document.execCommand('insertHTML',false,html);this.saveSelection();this.syncEditorToForm();this.embedModal=false
-  },
-  async saveArticle(){
-    if(this.saving)return;this.saving=true;
-    if(this.sourceMode)this.form.content=sanitizeHTML(this.form.content||'');else{const e=this.$refs.editor;if(!e){this.notify('Editor belum siap. Coba lagi.','error');this.saving=false;return}this.form.content=sanitizeHTML(e.innerHTML||'')}
-    const title=this.form.title.trim(),slug=slugify(this.form.slug||this.form.title);
-    if(!title){this.notify('Judul artikel wajib diisi.','error');this.saving=false;return}
-    if(!slug){this.notify('Slug tidak valid.','error');this.saving=false;return}
-    if(!this.form.content.trim()){this.notify('Isi artikel masih kosong.','error');this.saving=false;return}
-    const publishedAt=this.form.status==='published'?(this.form.published_at||new Date().toISOString()):null;
-    const payload={title,slug,excerpt:this.form.excerpt.trim()||null,content:this.form.content,featured_image:this.form.featured_image||null,category_id:this.form.category_id||null,author_name:this.form.author_name.trim()||'Cyberind.id',status:this.form.status,seo_title:this.form.seo_title.trim()||null,seo_description:this.form.seo_description.trim()||null,published_at:publishedAt};
-    let articleId=this.form.id;
-    let error;
-    if(articleId){({error}=await supabaseClient.from('articles').update(payload).eq('id',articleId))}else{const r=await supabaseClient.from('articles').insert(payload).select('id').single();error=r.error;articleId=r.data?.id}
-    if(error){this.notify('Gagal menyimpan: '+error.message,'error');this.saving=false;return}
-    await this.saveTags(articleId,this.form.tags||'');
-    await this.loadArticles();this.form.id=articleId;this.editing=true;this.notify('Artikel berhasil disimpan.');this.saving=false
-  },
-  async saveTags(articleId,raw){
-    const names=[...new Set(raw.split(',').map(x=>x.trim()).filter(Boolean))];await supabaseClient.from('article_tags').delete().eq('article_id',articleId);
-    for(const name of names){
-      const slug=slugify(name);if(!slug)continue;
-      let{data}=await supabaseClient.from('tags').select('id').eq('slug',slug).maybeSingle();
-      if(!data){const r=await supabaseClient.from('tags').insert({name,slug}).select('id').single();data=r.data}
-      if(data?.id)await supabaseClient.from('article_tags').insert({article_id:articleId,tag_id:data.id})
-    }
-  },
-  async deleteArticle(article){
-    if(!confirm(`Hapus artikel "${article.title}"?`))return;
-    const{error}=await supabaseClient.from('articles').delete().eq('id',article.id);if(error){this.notify(error.message,'error');return}
-    await this.loadArticles();this.notify('Artikel berhasil dihapus.')
-  },
-  previewArticle(article){this.previewArticleData=article;this.previewModal=true},
-  formatDate(v){if(!v)return '-';try{return new Intl.DateTimeFormat('id-ID',{dateStyle:'medium',timeStyle:'short'}).format(new Date(v))}catch{return v}},
-  async createCategory(){
-    const name=this.newCategory.name.trim();if(!name)return;
-    const slug=slugify(name);const{data,error}=await supabaseClient.from('categories').insert({name,slug}).select('id,name,slug').single();
-    if(error){this.notify(error.message,'error');return}this.categories.push(data);this.form.category_id=data.id;this.newCategory.name='';this.categoryModal=false;this.notify('Kategori ditambahkan.')
-  }
-})); 
+  }));
+});
 </script>
 </head>
 <body>
@@ -304,19 +329,14 @@ document.addEventListener('alpine:init',()=>Alpine.data('cmsApp',()=>({
 </div></template>
 </div></main>
 
-<!-- link modal -->
 <div x-show="linkModal" x-cloak class="fixed inset-0 z-[300] modal-bg flex items-center justify-center p-4"><div @click.outside="linkModal=false" class="w-full max-w-lg glass rounded-2xl p-6"><div class="flex justify-between items-center mb-5"><h3 class="font-bold text-lg">Tambah Link</h3><button @click="linkModal=false"><i class="fa-solid fa-xmark"></i></button></div><input x-model="linkForm.text" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-3" placeholder="Teks link"><input x-model="linkForm.url" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-4" placeholder="https://example.com"><label class="flex items-center gap-2 mb-2"><input type="checkbox" x-model="linkForm.newTab"> Buka tab baru</label><label class="flex items-center gap-2 mb-5"><input type="checkbox" x-model="linkForm.nofollow"> rel="nofollow"</label><button @click="insertLink()" class="w-full py-3 rounded-xl bg-red-500 text-white font-semibold">Sisipkan Link</button></div></div>
 
-<!-- image modal -->
 <div x-show="imageModal" x-cloak class="fixed inset-0 z-[300] modal-bg flex items-center justify-center p-4"><div @click.outside="imageModal=false" class="w-full max-w-lg glass rounded-2xl p-6"><div class="flex justify-between items-center mb-5"><h3 class="font-bold text-lg" x-text="imageForFeatured?'Featured Image':'Sisipkan Gambar'"></h3><button @click="imageModal=false"><i class="fa-solid fa-xmark"></i></button></div><div class="flex gap-2 mb-5"><button @click="imageTab='upload'" class="flex-1 py-2 rounded-lg" :class="imageTab==='upload'?'bg-red-500 text-white':'bg-neutral-100 dark:bg-neutral-800'">Upload</button><button @click="imageTab='external'" class="flex-1 py-2 rounded-lg" :class="imageTab==='external'?'bg-red-500 text-white':'bg-neutral-100 dark:bg-neutral-800'">External URL</button></div><div x-show="imageTab==='upload'"><input type="file" accept="image/jpeg,image/png,image/webp,image/gif" @change="uploadImage" class="w-full p-3 border rounded-xl"><p class="text-xs text-neutral-500 mt-2">JPG, PNG, WEBP, GIF · maksimal 5 MB.</p><div x-show="uploading" class="text-sm text-red-500 mt-3"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Uploading...</div></div><div x-show="imageTab==='external'"><input x-model="externalImage.url" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-3" placeholder="https://..."><input x-model="externalImage.alt" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-4" placeholder="Alt text"><button @click="insertExternalImage()" class="w-full py-3 rounded-xl bg-red-500 text-white font-semibold">Gunakan Gambar</button></div></div></div>
 
-<!-- embed modal -->
 <div x-show="embedModal" x-cloak class="fixed inset-0 z-[300] modal-bg flex items-center justify-center p-4"><div @click.outside="embedModal=false" class="w-full max-w-lg glass rounded-2xl p-6"><div class="flex justify-between items-center mb-5"><h3 class="font-bold text-lg">Embed Media</h3><button @click="embedModal=false"><i class="fa-solid fa-xmark"></i></button></div><select x-model="embedForm.provider" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-3"><option value="youtube">YouTube</option><option value="vimeo">Vimeo</option><option value="spotify">Spotify</option><option value="soundcloud">SoundCloud</option><option value="maps">Google Maps</option><option value="iframe">Custom HTTPS iframe</option></select><input x-model="embedForm.url" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-4" placeholder="Tempel URL media..."><button @click="insertEmbed()" class="w-full py-3 rounded-xl bg-red-500 text-white font-semibold">Sisipkan Embed</button><p class="text-xs text-neutral-500 mt-3">Iframe custom hanya menerima domain yang masuk daftar aman.</p></div></div>
 
-<!-- category modal -->
 <div x-show="categoryModal" x-cloak class="fixed inset-0 z-[300] modal-bg flex items-center justify-center p-4"><div @click.outside="categoryModal=false" class="w-full max-w-md glass rounded-2xl p-6"><div class="flex justify-between items-center mb-5"><h3 class="font-bold text-lg">Tambah Kategori</h3><button @click="categoryModal=false"><i class="fa-solid fa-xmark"></i></button></div><input x-model="newCategory.name" @keydown.enter.prevent="createCategory()" class="w-full px-4 py-3 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 mb-4" placeholder="Nama kategori"><button @click="createCategory()" class="w-full py-3 rounded-xl bg-red-500 text-white font-semibold">Tambah</button></div></div>
 
-<!-- preview -->
 <div x-show="previewModal" x-cloak class="fixed inset-0 z-[300] modal-bg flex items-center justify-center p-4"><div @click.outside="previewModal=false" class="w-full max-w-4xl max-h-[90vh] overflow-y-auto glass rounded-2xl p-6 scrollbar"><div class="flex justify-between items-center mb-6"><h3 class="font-bold text-xl">Preview Artikel</h3><button @click="previewModal=false"><i class="fa-solid fa-xmark"></i></button></div><template x-if="previewArticleData"><article><img x-show="previewArticleData.featured_image" :src="previewArticleData.featured_image" class="w-full max-h-80 object-cover rounded-2xl mb-6"><h1 class="text-3xl md:text-4xl font-bold" x-text="previewArticleData.title"></h1><p class="text-neutral-500 mt-2" x-text="previewArticleData.excerpt"></p><div class="prose-content mt-7" x-html="sanitizeHTML(previewArticleData.content||'')"></div></article></template></div></div>
 
 <div x-show="toast" x-cloak class="fixed bottom-5 right-5 z-[500] toast"><div class="px-5 py-3 rounded-xl shadow-xl text-white" :class="toast?.type==='error'?'bg-red-600':'bg-neutral-900'" x-text="toast?.message"></div></div>
