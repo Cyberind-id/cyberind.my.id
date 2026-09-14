@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" x-data="cmsApp()" :class="{ 'dark': dark }">
+<html lang="id" x-data="cmsApp" :class="{ 'dark': dark }">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -15,6 +15,7 @@ tailwind.config={darkMode:'class'};
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 <style>
+[x-cloak]{display:none!important}
 :root{--red:#ef4444;--bg:#f5f5f5;--text:#171717}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text)}
 .dark body{background:#090909;color:#f5f5f5}.glass{background:rgba(255,255,255,.82);backdrop-filter:blur(18px);border:1px solid rgba(0,0,0,.06)}
